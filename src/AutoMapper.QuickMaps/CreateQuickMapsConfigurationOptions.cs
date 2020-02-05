@@ -9,43 +9,33 @@ namespace AutoMapper.QuickMaps
     {
         ICreateQuickMapsConfigurationOptions AddAssemblies(params Assembly[] assemblies);
 
-        ICreateQuickMapsConfigurationOptions AddAssemblyTypeMarkers(params Type[] assemblyTypeMarkers);
+        ICreateQuickMapsConfigurationOptions AddAssemblies(params Type[] assemblyTypeMarkers);
 
         ICreateQuickMapsConfigurationOptions AddMappingMatchers(params MappingMatcher[] mappingMatchers);
     }
 
     internal class CreateQuickMapsConfigurationOptions : ICreateQuickMapsConfigurationOptions
     {
-        internal IEnumerable<Assembly> Assemblies { get; set; }
+        internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
-        internal IEnumerable<MappingMatcher> MappingMatchers { get; set; }
+        internal IEnumerable<MappingMatcher> MappingMatchers { get; private set; } = new MappingMatcher[0];
 
-        public ICreateQuickMapsConfigurationOptions AddAssemblies(params Assembly[] assemblies)
+        public ICreateQuickMapsConfigurationOptions AddAssemblies(params Assembly[] assembliesToScan)
         {
-            Assemblies = Assemblies == null
-                ? assemblies
-                : Assemblies.Concat(assemblies).ToArray();
-
+            AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
             return this;
         }
 
-        public ICreateQuickMapsConfigurationOptions AddAssemblyTypeMarkers(params Type[] assemblyTypeMarkers)
+        public ICreateQuickMapsConfigurationOptions AddAssemblies(params Type[] assemblyTypeMarkers)
         {
-            var assemblies = assemblyTypeMarkers.Select(x => x.Assembly).ToArray();
-
-            Assemblies = Assemblies == null
-                ? assemblies
-                : Assemblies.Concat(assemblies).ToArray();
-
+            var assembliesToScan = assemblyTypeMarkers.Select(x => x.Assembly).ToArray();
+            AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
             return this;
         }
 
         public ICreateQuickMapsConfigurationOptions AddMappingMatchers(params MappingMatcher[] mappingMatchers)
         {
-            MappingMatchers = MappingMatchers == null
-                ? mappingMatchers
-                : MappingMatchers.Concat(mappingMatchers).ToArray();
-
+            MappingMatchers = MappingMatchers.Concat(mappingMatchers).Distinct().ToArray();
             return this;
         }
     }

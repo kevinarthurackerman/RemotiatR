@@ -3,6 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Collections.ObjectModel;
 
 namespace RemotiatR.Client
 {
@@ -13,12 +16,27 @@ namespace RemotiatR.Client
     public class Remotiatr : IRemotiatr
     {
         private readonly IMessageSender _messageSender;
-        private readonly UrlBuilder _urlBuilder;
 
-        internal Remotiatr(IMessageSender messageSender, UrlBuilder urlBuilder)
+        private readonly IReadOnlyDictionary<Type, Uri> _uriLookup;
+
+        internal Remotiatr(IMessageSender messageSender, IEnumerable<Assembly> assembliesToScan, Func<Type,Uri> uriBuilder)
         {
             _messageSender = messageSender;
-            _urlBuilder = urlBuilder;
+
+            var typesToMatch = assembliesToScan
+                .SelectMany(x => x.GetTypes())
+                .Where(x => 
+                    x.IsClass 
+                    && x.IsVisible
+                    && x.GetConstructors().Any(x => !x.IsStatic && x.IsPublic)
+                    && x.GetInterfaces().Any(x => 
+                        (x.IsGenericType ? x.GetGenericTypeDefinition() : x) == typeof(IBaseRequest)
+                        || (x.IsGenericType ? x.GetGenericTypeDefinition() : x) == typeof(INotification)
+                    )
+                )
+                .ToArray();
+
+            _uriLookup = new ReadOnlyDictionary<Type,Uri>(typesToMatch.ToDictionary(x => x, x => uriBuilder(x)));
         }
 
         public Task Publish(object notification, CancellationToken cancellationToken = default) => 
@@ -35,9 +53,10 @@ namespace RemotiatR.Client
 
         private async Task<object> SendRequest(object request, Type requestType, Type responseType, CancellationToken cancellationToken)
         {
-            var url = _urlBuilder(request.GetType());
+            if (!_uriLookup.TryGetValue(requestType, out var uri))
+                throw new InvalidOperationException($"Cannot locate a URI for type {requestType.FullName}");
 
-            var response = await _messageSender.SendRequest(url, request, requestType, responseType, cancellationToken);
+            var response = await _messageSender.SendRequest(uri, request, requestType, responseType, cancellationToken);
 
             return response;
         }

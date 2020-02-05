@@ -1,45 +1,79 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
+using System.Reflection;
 
 namespace RemotiatR.Client
 {
     public interface IAddRemotiatrOptions
     {
-        IAddRemotiatrOptions AddServer<TServerMarker>(UrlBuilder urlBuilder, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        IAddRemotiatrOptions AddServer<TServerMarker>(Action<IAddServerOptions> configure = null)
             where TServerMarker : IRemotiatr;
 
-        IAddRemotiatrOptions AddDefaultServer(UrlBuilder urlBUilder, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped);
+        IAddRemotiatrOptions AddDefaultServer(Action<IAddServerOptions> configure = null) => AddServer<IRemotiatr>(configure);
     }
 
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
-        internal IDictionary<Type, ServerConfiguration> ServerConfigurations = new Dictionary<Type, ServerConfiguration>();
+        internal IDictionary<Type, AddServerOptions> ServerConfigurations = new Dictionary<Type, AddServerOptions>();
 
-        public IAddRemotiatrOptions AddServer<TServerMarker>(UrlBuilder urlBuilder, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        public IAddRemotiatrOptions AddServer<TServerMarker>(Action<IAddServerOptions> configure = null)
             where TServerMarker : IRemotiatr
         {
-            if (!ServerConfigurations.TryAdd(typeof(TServerMarker), new ServerConfiguration(urlBuilder, serviceLifetime)))
+            var options = new AddServerOptions();
+            configure?.Invoke(options);
+
+            if (!ServerConfigurations.TryAdd(typeof(TServerMarker), options))
                 throw new InvalidOperationException($"A server of type {typeof(TServerMarker).FullName} has already been registered.");
 
             return this;
         }
 
-        public IAddRemotiatrOptions AddDefaultServer(UrlBuilder urlBuilder, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) => AddServer<IRemotiatr>(urlBuilder, serviceLifetime);
+        public IAddRemotiatrOptions AddDefaultServer(Action<IAddServerOptions> configure = null) => AddServer<IRemotiatr>(configure);
     }
 
-    internal class ServerConfiguration
+    public interface IAddServerOptions
     {
-        internal UrlBuilder UrlBuilder { get; }
-        internal ServiceLifetime ServiceLifetime { get; }
+        IAddServerOptions SetMessageSenderLocator(Func<IServiceProvider, IMessageSender> messageSenderLocator);
 
-        internal ServerConfiguration(UrlBuilder urlBuilder, ServiceLifetime serviceLifetime)
+        IAddServerOptions SetUriBuilder(Func<Type, Uri> uriBuilder);
+
+        IAddServerOptions AddAssemblies(params Assembly[] assembliesToScan);
+
+        IAddServerOptions AddAssemblies(params Type[] assemblyTypeMarkers);
+    }
+
+    internal class AddServerOptions : IAddServerOptions
+    {
+        internal Func<IServiceProvider, IMessageSender> MessageSenderLocator { get; private set; }
+
+        internal Func<Type, Uri> UriBuilder { get; private set; }
+
+        internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
+
+        public IAddServerOptions SetMessageSenderLocator(Func<IServiceProvider, IMessageSender> messageSenderLocator)
         {
-            UrlBuilder = urlBuilder;
-            ServiceLifetime = serviceLifetime;
+            MessageSenderLocator = messageSenderLocator;
+            return this;
+        }
+
+        public IAddServerOptions SetUriBuilder(Func<Type, Uri> uriBuilder)
+        {
+            UriBuilder = uriBuilder;
+            return this;
+        }
+
+        public IAddServerOptions AddAssemblies(params Assembly[] assembliesToScan)
+        {
+            AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
+            return this;
+        }
+
+        public IAddServerOptions AddAssemblies(params Type[] assemblyTypeMarkers)
+        {
+            var assembliesToScan = assemblyTypeMarkers.Select(x => x.Assembly).ToArray();
+            AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
+            return this;
         }
     }
-    
-    public delegate string UrlBuilder(Type request);
 }

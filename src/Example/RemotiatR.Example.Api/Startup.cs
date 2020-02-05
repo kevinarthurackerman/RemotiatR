@@ -34,7 +34,7 @@ namespace RemotiatR.Example.Api
 
             services.AddAutoMapper(x => x.CreateQuickMaps(y =>
             {
-                y.AddAssemblyTypeMarkers(typeof(Program), typeof(SharedMarker));
+                y.AddAssemblies(typeof(Program), typeof(SharedMarker));
                 y.AddMappingMatchers(
                     DefaultMappingMatchers.TypeNameMatcher("{action}_{model}+Request", "{model}Entity"),
                     DefaultMappingMatchers.TypeNameMatcher("{model}Entity", "{action}_{model}+Response")

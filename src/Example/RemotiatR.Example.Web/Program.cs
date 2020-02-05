@@ -7,6 +7,7 @@ using AutoMapper.QuickMaps;
 using RemotiatR.Example.Shared;
 using RemotiatR.Client;
 using System.Linq;
+using System;
 
 namespace RemotiatR.Example.Web
 {
@@ -22,7 +23,7 @@ namespace RemotiatR.Example.Web
 
             builder.Services.AddAutoMapper(x => x.CreateQuickMaps(y =>
             {
-                y.AddAssemblyTypeMarkers(typeof(Program), typeof(SharedMarker));
+                y.AddAssemblies(typeof(Program), typeof(SharedMarker));
                 y.AddMappingMatchers(
                     DefaultMappingMatchers.TypeNameMatcher("{action}_{model}+Response", "{view}+{model}ViewModel"),
                     DefaultMappingMatchers.TypeNameMatcher("{view}+{model}ViewModel", "{action}_{model}+Request")
@@ -31,10 +32,15 @@ namespace RemotiatR.Example.Web
 
             builder.Services.AddRemotiatr(x => x.AddDefaultServer(x =>
             {
-                var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
-                var url = $"https://localhost:44339/api/{segments[1]}/{segments[0]}";
-                return url;
-            }, ServiceLifetime.Singleton));
+                x.AddAssemblies(typeof(SharedMarker));
+                x.SetUriBuilder(x =>
+                {
+                    var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
+                    var uri = $"https://localhost:44339/api/{segments[1]}/{segments[0]}";
+                    return new Uri(uri);
+                });
+                x.SetMessageSenderLocator(x => x.GetRequiredService<IMessageSender>());
+            }));
 
             Services = builder.Services;
 

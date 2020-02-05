@@ -16,19 +16,17 @@ namespace AutoMapper.QuickMaps
             var options = new CreateQuickMapsConfigurationOptions();
             configure(options);
             
-            if (options.Assemblies == null || options.Assemblies.Count() == 0)
+            if (!options.AssembliesToScan.Any())
                 throw new InvalidOperationException($"{nameof(CreateQuickMaps)} must be configured with at least one {nameof(Assembly)}");
-            if (options.MappingMatchers == null || options.MappingMatchers.Count() == 0)
+            if (!options.MappingMatchers.Any())
                 throw new InvalidOperationException($"{nameof(CreateQuickMaps)} must be configured with at least one {nameof(MappingMatcher)}");
 
-            var typesToMatch = options.Assemblies
-                .Distinct()
+            var typesToMatch = options.AssembliesToScan
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.IsClass && x.IsVisible && x.GetConstructors().Any(x => !x.IsStatic && x.IsPublic))
                 .ToArray();
 
             var mappingMatchers = options.MappingMatchers
-                .Distinct()
                 .ToArray();
 
             foreach (var sourceType in typesToMatch)

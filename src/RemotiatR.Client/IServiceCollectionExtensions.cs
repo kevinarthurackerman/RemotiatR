@@ -9,10 +9,10 @@ namespace RemotiatR.Client
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure)
+        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
         {
             var options = new AddRemotiatrOptions();
-            configure(options);
+            configure?.Invoke(options);
 
             if (!serviceCollection.Any(x => x.ServiceType == typeof(HttpClient)))
                 serviceCollection.AddSingleton<HttpClient>();
@@ -27,11 +27,16 @@ namespace RemotiatR.Client
                 serviceCollection.AddSingleton<IMessageSender,DefaultHttpMessageSender>();
 
             foreach (var serverConfiguration in options.ServerConfigurations)
-                serviceCollection.Add(new ServiceDescriptor(serverConfiguration.Key, sp =>
-                {
-                    var messageSender = sp.GetRequiredService<IMessageSender>();
-                    return new Remotiatr(messageSender, serverConfiguration.Value.UrlBuilder);
-                }, serverConfiguration.Value.ServiceLifetime));
+                serviceCollection.Add(new ServiceDescriptor(
+                    serverConfiguration.Key, 
+                    sp =>
+                    {
+                        var config = serverConfiguration.Value;
+                        var messageSender = sp.GetRequiredService<IMessageSender>();
+                        return new Remotiatr(messageSender, config.AssembliesToScan, config.UriBuilder);
+                    }, 
+                    ServiceLifetime.Singleton
+                ));
 
             return serviceCollection;
         }
