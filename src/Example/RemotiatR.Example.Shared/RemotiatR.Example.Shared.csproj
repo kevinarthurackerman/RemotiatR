@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>RemotiatR.Example.Shared</AssemblyName>
+    <RootNamespace>RemotiatR.Example.Shared</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

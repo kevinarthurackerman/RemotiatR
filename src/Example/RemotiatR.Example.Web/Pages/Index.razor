@@ -1,0 +1,26 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+<h2>Registered Services</h2>
+<ul>
+    @foreach (var service in Program.Services)
+    {
+        <li>@service.ServiceType : @service.ImplementationType</li>
+    }
+</ul>
+
+<h2>Assembly Types</h2>
+<ul>
+    @foreach (var type in typeof(Program).Assembly.GetTypes().Concat(typeof(Example.Shared.SharedMarker).Assembly.GetTypes()))
+    {
+        <li>@type.FullName.Split('.').Last()</li>
+    }
+</ul>
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        return Task.CompletedTask;
+    }
+}

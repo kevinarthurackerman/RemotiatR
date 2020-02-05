@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>RemotiatR.Server</AssemblyName>
+    <RootNamespace>RemotiatR.Server</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

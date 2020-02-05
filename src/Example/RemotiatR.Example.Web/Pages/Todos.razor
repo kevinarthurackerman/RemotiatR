@@ -1,0 +1,162 @@
+﻿@using RemotiatR.Example.Shared.Features.Todo
+
+@page "/todos"
+
+@inject HttpClient _httpClient;
+@inject IMapper  _mapper;
+@inject IRemotiatr _remotiatr;
+
+<h1>Todos</h1>
+
+@if (_loaded)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Last Edited</th>
+                <th class="text-right"><button class="btn btn-primary btn-sm" @onclick="OnClickAdd">Add</button></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in _todos)
+            {
+                <tr>
+                    @if (todo.IsEditing)
+                    {
+                        <td><input type="text" @bind="todo.Title" /></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">
+                            <button class="btn btn-primary btn-sm" @onclick="() => OnClickSave(todo)">Save</button>
+                            <button class="btn btn-default btn-sm" @onclick="() => OnClickCancel(todo)">Cancel</button>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@todo.Title</td>
+                        <td>@todo.Created</td>
+                        <td>@todo.LastEdited</td>
+                        <td class="text-right">
+                            <button class="btn btn-primary btn-sm" @onclick="() => OnClickEdit(todo)">Edit</button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => OnClickDelete(todo)">Delete</button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-right">@_count Todos</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private bool _loaded;
+
+    private IList<TodosViewModel> _todos;
+
+    private int _count => _todos.Where(x => x.Id != (default)).Count();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _remotiatr.Send(new Get_Todos.Request());
+
+        _todos = _mapper.Map<IList<TodosViewModel>>(result);
+
+        _loaded = true;
+    }
+
+    private void OnClickAdd() => _todos.Insert(0, new TodosViewModel { IsEditing = true });
+
+    private void OnClickEdit(TodosViewModel todo)
+    {
+        todo.PreviousState = _mapper.Map<TodosViewModel.PreviousStateViewModel>(todo);
+        todo.IsEditing = true;
+    }
+
+    private async Task OnClickSave(TodosViewModel todo)
+    {
+        if (todo.Id == default)
+        {
+            var request = _mapper.Map<Create_Todos.Request>(todo);
+
+            var result = await _remotiatr.Send(request);
+
+            _mapper.Map(result, todo);
+
+            todo.PreviousState = null;
+            todo.IsEditing = false;
+        }
+        else
+        {
+            var request = _mapper.Map<Edit_Todos.Request>(todo);
+
+            var result = await _remotiatr.Send(request);
+
+            _mapper.Map(result, todo);
+
+            todo.PreviousState = null;
+            todo.IsEditing = false;
+        }
+
+        _todos = _todos
+            .OrderBy(x => x.Id == default)
+            .ThenBy(x => x.Title)
+            .ToList();
+    }
+
+    private async Task OnClickDelete(TodosViewModel todo)
+    {
+        var request = _mapper.Map<Delete_Todos.Request>(todo);
+
+        var result = await _remotiatr.Send(request);
+
+        _todos.Remove(todo);
+    }
+
+    private void OnClickCancel(TodosViewModel todo)
+    {
+        if (todo.PreviousState != null)
+        {
+            _mapper.Map(todo.PreviousState, todo);
+            todo.PreviousState = null;
+            todo.IsEditing = false;
+        }
+        else
+        {
+            _todos.Remove(todo);
+        }
+    }
+
+    public class TodosViewModel
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime LastEdited { get; set; }
+        public bool IsEditing { get; set; }
+
+        public PreviousStateViewModel PreviousState { get; set; }
+
+        public class PreviousStateViewModel
+        {
+            public string Title { get; set; }
+        }
+    }
+
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<TodosViewModel, TodosViewModel.PreviousStateViewModel>().ReverseMap();
+        }
+    }
+}
