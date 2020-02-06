@@ -41,10 +41,11 @@ namespace AutoMapper.QuickMaps
 #if NETSTANDARD2_1
                 var value1Segments = value1Matches.SelectMany(x => x.Groups.Skip(1).Select(y => y.Value));
 #endif
+
                 if (value1Segments.Count() != tokenizer1SegmentsCount) return false;
 
                 var value1Constants = GetConstantValues(value1Segments).ToArray();
-                for (var i = 0; i < value1Constants.Count(); i++)
+                for (var i = 0; i < value1Constants.Length; i++)
                     if (value1Constants[i] != tokenizer1Constants[i]) return false;
 
                 var value2Matches = tokenizer2Regex.Matches(x.Value2);
@@ -59,8 +60,10 @@ namespace AutoMapper.QuickMaps
                 var value2Segments = value2Matches.SelectMany(x => x.Groups.Skip(1).Select(y => y.Value));
 #endif
 
+                if (value2Segments.Count() != tokenizer2SegmentsCount) return false;
+
                 var value2Constants = GetConstantValues(value2Segments).ToArray();
-                for (var i = 0; i < value2Constants.Count(); i++)
+                for (var i = 0; i < value2Constants.Length; i++)
                     if (value2Constants[i] != tokenizer2Constants[i]) return false;
 
                 var value1Tokens = tokenizer1TokenNames.Zip(GetTokens(value1Segments), (Name, Value) => (Name, Value));

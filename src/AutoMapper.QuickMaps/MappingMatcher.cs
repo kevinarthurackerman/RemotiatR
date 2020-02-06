@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace AutoMapper.QuickMaps
 {
@@ -18,8 +17,8 @@ namespace AutoMapper.QuickMaps
             {
                 if (sourceType == destinationType) return matcherBehaviors.HasFlag(MappingMatcherBehaviors.MatchIdenticalType);
 
-                var sourceTypeName = sourceType.FullName.Split('.').Last();
-                var destinationTypeName = destinationType.FullName.Split('.').Last();
+                var sourceTypeName = sourceType.ExtendedName();
+                var destinationTypeName = destinationType.ExtendedName();
 
                 if (matcherBehaviors.HasFlag(MappingMatcherBehaviors.IgnoreCase))
                 {
@@ -64,8 +63,8 @@ namespace AutoMapper.QuickMaps
             {
                 if (sourceType == destinationType) return matcherBehaviors.HasFlag(MappingMatcherBehaviors.MatchIdenticalType);
 
-                var sourceTypeName = sourceType.FullName.Split('.').Last();
-                var destinationTypeName = destinationType.Name.Split('.').Last();
+                var sourceTypeName = sourceType.ExtendedName();
+                var destinationTypeName = destinationType.ExtendedName();
 
                 if (matcherBehaviors.HasFlag(MappingMatcherBehaviors.IgnoreCase))
                 {

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 
 namespace RemotiatR.Client
 {
@@ -14,12 +15,14 @@ namespace RemotiatR.Client
     public class Remotiatr : IRemotiatr
     {
         private readonly IMediator _mediator;
+        private readonly ImmutableHashSet<Type> _notificationTypesLookup;
         private readonly ImmutableHashSet<Type> _requestTypesLookup;
 
-        internal Remotiatr(IMediator mediator, ImmutableHashSet<Type> requestTypesLookup)
+        internal Remotiatr(IMediator mediator, IEnumerable<Type> notificationTypes, IEnumerable<Type> requestTypes)
         {
             _mediator = mediator;
-            _requestTypesLookup = requestTypesLookup;
+            _notificationTypesLookup = ImmutableHashSet.Create(notificationTypes.ToArray());
+            _requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
         }
 
         public Task Publish(object notification, CancellationToken cancellationToken = default) =>
@@ -28,12 +31,12 @@ namespace RemotiatR.Client
         public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification =>
             PublishNotification(notification, cancellationToken);
 
-        private Task PublishNotification(object request, CancellationToken cancellationToken)
+        private Task PublishNotification(object notification, CancellationToken cancellationToken)
         {
-            if (!_requestTypesLookup.TryGetValue(request.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle type {request.GetType().FullName}");
+            if (!_notificationTypesLookup.TryGetValue(notification.GetType(), out var _))
+                throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}");
 
-            return _mediator.Publish(request, cancellationToken);
+            return _mediator.Publish(notification, cancellationToken);
         }
 
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
@@ -45,15 +48,9 @@ namespace RemotiatR.Client
         private Task<object> SendRequest(object request, CancellationToken cancellationToken)
         {
             if(!_requestTypesLookup.TryGetValue(request.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle type {request.GetType().FullName}");
+                throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}");
 
             return _mediator.Send(request, cancellationToken);
         }
-
-        private static Type GetResponseType(Type requestType) =>
-            requestType.GetInterfaces()
-                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IRequest<>))
-                .GetGenericArguments()
-                .First();
     }
 }
