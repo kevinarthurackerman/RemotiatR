@@ -80,8 +80,7 @@ namespace RemotiatR.Example.Api
                 x.SetUriBuilder(x =>
                 {
                     var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
-                    var uri = $"/api/{segments[1]}/{segments[0]}";
-                    return new Uri(uri, UriKind.Relative);
+                    return new Uri($"/api/{segments[1]}/{segments[0]}", UriKind.Relative);
                 });
             });
         }

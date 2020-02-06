@@ -33,7 +33,7 @@ namespace RemotiatR.Client
                     {
                         var config = serverConfiguration.Value;
                         var messageSender = sp.GetRequiredService<IMessageSender>();
-                        return new Remotiatr(messageSender, config.AssembliesToScan, config.UriBuilder);
+                        return new Remotiatr(messageSender, config.AssembliesToScan, config.UriBuilder, config.BaseUri);
                     }, 
                     ServiceLifetime.Singleton
                 ));

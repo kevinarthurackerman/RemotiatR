@@ -33,11 +33,11 @@ namespace RemotiatR.Example.Web
             builder.Services.AddRemotiatr(x => x.AddDefaultServer(x =>
             {
                 x.AddAssemblies(typeof(SharedMarker));
+                x.SetBaseUri(new Uri("https://localhost:44339"));
                 x.SetUriBuilder(x =>
                 {
                     var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
-                    var uri = $"https://localhost:44339/api/{segments[1]}/{segments[0]}";
-                    return new Uri(uri);
+                    return new Uri($"/api/{segments[1]}/{segments[0]}", UriKind.Relative);
                 });
             }));
 

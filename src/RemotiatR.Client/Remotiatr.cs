@@ -19,7 +19,7 @@ namespace RemotiatR.Client
 
         private readonly IReadOnlyDictionary<Type, Uri> _uriLookup;
 
-        internal Remotiatr(IMessageSender messageSender, IEnumerable<Assembly> assembliesToScan, Func<Type,Uri> uriBuilder)
+        internal Remotiatr(IMessageSender messageSender, IEnumerable<Assembly> assembliesToScan, Func<Type,Uri> uriBuilder, Uri baseUri)
         {
             _messageSender = messageSender;
 
@@ -33,7 +33,15 @@ namespace RemotiatR.Client
                 )
                 .ToArray();
 
-            _uriLookup = new ReadOnlyDictionary<Type,Uri>(typesToMatch.ToDictionary(x => x, x => uriBuilder(x)));
+            _uriLookup = new ReadOnlyDictionary<Type,Uri>(typesToMatch.ToDictionary(x => x, x => MakeUriAbsolute(baseUri, uriBuilder(x))));
+
+            static Uri MakeUriAbsolute(Uri baseUri, Uri pathUri)
+            {
+                if (pathUri.IsAbsoluteUri)return pathUri;
+                if (baseUri != null) return new Uri(baseUri, pathUri);
+
+                throw new InvalidOperationException("If a base URI is not provided all URIs must be absolute");
+            }
         }
 
         public Task Publish(object notification, CancellationToken cancellationToken = default) => 

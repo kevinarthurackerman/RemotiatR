@@ -39,6 +39,8 @@ namespace RemotiatR.Client
 
         IAddServerOptions SetUriBuilder(Func<Type, Uri> uriBuilder);
 
+        IAddServerOptions SetBaseUri(Uri baseUri);
+
         IAddServerOptions AddAssemblies(params Assembly[] assembliesToScan);
 
         IAddServerOptions AddAssemblies(params Type[] assemblyTypeMarkers);
@@ -48,7 +50,9 @@ namespace RemotiatR.Client
     {
         internal Func<IServiceProvider, IMessageSender> MessageSenderLocator { get; private set; } = x => x.GetRequiredService<IMessageSender>();
 
-        internal Func<Type, Uri> UriBuilder { get; private set; }
+        internal Func<Type, Uri> UriBuilder { get; private set; } = x => new Uri("/api/" + x.FullName.Split('.').Last().Replace('+', '/'), UriKind.Relative);
+
+        internal Uri BaseUri { get; private set; }
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
@@ -61,6 +65,14 @@ namespace RemotiatR.Client
         public IAddServerOptions SetUriBuilder(Func<Type, Uri> uriBuilder)
         {
             UriBuilder = uriBuilder;
+            return this;
+        }
+
+        public IAddServerOptions SetBaseUri(Uri baseUri)
+        {
+            if (!baseUri.IsAbsoluteUri) throw new ArgumentException("Base URI must be absolute");
+
+            BaseUri = baseUri;
             return this;
         }
 
