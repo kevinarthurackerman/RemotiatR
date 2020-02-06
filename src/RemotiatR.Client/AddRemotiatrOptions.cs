@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -45,7 +46,7 @@ namespace RemotiatR.Client
 
     internal class AddServerOptions : IAddServerOptions
     {
-        internal Func<IServiceProvider, IMessageSender> MessageSenderLocator { get; private set; }
+        internal Func<IServiceProvider, IMessageSender> MessageSenderLocator { get; private set; } = x => x.GetRequiredService<IMessageSender>();
 
         internal Func<Type, Uri> UriBuilder { get; private set; }
 

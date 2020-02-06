@@ -39,7 +39,6 @@ namespace RemotiatR.Example.Web
                     var uri = $"https://localhost:44339/api/{segments[1]}/{segments[0]}";
                     return new Uri(uri);
                 });
-                x.SetMessageSenderLocator(x => x.GetRequiredService<IMessageSender>());
             }));
 
             Services = builder.Services;
