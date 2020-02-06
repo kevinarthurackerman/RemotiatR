@@ -29,10 +29,7 @@ namespace RemotiatR.Client
                     x.IsClass 
                     && x.IsVisible
                     && x.GetConstructors().Any(x => !x.IsStatic && x.IsPublic)
-                    && x.GetInterfaces().Any(x => 
-                        (x.IsGenericType ? x.GetGenericTypeDefinition() : x) == typeof(IBaseRequest)
-                        || (x.IsGenericType ? x.GetGenericTypeDefinition() : x) == typeof(INotification)
-                    )
+                    && x.GetInterfaces().Any(x => x == typeof(IBaseRequest) || x == typeof(INotification))
                 )
                 .ToArray();
 
@@ -49,7 +46,7 @@ namespace RemotiatR.Client
             SendRequest(request, request.GetType(), typeof(TResponse), cancellationToken).ContinueWith(x => (TResponse)x.Result);
 
         public Task<object> Send(object request, CancellationToken cancellationToken = default) =>
-            SendRequest(request, request.GetType(), request.GetType().GenericTypeArguments.FirstOrDefault() ?? typeof(Unit), cancellationToken);
+            SendRequest(request, request.GetType(), GetResponseType(request.GetType()) ?? typeof(Unit), cancellationToken);
 
         private async Task<object> SendRequest(object request, Type requestType, Type responseType, CancellationToken cancellationToken)
         {
@@ -60,5 +57,11 @@ namespace RemotiatR.Client
 
             return response;
         }
+
+        private static Type GetResponseType(Type requestType) =>
+            requestType.GetInterfaces()
+                .First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IRequest<>))
+                .GetGenericArguments()
+                .First();
     }
 }

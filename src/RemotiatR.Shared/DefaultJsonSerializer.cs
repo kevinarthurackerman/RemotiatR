@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RemotiatR.Shared
 {
@@ -16,7 +18,8 @@ namespace RemotiatR.Shared
 
         public object Deserialize(Stream stream, Type type)
         {
-            using var streamReader = new StreamReader(stream);
+            if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
+            using var streamReader = new StreamReader(stream, Encoding.UTF8);
             using var jsonTextReader = new JsonTextReader(streamReader);
             return _jsonSerializer.Deserialize(jsonTextReader, type);
         }
@@ -24,12 +27,12 @@ namespace RemotiatR.Shared
         public Stream Serialize(object value, Type type)
         {
             var stream = new MemoryStream();
-            using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
+            using var streamWriter = new StreamWriter(stream, Encoding.UTF8, 1024, true);
             using var jsonTextWriter = new JsonTextWriter(streamWriter);
             jsonTextWriter.CloseOutput = false;
             _jsonSerializer.Serialize(jsonTextWriter, value, type);
             jsonTextWriter.Flush();
-            stream.Seek(0, SeekOrigin.Begin);
+            if(stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }
     }
