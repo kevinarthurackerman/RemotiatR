@@ -6,8 +6,8 @@ using AutoMapper;
 using AutoMapper.QuickMaps;
 using RemotiatR.Example.Shared;
 using RemotiatR.Client;
-using System.Linq;
 using System;
+using MediatR;
 
 namespace RemotiatR.Example.Web
 {
@@ -30,15 +30,13 @@ namespace RemotiatR.Example.Web
                 );
             }), typeof(Program));
 
+            builder.Services.AddMediatR(typeof(Program));
+
             builder.Services.AddRemotiatr(x => x.AddDefaultServer(x =>
             {
                 x.AddAssemblies(typeof(SharedMarker));
                 x.SetBaseUri(new Uri("https://localhost:44339"));
-                x.SetUriBuilder(x =>
-                {
-                    var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
-                    return new Uri($"/api/{segments[1]}/{segments[0]}", UriKind.Relative);
-                });
+                x.SetUriBuilder(Defaults.UriBuilder);
             }));
 
             Services = builder.Services;

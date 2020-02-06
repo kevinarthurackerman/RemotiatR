@@ -11,8 +11,6 @@ using AutoMapper;
 using AutoMapper.QuickMaps;
 using RemotiatR.Example.Shared;
 using RemotiatR.Server;
-using System;
-using System.Linq;
 
 namespace RemotiatR.Example.Api
 {
@@ -33,7 +31,7 @@ namespace RemotiatR.Example.Api
 
             services.AddScoped<IServerClock, ServerClock>();
 
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(Program));
 
             services.AddRemotiatr();
 
@@ -77,11 +75,7 @@ namespace RemotiatR.Example.Api
             app.UseRemotiatr(x =>
             {
                 x.AddAssemblies(typeof(SharedMarker));
-                x.SetUriBuilder(x =>
-                {
-                    var segments = x.FullName.Split('.').Last().Split('+').First().Split('_');
-                    return new Uri($"/api/{segments[1]}/{segments[0]}", UriKind.Relative);
-                });
+                x.SetUriBuilder(Defaults.UriBuilder);
             });
         }
     }

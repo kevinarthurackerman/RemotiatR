@@ -3,9 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Collections.ObjectModel;
+using System.Collections.Immutable;
 
 namespace RemotiatR.Client
 {
@@ -15,60 +13,46 @@ namespace RemotiatR.Client
 
     public class Remotiatr : IRemotiatr
     {
-        private readonly IMessageSender _messageSender;
+        private readonly IMediator _mediator;
+        private readonly ImmutableHashSet<Type> _requestTypesLookup;
 
-        private readonly IReadOnlyDictionary<Type, Uri> _uriLookup;
-
-        internal Remotiatr(IMessageSender messageSender, IEnumerable<Assembly> assembliesToScan, Func<Type,Uri> uriBuilder, Uri baseUri)
+        internal Remotiatr(IMediator mediator, ImmutableHashSet<Type> requestTypesLookup)
         {
-            _messageSender = messageSender;
-
-            var typesToMatch = assembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => 
-                    x.IsClass 
-                    && x.IsVisible
-                    && x.GetConstructors().Any(x => !x.IsStatic && x.IsPublic)
-                    && x.GetInterfaces().Any(x => x == typeof(IBaseRequest) || x == typeof(INotification))
-                )
-                .ToArray();
-
-            _uriLookup = new ReadOnlyDictionary<Type,Uri>(typesToMatch.ToDictionary(x => x, x => MakeUriAbsolute(baseUri, uriBuilder(x))));
-
-            static Uri MakeUriAbsolute(Uri baseUri, Uri pathUri)
-            {
-                if (pathUri.IsAbsoluteUri)return pathUri;
-                if (baseUri != null) return new Uri(baseUri, pathUri);
-
-                throw new InvalidOperationException("If a base URI is not provided all URIs must be absolute");
-            }
+            _mediator = mediator;
+            _requestTypesLookup = requestTypesLookup;
         }
 
-        public Task Publish(object notification, CancellationToken cancellationToken = default) => 
-            SendRequest(notification, notification.GetType(), typeof(Unit), cancellationToken);
+        public Task Publish(object notification, CancellationToken cancellationToken = default) =>
+            PublishNotification(notification, cancellationToken);
 
         public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification =>
-            SendRequest(notification, notification.GetType(), typeof(Unit), cancellationToken);
+            PublishNotification(notification, cancellationToken);
+
+        private Task PublishNotification(object request, CancellationToken cancellationToken)
+        {
+            if (!_requestTypesLookup.TryGetValue(request.GetType(), out var _))
+                throw new InvalidOperationException($"This server is not configured to handle type {request.GetType().FullName}");
+
+            return _mediator.Publish(request, cancellationToken);
+        }
 
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
-            SendRequest(request, request.GetType(), typeof(TResponse), cancellationToken).ContinueWith(x => (TResponse)x.Result);
+            SendRequest(request, cancellationToken).ContinueWith(x => (TResponse)x.Result);
 
         public Task<object> Send(object request, CancellationToken cancellationToken = default) =>
-            SendRequest(request, request.GetType(), GetResponseType(request.GetType()) ?? typeof(Unit), cancellationToken);
+            SendRequest(request, cancellationToken);
 
-        private async Task<object> SendRequest(object request, Type requestType, Type responseType, CancellationToken cancellationToken)
+        private Task<object> SendRequest(object request, CancellationToken cancellationToken)
         {
-            if (!_uriLookup.TryGetValue(requestType, out var uri))
-                throw new InvalidOperationException($"Cannot locate a URI for type {requestType.FullName}");
+            if(!_requestTypesLookup.TryGetValue(request.GetType(), out var _))
+                throw new InvalidOperationException($"This server is not configured to handle type {request.GetType().FullName}");
 
-            var response = await _messageSender.SendRequest(uri, request, requestType, responseType, cancellationToken);
-
-            return response;
+            return _mediator.Send(request, cancellationToken);
         }
 
         private static Type GetResponseType(Type requestType) =>
             requestType.GetInterfaces()
-                .First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IRequest<>))
+                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IRequest<>))
                 .GetGenericArguments()
                 .First();
     }

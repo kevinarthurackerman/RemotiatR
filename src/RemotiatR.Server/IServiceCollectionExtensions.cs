@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RemotiatR.Shared;
-using System;
 using System.Linq;
 
 namespace RemotiatR.Server
