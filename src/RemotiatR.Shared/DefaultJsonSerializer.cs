@@ -17,7 +17,7 @@ namespace RemotiatR.Shared
         public object Deserialize(Stream stream, Type type)
         {
             if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
-            using var streamReader = new StreamReader(stream, Encoding.UTF8);
+            using var streamReader = new StreamReader(stream, Encoding.Default);
             using var jsonTextReader = new JsonTextReader(streamReader);
             return _jsonSerializer.Deserialize(jsonTextReader, type);
         }
@@ -25,7 +25,7 @@ namespace RemotiatR.Shared
         public Stream Serialize(object value, Type type)
         {
             var stream = new MemoryStream();
-            using var streamWriter = new StreamWriter(stream, Encoding.UTF8, 1024, true);
+            using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
             using var jsonTextWriter = new JsonTextWriter(streamWriter);
             jsonTextWriter.CloseOutput = false;
             _jsonSerializer.Serialize(jsonTextWriter, value, type);
