@@ -16,7 +16,7 @@ namespace RemotiatR.Client
         {
             var options = new AddRemotiatrOptions();
             configure?.Invoke(options);
-
+            
             serviceCollection.TryAddSingleton<HttpClient>();
             serviceCollection.TryAddSingleton<JsonSerializer, JsonSerializer>();
             serviceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
