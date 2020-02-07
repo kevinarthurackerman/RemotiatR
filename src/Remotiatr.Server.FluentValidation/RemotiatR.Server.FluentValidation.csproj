@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
+    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
   </ItemGroup>
 
 </Project>
