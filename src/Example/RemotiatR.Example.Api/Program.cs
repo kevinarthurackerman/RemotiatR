@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using RemotiatR.Example.Shared;
+using RemotiatR.Shared;
 
 namespace RemotiatR.Example.Api
 {
@@ -15,6 +17,7 @@ namespace RemotiatR.Example.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureServices(x => x.Validate(typeof(Program), typeof(SharedMarker)));
                 });
     }
 }

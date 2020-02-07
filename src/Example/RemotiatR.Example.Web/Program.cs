@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using RemotiatR.Example.Shared;
+using RemotiatR.Shared;
 
 namespace RemotiatR.Example.Web
 {
@@ -19,7 +21,9 @@ namespace RemotiatR.Example.Web
             startup.ConfigureServices(builder.Services);
             
             builder.RootComponents.Add<App>("app");
-            
+
+            builder.Services.Validate(typeof(Program), typeof(SharedMarker));
+
             Services = builder.Services;
 
             var wasmHost = builder.Build();
