@@ -25,7 +25,7 @@ namespace RemotiatR.Shared
             return true;
         }
 
-        public static void Validate(this IServiceCollection serviceCollection) => Validate(serviceCollection, Assembly.GetCallingAssembly());
+        public static void Validate(this IServiceCollection serviceCollection) => Validate(serviceCollection, new Assembly[0]);
 
         public static void Validate(this IServiceCollection serviceCollection, params Type[] assemblyTypeMarkers) =>
             Validate(serviceCollection, assemblyTypeMarkers.Select(x => x.Assembly).ToArray());
@@ -35,7 +35,12 @@ namespace RemotiatR.Shared
             var exceptions = new List<Exception>();
             var provider = serviceCollection.BuildServiceProvider();
             var assemblyLookup = assemblies.Distinct().ToHashSet();
-            foreach (var serviceDescriptor in serviceCollection.Where(x => assemblyLookup.Contains(x.ServiceType.Assembly)))
+
+            var servicesToCheck = assemblies.Any()
+                ? serviceCollection.Where(x => assemblyLookup.Contains(x.ServiceType.Assembly))
+                : serviceCollection;
+
+            foreach (var serviceDescriptor in servicesToCheck)
             {
                 try
                 {
