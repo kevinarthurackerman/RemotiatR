@@ -11,6 +11,7 @@ using AutoMapper;
 using AutoMapper.QuickMaps;
 using RemotiatR.Example.Shared;
 using RemotiatR.Server;
+using RemotiatR.Server.FluentValidation;
 
 namespace RemotiatR.Example.Api
 {
@@ -43,6 +44,8 @@ namespace RemotiatR.Example.Api
                     DefaultMappingMatchers.TypeNameMatcher("{model}Entity", "{action}_{model}+Response")
                 );
             }), typeof(Program));
+
+            services.AddFluentValidation(typeof(Program), typeof(SharedMarker));
 
             services.AddCors(x => x.AddPolicy(BlazorClientPolicy, x => x.WithOrigins("https://localhost:44367").AllowAnyMethod()));
 

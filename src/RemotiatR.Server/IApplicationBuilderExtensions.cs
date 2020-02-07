@@ -50,13 +50,16 @@ namespace RemotiatR.Server
         }
 
         private static RequestDelegate ProcessNotification(Type requestType) =>
-            async ctx =>
+            async httpContext =>
             {
-                var mediator = ctx.RequestServices.GetRequiredService<IMediator>();
-                var serializer = ctx.RequestServices.GetRequiredService<ISerializer>();
+                var mediator = httpContext.RequestServices.GetRequiredService<IMediator>();
+                var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
+                var httpContextAccessor = httpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
+
+                httpContextAccessor.HttpContext = httpContext;
 
                 var dataStream = new MemoryStream();
-                await ctx.Request.Body.CopyToAsync(dataStream);
+                await httpContext.Request.Body.CopyToAsync(dataStream);
 
                 var notification = serializer.Deserialize(dataStream, requestType);
 
@@ -64,21 +67,27 @@ namespace RemotiatR.Server
             };
 
         private static RequestDelegate ProcessRequest(Type requestType, Type responseType) =>
-            async ctx =>
+            async httpContext =>
                 {
-                    var mediator = ctx.RequestServices.GetRequiredService<IMediator>();
-                    var serializer = ctx.RequestServices.GetRequiredService<ISerializer>();
+                    var mediator = httpContext.RequestServices.GetRequiredService<IMediator>();
+                    var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
+                    var httpContextAccessor = httpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
+
+                    httpContextAccessor.HttpContext = httpContext;
 
                     var dataStream = new MemoryStream();
-                    await ctx.Request.Body.CopyToAsync(dataStream);
+                    await httpContext.Request.Body.CopyToAsync(dataStream);
 
                     var request = serializer.Deserialize(dataStream, requestType);
 
                     var response = await mediator.Send(request);
 
-                    var responseData = serializer.Serialize(response, responseType);
+                    if (httpContext.Response.StatusCode >= 200 && httpContext.Response.StatusCode < 300)
+                    {
+                        var responseData = serializer.Serialize(response, responseType);
 
-                    await responseData.CopyToAsync(ctx.Response.Body);
+                        await responseData.CopyToAsync(httpContext.Response.Body);
+                    }
                 };
     }
 }

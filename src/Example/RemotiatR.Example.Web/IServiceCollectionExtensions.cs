@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 namespace RemotiatR.Example.Web
@@ -15,6 +16,9 @@ namespace RemotiatR.Example.Web
         {
             var handlers = new List<DelegatingHandler>();
             configure?.Invoke(handlers);
+
+            var existingClient = serviceCollection.FirstOrDefault(x => x.ServiceType == typeof(TClient));
+            if (existingClient != null) serviceCollection.Remove(existingClient);
 
             serviceCollection.AddSingleton(x => HttpClientFactory.Create(handlers.ToArray()));
 

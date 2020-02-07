@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using System;
 
 namespace RemotiatR.Example.Shared.Features.Todo
@@ -8,6 +9,15 @@ namespace RemotiatR.Example.Shared.Features.Todo
         public class Request : IRequest<Response>
         {
             public string Title { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Request>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.Title)
+                    .NotEmpty();
+            }
         }
 
         public class Response

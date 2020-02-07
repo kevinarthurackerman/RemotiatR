@@ -18,7 +18,7 @@ namespace RemotiatR.Client
             configure?.Invoke(options);
             
             serviceCollection.TryAddSingleton<HttpClient>();
-            serviceCollection.TryAddSingleton<JsonSerializer, JsonSerializer>();
+            serviceCollection.TryAddSingleton<JsonSerializer>();
             serviceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
             serviceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
 

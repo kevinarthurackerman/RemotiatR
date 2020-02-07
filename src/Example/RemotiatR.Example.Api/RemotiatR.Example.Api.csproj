@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\AutoMapper.QuickMaps\AutoMapper.QuickMaps.csproj" />
     <ProjectReference Include="..\..\RemotiatR.Server\RemotiatR.Server.csproj" />
     <ProjectReference Include="..\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj" />
+    <ProjectReference Include="..\Remotiatr.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj" />
   </ItemGroup>
 
 
