@@ -37,15 +37,11 @@ namespace RemotiatR.Client
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
             requestMessage.Content = content;
 
-            HttpRequestHandlerDelegate terminalHandler = async () => await _httpClient.SendAsync(requestMessage, cancellationToken);
-
-            var handle = _httpMessageHandlers
-                .Reverse()
-                .Aggregate(terminalHandler, (next, outerHandle) => () => outerHandle.Handle(requestMessage, cancellationToken, next));
+            var handle = BuildHandler(_httpMessageHandlers, requestMessage, cancellationToken);
 
             var responseMessage = await handle();
 
-            if ((int)responseMessage.StatusCode >= 200 && (int)responseMessage.StatusCode < 300)
+            if (IsSuccessStatusCode((int)responseMessage.StatusCode))
             {
                 var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
@@ -54,6 +50,19 @@ namespace RemotiatR.Client
 
             return null;
         }
+
+        private HttpRequestHandlerDelegate BuildHandler(IEnumerable<IHttpMessageHandler> messageHandlers, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+        {
+            HttpRequestHandlerDelegate terminalHandler = async () => await _httpClient.SendAsync(requestMessage, cancellationToken);
+
+            var handle = _httpMessageHandlers
+                .Reverse()
+                .Aggregate(terminalHandler, (next, outerHandle) => () => outerHandle.Handle(requestMessage, cancellationToken, next));
+
+            return handle;
+        }
+
+        private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 300;
     }
 
     public interface IHttpMessageHandler

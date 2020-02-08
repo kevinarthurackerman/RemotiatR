@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RemotiatR.Example.Api.Services;
 using RemotiatR.Example.Api.Services.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

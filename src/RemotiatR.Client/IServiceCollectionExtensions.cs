@@ -18,16 +18,24 @@ namespace RemotiatR.Client
 
         public static IServiceCollection AddRemotiatr<TMarker>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
         {
-            var options = new AddRemotiatrOptions2();
+            var options = new AddRemotiatrOptions();
             configure?.Invoke(options);
 
             IServiceCollection internalServiceCollection = new ServiceCollection();
 
             foreach (var service in options.Services) internalServiceCollection.Add(service);
             
-            internalServiceCollection.TryAddSingleton<HttpClient>();
+            internalServiceCollection.TryAddSingleton(x =>
+            {
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                return httpClient;
+            });
+
             internalServiceCollection.TryAddSingleton<JsonSerializer>();
+
             internalServiceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
+
             internalServiceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
 
             var notificationTypes = RegisterNotificationHandlers(

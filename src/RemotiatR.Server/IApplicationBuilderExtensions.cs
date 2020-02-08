@@ -82,12 +82,14 @@ namespace RemotiatR.Server
 
                     var response = await mediator.Send(request);
 
-                    if (httpContext.Response.StatusCode >= 200 && httpContext.Response.StatusCode < 300)
+                    if (IsSuccessStatusCode(httpContext.Response.StatusCode))
                     {
                         var responseData = serializer.Serialize(response, responseType);
 
                         await responseData.CopyToAsync(httpContext.Response.Body);
                     }
                 };
+
+        private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 300;
     }
 }

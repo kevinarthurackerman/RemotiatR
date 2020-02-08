@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using RemotiatR.Example.Api.Services.Data;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

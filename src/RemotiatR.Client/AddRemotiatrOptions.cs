@@ -19,7 +19,7 @@ namespace RemotiatR.Client
         IAddRemotiatrOptions AddAssemblies(params Type[] assemblyTypeMarkers);
     }
 
-    internal class AddRemotiatrOptions2 : IAddRemotiatrOptions
+    internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 

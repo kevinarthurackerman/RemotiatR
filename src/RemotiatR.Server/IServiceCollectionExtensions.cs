@@ -11,8 +11,11 @@ namespace RemotiatR.Server
         public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection)
         {
             serviceCollection.TryAddSingleton<JsonSerializer, JsonSerializer>();
+
             serviceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
+
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             return serviceCollection;
         }
     }
