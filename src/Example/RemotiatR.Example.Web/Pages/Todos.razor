@@ -4,16 +4,20 @@
 
 @inject IMapper _mapper;
 @inject IRemotiatr<Default> _remotiatr;
-@*@inject IValidationErrorsAccessor _validationErrorsAccessor;*@
 
 <h1>Todos</h1>
 
-@*<ul>
-    @foreach(var validationError in _validationErrorsAccessor.ValidationErrors)
-    {
-        <li class="text-danger">@validationError.PropertyName : @validationError.ErrorMessage</li>
-    }
-</ul>*@
+@if (_validationErrors.Any())
+{
+    <h4 class="text-danger">Please correct the following errors</h4>
+
+    <ul>
+        @foreach (var validationError in _validationErrors)
+        {
+            <li class="text-danger">@validationError.PropertyName : @validationError.ErrorMessage</li>
+        }
+    </ul>
+}
 
 @if (_loaded)
 {
@@ -23,34 +27,47 @@
                 <th>Title</th>
                 <th>Created</th>
                 <th>Last Edited</th>
-                <th class="text-right"><button class="btn btn-primary btn-sm" @onclick="OnClickAdd">Add</button></th>
+                <th class="text-right">
+                    <button class="btn btn-primary btn-sm" @onclick="OnClickAdd">Add</button>
+                    <button class="btn btn-default btn-sm" @onclick="OnClickRefresh">Refresh</button>
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var todo in _todos)
             {
-                <tr>
-                    @if (todo.IsEditing)
-                    {
-                        <td><input type="text" @bind="todo.Title" /></td>
-                        <td></td>
-                        <td></td>
-                        <td class="text-right">
-                            <button class="btn btn-primary btn-sm" @onclick="() => OnClickSave(todo)">Save</button>
-                            <button class="btn btn-default btn-sm" @onclick="() => OnClickCancel(todo)">Cancel</button>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>@todo.Title</td>
-                        <td>@todo.Created</td>
-                        <td>@todo.LastEdited</td>
-                        <td class="text-right">
-                            <button class="btn btn-primary btn-sm" @onclick="() => OnClickEdit(todo)">Edit</button>
-                            <button class="btn btn-danger btn-sm" @onclick="() => OnClickDelete(todo)">Delete</button>
-                        </td>
-                    }
-                </tr>
+            <tr>
+                @if (todo.IsEditing && todo.Id == default)
+                {
+                    <td><input type="text" @bind="todo.Title" /></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right">
+                        <button class="btn btn-primary btn-sm" @onclick="async () => await OnClickSave(todo)">Save</button>
+                        <button class="btn btn-default btn-sm" @onclick="async () => OnClickCancel(todo)">Cancel</button>
+                    </td>
+                }
+                else if (todo.IsEditing && todo.Id != default)
+                {
+                    <td><input type="text" @bind="todo.Title" /></td>
+                    <td>@todo.Created</td>
+                    <td>@todo.LastEdited</td>
+                    <td class="text-right">
+                        <button class="btn btn-primary btn-sm" @onclick="async () => await OnClickSave(todo)">Save</button>
+                        <button class="btn btn-default btn-sm" @onclick="async () => OnClickCancel(todo)">Cancel</button>
+                    </td>
+                }
+                else
+                {
+                    <td>@todo.Title</td>
+                    <td>@todo.Created</td>
+                    <td>@todo.LastEdited</td>
+                    <td class="text-right">
+                        <button class="btn btn-primary btn-sm" @onclick="() => OnClickEdit(todo)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="async () => await OnClickDelete(todo)">Delete</button>
+                    </td>
+                }
+            </tr>
             }
         </tbody>
         <tfoot>
@@ -72,14 +89,11 @@ else
 
     private int _count => _todos.Where(x => x.Id != (default)).Count();
 
-    protected override async Task OnInitializedAsync()
-    {
-        var result = await _remotiatr.Send(new Get_Todos.Request());
+    private IEnumerable<ValidationFailure> _validationErrors = new ValidationFailure[0];
 
-        _todos = _mapper.Map<IList<TodosViewModel>>(result);
+    protected override Task OnInitializedAsync() => Reload();
 
-        _loaded = true;
-    }
+    private Task OnClickRefresh() => Reload();
 
     private void OnClickAdd() => _todos.Insert(0, new TodosViewModel { IsEditing = true });
 
@@ -91,42 +105,49 @@ else
 
     private async Task OnClickSave(TodosViewModel todo)
     {
-        if (todo.Id == default)
+        var validationResult = await ValidationScope.Run(async () =>
         {
-            var request = _mapper.Map<Create_Todos.Request>(todo);
+            if (todo.Id == default)
+            {
+                var request = _mapper.Map<Create_Todos.Request>(todo);
 
-            var result = await _remotiatr.Send(request);
+                var result = await _remotiatr.Send(request);
 
-            _mapper.Map(result, todo);
+                _mapper.Map(result, todo);
+            }
+            else
+            {
+                var request = _mapper.Map<Edit_Todos.Request>(todo);
+
+                var result = await _remotiatr.Send(request);
+
+                _mapper.Map(result, todo);
+            }
 
             todo.PreviousState = null;
             todo.IsEditing = false;
-        }
-        else
-        {
-            var request = _mapper.Map<Edit_Todos.Request>(todo);
 
-            var result = await _remotiatr.Send(request);
+            _todos = _todos
+                .OrderBy(x => x.Id == default)
+                .ThenBy(x => x.Title)
+                .ToList();
+        });
 
-            _mapper.Map(result, todo);
-
-            todo.PreviousState = null;
-            todo.IsEditing = false;
-        }
-
-        _todos = _todos
-            .OrderBy(x => x.Id == default)
-            .ThenBy(x => x.Title)
-            .ToList();
+        _validationErrors = validationResult.Errors;
     }
 
     private async Task OnClickDelete(TodosViewModel todo)
     {
-        var request = _mapper.Map<Delete_Todos.Request>(todo);
+        var validationResult = await ValidationScope.Run(async () =>
+        {
+            var request = _mapper.Map<Delete_Todos.Request>(todo);
 
-        var result = await _remotiatr.Send(request);
+            var result = await _remotiatr.Send(request);
 
-        _todos.Remove(todo);
+            _todos.Remove(todo);
+        });
+
+        _validationErrors = validationResult.Errors;
     }
 
     private void OnClickCancel(TodosViewModel todo)
@@ -141,6 +162,25 @@ else
         {
             _todos.Remove(todo);
         }
+    }
+
+    private async Task Reload()
+    {
+        _loaded = false;
+
+        var validationResult = await ValidationScope.Run(async () =>
+        {
+            var result = await _remotiatr.Send(new Get_Todos.Request());
+            _todos = _mapper.Map<IList<TodosViewModel>>(result);
+        });
+
+        if(!validationResult.IsValid)
+        {
+            _validationErrors = validationResult.Errors;
+            _todos = new List<TodosViewModel>();
+        }
+        
+        _loaded = true;
     }
 
     public class TodosViewModel

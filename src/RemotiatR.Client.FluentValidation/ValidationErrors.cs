@@ -1,23 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace RemotiatR.Client.FluentValidation
 {
     public interface IValidationErrorsAccessor
     {
-        ValidationErrors ValidationErrors { get; set; }
+        ValidationErrors ValidationErrors { get; }
     }
 
     internal class ValidationErrorsAccessor : IValidationErrorsAccessor
     {
-        public ValidationErrors ValidationErrors { get; set; }
+        public ValidationErrors ValidationErrors { get; } = new ValidationErrors();
     }
 
-    public class ValidationErrors : ReadOnlyCollection<ValidationError>
+    public class ValidationErrors : Collection<ValidationError>
     {
-        internal ValidationErrors(IList<ValidationError> list) : base(list)
-        {
-        }
     }
 
     public class ValidationError

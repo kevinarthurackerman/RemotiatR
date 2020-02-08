@@ -37,7 +37,7 @@ namespace RemotiatR.Client
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
             requestMessage.Content = content;
 
-            HttpRequestHandlerDelegate terminalHandler = () => _httpClient.SendAsync(requestMessage, cancellationToken);
+            HttpRequestHandlerDelegate terminalHandler = async () => await _httpClient.SendAsync(requestMessage, cancellationToken);
 
             var handle = _httpMessageHandlers
                 .Reverse()

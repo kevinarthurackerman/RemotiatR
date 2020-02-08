@@ -1,4 +1,6 @@
-﻿using RemotiatR.Shared;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using RemotiatR.Shared;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,6 +22,8 @@ namespace RemotiatR.Client.FluentValidation
 
         public async Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, HttpRequestHandlerDelegate next)
         {
+            _validationErrorsAccessor.ValidationErrors.Clear();
+
             var responseMessage = await next();
 
             if (responseMessage.StatusCode == HttpStatusCode.UnprocessableEntity)
@@ -27,8 +31,22 @@ namespace RemotiatR.Client.FluentValidation
                 var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
                 var errors = (ValidationError[])_serializer.Deserialize(resultStream, typeof(ValidationError[]));
+                
+                foreach (var error in errors)
+                    _validationErrorsAccessor.ValidationErrors.Add(error);
+            }
 
-                _validationErrorsAccessor.ValidationErrors = new ValidationErrors(errors.ToList());
+            if(_validationErrorsAccessor.ValidationErrors.Any())
+            {
+                var validationFailures = _validationErrorsAccessor.ValidationErrors
+                    .Select(x => new ValidationFailure(x.PropertyName, x.ErrorMessage)
+                        {
+                            ErrorMessage = x.ErrorMessage
+                        }
+                    )
+                    .ToArray();
+
+                throw new ValidationException(validationFailures);
             }
 
             return responseMessage;

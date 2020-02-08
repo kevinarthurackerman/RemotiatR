@@ -17,7 +17,10 @@ namespace RemotiatR.Client
             _uri = uri;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken) =>
-            _messageSender.SendRequest(_uri, request, typeof(TRequest), typeof(TResponse), cancellationToken).ContinueWith(x => (TResponse)x.Result);
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _messageSender.SendRequest(_uri, request, typeof(TRequest), typeof(TResponse), cancellationToken);
+            return (TResponse)result;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RemotiatR.Example.Api.Services;
 using RemotiatR.Example.Api.Services.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +12,25 @@ namespace RemotiatR.Example.Api.Features.Todo
 {
     public abstract class Create_Todos : Shared.Features.Todo.Create_Todos
     {
+        public class ApiValidator : AbstractValidator<Request>
+        {
+            private readonly AppDbContext _dbContext;
+
+            public ApiValidator(AppDbContext dbContext)
+            {
+                _dbContext = dbContext;
+
+                RuleFor(x => x.Title)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty()
+                    .MustAsync(BeUniqueTitle)
+                    .WithMessage("{PropertyName} must be unique");
+            }
+
+            public async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken) =>
+                await _dbContext.Todos.AllAsync(x => x.Title != title, cancellationToken);
+        }
+
         public class Handler : IRequestHandler<Request, Response>
         {
             private readonly AppDbContext _dbContext;
