@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QuickMaps;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Client;
@@ -30,16 +29,12 @@ namespace RemotiatR.Example.Web
                 );
             }), typeof(Program));
 
-            services.AddMediatR(typeof(Program));
-
-            services.AddRemotiatr(x => x.AddDefaultServer(x =>
+            services.AddRemotiatr(x =>
             {
                 x.AddAssemblies(typeof(SharedMarker));
                 x.SetBaseUri(new Uri("https://localhost:44339"));
                 x.SetUriBuilder(Defaults.UriBuilder);
-            }));
-
-            services.AddHttpClient();
+            });
         }
 
         public void Configure(IServiceProvider services)

@@ -5,22 +5,35 @@ using System;
 using System.Linq;
 using System.Collections.Immutable;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RemotiatR.Client
 {
-    public interface IRemotiatr : IMediator
+    public interface Default
     {
     }
 
-    public class Remotiatr : IRemotiatr
+    public interface IRemotiatr : IRemotiatr<Default>
     {
+    }
+
+    public interface IRemotiatr<TMarker> : IMediator
+    {
+    }
+
+    public class Remotiatr<TMarker> : IRemotiatr<TMarker>, IDisposable
+    {
+        private readonly IServiceScope _serviceScope;
         private readonly IMediator _mediator;
         private readonly ImmutableHashSet<Type> _notificationTypesLookup;
         private readonly ImmutableHashSet<Type> _requestTypesLookup;
 
-        internal Remotiatr(IMediator mediator, IEnumerable<Type> notificationTypes, IEnumerable<Type> requestTypes)
+        internal Remotiatr(IServiceProvider serviceProvider, IEnumerable<Type> notificationTypes, IEnumerable<Type> requestTypes)
         {
-            _mediator = mediator;
+            _serviceScope = serviceProvider.CreateScope();
+
+            _mediator = _serviceScope.ServiceProvider.GetRequiredService<IMediator>();
+
             _notificationTypesLookup = ImmutableHashSet.Create(notificationTypes.ToArray());
             _requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
         }
@@ -52,5 +65,7 @@ namespace RemotiatR.Client
 
             return _mediator.Send(request, cancellationToken);
         }
+
+        public void Dispose() => _serviceScope.Dispose();
     }
 }

@@ -13,46 +13,41 @@ namespace RemotiatR.Client
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+            => AddRemotiatr<Default>(serviceCollection, configure);
+
+        public static IServiceCollection AddRemotiatr<TMarker>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
         {
-            var options = new AddRemotiatrOptions();
+            var options = new AddRemotiatrOptions2();
             configure?.Invoke(options);
-            
-            serviceCollection.TryAddSingleton<HttpClient>();
-            serviceCollection.TryAddSingleton<JsonSerializer>();
-            serviceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
-            serviceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
 
-            foreach (var serverConfigurations in options.ServerConfigurations)
-            {
-                var serverType = serverConfigurations.Key;
-                var configs = serverConfigurations.Value;
+            IServiceCollection internalServiceCollection = new ServiceCollection();
 
-                var notificationTypes = RegisterNotificationHandlers(
-                    configs.AssembliesToScan,
-                    configs.BaseUri,
-                    configs.UriBuilder,
-                    configs.MessageSenderLocator,
-                    serviceCollection
-                );
+            if (options.InheritServices) foreach (var service in serviceCollection) internalServiceCollection.Add(service);
 
-                var requestTypes = RegisterRequestHandlers(
-                    configs.AssembliesToScan,
-                    configs.BaseUri,
-                    configs.UriBuilder,
-                    configs.MessageSenderLocator,
-                    serviceCollection
-                );
+            internalServiceCollection.TryAddSingleton<HttpClient>();
+            internalServiceCollection.TryAddSingleton<JsonSerializer>();
+            internalServiceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+            internalServiceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
 
-                serviceCollection.Add(new ServiceDescriptor(
-                    serverType,
-                    sp =>
-                    {
-                        var mediator = sp.GetRequiredService<IMediator>();
-                        return new Remotiatr(mediator, notificationTypes, requestTypes);
-                    },
-                    ServiceLifetime.Singleton
-                ));
-            }
+            var notificationTypes = RegisterNotificationHandlers(
+                options.AssembliesToScan,
+                options.BaseUri,
+                options.UriBuilder,
+                internalServiceCollection
+            );
+
+            var requestTypes = RegisterRequestHandlers(
+                options.AssembliesToScan,
+                options.BaseUri,
+                options.UriBuilder,
+                internalServiceCollection
+            );
+
+            internalServiceCollection.AddMediatR(options.AssembliesToScan.ToArray());
+
+            var serviceProvider = internalServiceCollection.BuildServiceProvider();
+
+            serviceCollection.AddScoped<IRemotiatr<TMarker>>(x => new Remotiatr<TMarker>(serviceProvider, notificationTypes, requestTypes));
 
             return serviceCollection;
         }
@@ -60,8 +55,7 @@ namespace RemotiatR.Client
         private static IEnumerable<Type> RegisterNotificationHandlers(
             IEnumerable<Assembly> assembliesToScan,
             Uri baseUri,
-            Func<Type,Uri> uriBuilder,
-            Func<IServiceProvider,IMessageSender> messageSenderLocator,
+            Func<Type, Uri> uriBuilder,
             IServiceCollection serviceCollection
         )
         {
@@ -86,7 +80,7 @@ namespace RemotiatR.Client
 
                     serviceCollection.AddTransient(
                         notificationHandlerInterfaceType,
-                        x => notificationHandlerType.Invoke(new object[] { messageSenderLocator(x), endpointInfo.Uri })
+                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageSender>(), endpointInfo.Uri })
                     );
                 }
             }
@@ -98,7 +92,6 @@ namespace RemotiatR.Client
             IEnumerable<Assembly> assembliesToScan,
             Uri baseUri,
             Func<Type, Uri> uriBuilder,
-            Func<IServiceProvider, IMessageSender> messageSenderLocator,
             IServiceCollection serviceCollection
         )
         {
@@ -124,7 +117,7 @@ namespace RemotiatR.Client
 
                     serviceCollection.AddTransient(
                         requestHandlerInterfaceType,
-                        x => requestHandlerType.Invoke(new object[] { messageSenderLocator(x), endpointInfo.Uri })
+                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageSender>(), endpointInfo.Uri })
                     );
                 }
             }

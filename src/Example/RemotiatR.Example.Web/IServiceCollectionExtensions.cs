@@ -8,16 +8,12 @@ namespace RemotiatR.Example.Web
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddHttpClient(this IServiceCollection serviceCollection, Action<IList<DelegatingHandler>> configure = null) =>
-            AddHttpClient<HttpClient>(serviceCollection, configure);
-
-        public static IServiceCollection AddHttpClient<TClient>(this IServiceCollection serviceCollection, Action<IList<DelegatingHandler>> configure = null)
-            where TClient : HttpClient
+        public static IServiceCollection AddHttpClient(this IServiceCollection serviceCollection, Action<IList<DelegatingHandler>> configure = null)
         {
             var handlers = new List<DelegatingHandler>();
             configure?.Invoke(handlers);
 
-            var existingClient = serviceCollection.FirstOrDefault(x => x.ServiceType == typeof(TClient));
+            var existingClient = serviceCollection.FirstOrDefault(x => x.ServiceType == typeof(HttpClient));
             if (existingClient != null) serviceCollection.Remove(existingClient);
 
             serviceCollection.AddSingleton(x => HttpClientFactory.Create(handlers.ToArray()));
