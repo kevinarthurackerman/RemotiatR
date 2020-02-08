@@ -6,6 +6,7 @@ using RemotiatR.Client;
 using RemotiatR.Example.Shared;
 using System;
 using RemotiatR.Client.FluentValidation;
+using RemotiatR.Example.Shared.Features.Info;
 
 namespace RemotiatR.Example.Web
 {
@@ -40,6 +41,8 @@ namespace RemotiatR.Example.Web
 
         public void Configure(IServiceProvider services)
         {
+            // Pings the server to wake it up
+            services.GetRequiredService<IRemotiatr<Default>>().Send(new Ping_Info.Request());
         }
     }
 }
