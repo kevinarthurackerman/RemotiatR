@@ -95,12 +95,19 @@ else
 
     private Task OnClickRefresh() => Reload();
 
-    private void OnClickAdd() => _todos.Insert(0, new TodosViewModel { IsEditing = true });
+    private void OnClickAdd()
+    {
+        _todos.Insert(0, new TodosViewModel { IsEditing = true });
+
+        ClearValidation();
+    }
 
     private void OnClickEdit(TodosViewModel todo)
     {
         todo.PreviousState = _mapper.Map<TodosViewModel.PreviousStateViewModel>(todo);
         todo.IsEditing = true;
+
+        ClearValidation();
     }
 
     private async Task OnClickSave(TodosViewModel todo)
@@ -128,7 +135,7 @@ else
             todo.IsEditing = false;
 
             _todos = _todos
-                .OrderBy(x => x.Id == default)
+                .OrderBy(x => x.Id != default)
                 .ThenBy(x => x.Title)
                 .ToList();
         });
@@ -162,6 +169,8 @@ else
         {
             _todos.Remove(todo);
         }
+
+        ClearValidation();
     }
 
     private async Task Reload()
@@ -179,8 +188,15 @@ else
             _validationErrors = validationResult.Errors;
             _todos = new List<TodosViewModel>();
         }
-        
+
+        ClearValidation();
+
         _loaded = true;
+    }
+
+    private void ClearValidation()
+    {
+        if (_validationErrors.Any()) _validationErrors = new ValidationFailure[0];
     }
 
     public class TodosViewModel

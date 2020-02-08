@@ -25,7 +25,7 @@ namespace RemotiatR.Client.FluentValidation
         {
             serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
 
-            serviceCollection.TryAddSingleton<IValidationErrorsAccessor, ValidationErrorsAccessor>();
+            serviceCollection.TryAddScoped<IValidationErrorsAccessor, ValidationErrorsAccessor>();
 
             serviceCollection.AddSingleton<IHttpMessageHandler, ValidationHttpMessageHandler>();
 
