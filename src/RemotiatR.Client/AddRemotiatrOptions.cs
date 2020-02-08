@@ -8,8 +8,6 @@ namespace RemotiatR.Client
 {
     public interface IAddRemotiatrOptions
     {
-        bool InheritServices { get; set; }
-
         IServiceCollection Services { get; }
 
         IAddRemotiatrOptions SetUriBuilder(Func<Type, Uri> uriBuilder);
@@ -23,8 +21,6 @@ namespace RemotiatR.Client
 
     internal class AddRemotiatrOptions2 : IAddRemotiatrOptions
     {
-        public bool InheritServices { get; set; } = true;
-
         public IServiceCollection Services { get; } = new ServiceCollection();
 
         internal Func<Type, Uri> UriBuilder { get; private set; } = x => new Uri("/api/" + x.FullName.Split('.').Last().Replace('+', '/'), UriKind.Relative);

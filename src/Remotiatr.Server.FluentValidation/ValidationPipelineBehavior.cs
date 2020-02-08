@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using RemotiatR.Shared;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace RemotiatR.Server.FluentValidation
 
             if (failures.Any())
             {
-                _httpContext.Response.StatusCode = 422;
+                _httpContext.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
 
                 var responseData = _serializer.Serialize(failures, typeof(ValidationFailure[]));
 
@@ -49,9 +50,9 @@ namespace RemotiatR.Server.FluentValidation
         }
     }
 
-    public class ValidationError
+    internal class ValidationError
     {
-        public ValidationError(string propertyName, string errorCode, string errorMessage)
+        internal ValidationError(string propertyName, string errorCode, string errorMessage)
         {
             PropertyName = propertyName;
             ErrorCode = errorCode;

@@ -2,10 +2,18 @@
 
 @page "/todos"
 
-@inject IMapper  _mapper;
+@inject IMapper _mapper;
 @inject IRemotiatr<Default> _remotiatr;
+@*@inject IValidationErrorsAccessor _validationErrorsAccessor;*@
 
 <h1>Todos</h1>
+
+@*<ul>
+    @foreach(var validationError in _validationErrorsAccessor.ValidationErrors)
+    {
+        <li class="text-danger">@validationError.PropertyName : @validationError.ErrorMessage</li>
+    }
+</ul>*@
 
 @if (_loaded)
 {

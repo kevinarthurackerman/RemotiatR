@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AutoMapper.QuickMaps\AutoMapper.QuickMaps.csproj" />
+    <ProjectReference Include="..\..\RemotiatR.Client.FluentValidation\RemotiatR.Client.FluentValidation.csproj" />
     <ProjectReference Include="..\..\RemotiatR.Client\RemotiatR.Client.csproj" />
     <ProjectReference Include="..\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj" />
   </ItemGroup>

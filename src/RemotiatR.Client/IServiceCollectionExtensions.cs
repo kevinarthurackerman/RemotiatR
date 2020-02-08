@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using RemotiatR.Shared;
 using System;
@@ -22,11 +23,11 @@ namespace RemotiatR.Client
 
             IServiceCollection internalServiceCollection = new ServiceCollection();
 
-            if (options.InheritServices) foreach (var service in serviceCollection) internalServiceCollection.Add(service);
-
+            foreach (var service in options.Services) internalServiceCollection.Add(service);
+            
             internalServiceCollection.TryAddSingleton<HttpClient>();
             internalServiceCollection.TryAddSingleton<JsonSerializer>();
-            internalServiceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+            internalServiceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
             internalServiceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
 
             var notificationTypes = RegisterNotificationHandlers(

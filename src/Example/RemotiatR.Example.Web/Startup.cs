@@ -6,6 +6,7 @@ using RemotiatR.Client;
 using RemotiatR.Example.Shared;
 using System;
 using System.Net.Http;
+using RemotiatR.Client.FluentValidation;
 
 namespace RemotiatR.Example.Web
 {
@@ -34,6 +35,7 @@ namespace RemotiatR.Example.Web
                 x.AddAssemblies(typeof(SharedMarker));
                 x.SetBaseUri(new Uri("https://localhost:44339"));
                 x.SetUriBuilder(Defaults.UriBuilder);
+                x.Services.AddFluentValidation(typeof(Program), typeof(SharedMarker));
             });
         }
 
