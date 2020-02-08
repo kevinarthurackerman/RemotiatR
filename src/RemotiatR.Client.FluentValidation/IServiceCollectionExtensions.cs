@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
@@ -27,7 +28,9 @@ namespace RemotiatR.Client.FluentValidation
             serviceCollection.TryAddSingleton<IValidationErrorsAccessor, ValidationErrorsAccessor>();
 
             serviceCollection.AddSingleton<IHttpMessageHandler, ValidationHttpMessageHandler>();
-            
+
+            serviceCollection.Add(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>), lifetime));
+
             serviceCollection.AddValidatorsFromAssemblies(assemblies, lifetime);
 
             return serviceCollection;
