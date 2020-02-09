@@ -71,8 +71,6 @@ namespace RemotiatR.Example.Api
 
             app.UseServerClock();
 
-            app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseRemotiatr(x =>
