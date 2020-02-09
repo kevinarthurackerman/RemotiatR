@@ -2,7 +2,7 @@
 @using static TodosPage;
 
 @inject IMapper _mapper;
-@inject IRemotiatr<Default> _remotiatr;
+@inject IRemotiatr _remotiatr;
 
 <tr>
     @if (Todo.IsEditing && Todo.Id == default)
@@ -84,10 +84,9 @@
 
             todo.PreviousState = null;
             todo.IsEditing = false;
-
-            await OnSortTodos.InvokeAsync(null);
         });
 
+        await OnSortTodos.InvokeAsync(null);
         await OnSetValidationErrors.InvokeAsync(validationResult.Errors);
     }
 

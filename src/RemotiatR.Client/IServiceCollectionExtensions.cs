@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -14,29 +15,18 @@ namespace RemotiatR.Client
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
-            => AddRemotiatr<Default>(serviceCollection, configure);
+            => AddRemotiatr<IDefaultRemotiatrMarker,IRemotiatr>(serviceCollection, configure);
 
         public static IServiceCollection AddRemotiatr<TMarker>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+            => AddRemotiatr<TMarker,IRemotiatr<TMarker>>(serviceCollection, configure);
+
+        private static IServiceCollection AddRemotiatr<TMarker,TRemotiatr>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+            where TRemotiatr : IRemotiatr<TMarker>
         {
             var options = new AddRemotiatrOptions();
             configure?.Invoke(options);
 
-            IServiceCollection internalServiceCollection = new ServiceCollection();
-
-            foreach (var service in options.Services) internalServiceCollection.Add(service);
-            
-            internalServiceCollection.TryAddSingleton(x =>
-            {
-                var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                return httpClient;
-            });
-
-            internalServiceCollection.TryAddSingleton<JsonSerializer>();
-
-            internalServiceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
-
-            internalServiceCollection.TryAddSingleton<IMessageSender,DefaultHttpMessageSender>();
+            var internalServiceCollection = BuildInternalServiceCollection(options);
 
             var notificationTypes = RegisterNotificationHandlers(
                 options.AssembliesToScan,
@@ -45,6 +35,8 @@ namespace RemotiatR.Client
                 internalServiceCollection
             );
 
+            var notificationTypesLookup = ImmutableHashSet.Create(notificationTypes.ToArray());
+
             var requestTypes = RegisterRequestHandlers(
                 options.AssembliesToScan,
                 options.BaseUri,
@@ -52,11 +44,47 @@ namespace RemotiatR.Client
                 internalServiceCollection
             );
 
-            internalServiceCollection.AddMediatR(options.AssembliesToScan.ToArray());
+            var requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
 
-            var serviceProvider = internalServiceCollection.BuildServiceProvider();
+            var internalServiceProvider = internalServiceCollection.BuildServiceProvider();
 
-            serviceCollection.AddScoped<IRemotiatr<TMarker>>(x => new Remotiatr<TMarker>(serviceProvider, notificationTypes, requestTypes));
+            serviceCollection.RemoveAll<IRemotiatr<TMarker>>();
+
+            if (typeof(TMarker) == typeof(IDefaultRemotiatrMarker))
+            {
+                serviceCollection.RemoveAll<IRemotiatr>();
+
+                serviceCollection.AddScoped<IRemotiatr>(x => new DefaultRemotiatr(internalServiceProvider, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
+            }
+            else
+            {
+                serviceCollection.AddScoped<IRemotiatr<TMarker>>(x => new Remotiatr<TMarker>(internalServiceProvider, notificationTypesLookup, requestTypesLookup));
+            }
+
+            return serviceCollection;
+        }
+
+        private static IServiceCollection BuildInternalServiceCollection(AddRemotiatrOptions options)
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+
+            foreach (var service in options.Services) serviceCollection.Add(service);
+
+            serviceCollection.TryAddSingleton(x =>
+            {
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                return httpClient;
+            });
+
+            serviceCollection.TryAddSingleton<JsonSerializer>();
+
+            serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+
+            serviceCollection.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
+
+            serviceCollection.AddMediatR(options.AssembliesToScan.ToArray());
 
             return serviceCollection;
         }

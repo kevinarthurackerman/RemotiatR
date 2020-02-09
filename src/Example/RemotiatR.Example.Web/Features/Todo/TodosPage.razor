@@ -3,7 +3,7 @@
 @page "/todos"
 
 @inject IMapper _mapper;
-@inject IRemotiatr<Default> _remotiatr;
+@inject IRemotiatr _remotiatr;
 
 <h1>Todos</h1>
 
@@ -65,7 +65,7 @@ else
         ClearValidation();
     }
 
-    private void SortTodos() => _todos
+    private void SortTodos() => _todos = _todos
         .OrderBy(x => x.Id != default)
         .ThenBy(x => x.Title)
         .ToList();

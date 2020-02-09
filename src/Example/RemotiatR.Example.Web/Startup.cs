@@ -42,7 +42,7 @@ namespace RemotiatR.Example.Web
         public void Configure(IServiceProvider services)
         {
             // Pings the server to wake it up
-            services.GetRequiredService<IRemotiatr<Default>>().Send(new Ping_Info.Request());
+            services.GetRequiredService<IRemotiatr>().Send(new Ping_Info.Request());
         }
     }
 }

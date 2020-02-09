@@ -9,11 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace RemotiatR.Client
 {
-    public interface Default
+    public interface IDefaultRemotiatrMarker
     {
     }
 
-    public interface IRemotiatr : IRemotiatr<Default>
+    public interface IRemotiatr : IRemotiatr<IDefaultRemotiatrMarker>
     {
     }
 
@@ -21,18 +21,26 @@ namespace RemotiatR.Client
     {
     }
 
+    public class DefaultRemotiatr : Remotiatr<IDefaultRemotiatrMarker>, IRemotiatr
+    {
+        internal DefaultRemotiatr(IServiceProvider serviceProvider, IImmutableSet<Type> canHandleNotificationTypes, IImmutableSet<Type> canHandleRequestTypes)
+            : base(serviceProvider, canHandleNotificationTypes, canHandleRequestTypes)
+        {
+        }
+    }
+
     public class Remotiatr<TMarker> : IRemotiatr<TMarker>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ImmutableHashSet<Type> _notificationTypesLookup;
-        private readonly ImmutableHashSet<Type> _requestTypesLookup;
+        private readonly IImmutableSet<Type> _notificationTypesLookup;
+        private readonly IImmutableSet<Type> _requestTypesLookup;
 
-        internal Remotiatr(IServiceProvider serviceProvider, IEnumerable<Type> notificationTypes, IEnumerable<Type> requestTypes)
+        internal Remotiatr(IServiceProvider serviceProvider, IImmutableSet<Type> canHandleNotificationTypes, IImmutableSet<Type> canHandleRequestTypes)
         {
             _serviceProvider = serviceProvider;
 
-            _notificationTypesLookup = ImmutableHashSet.Create(notificationTypes.ToArray());
-            _requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
+            _notificationTypesLookup = canHandleNotificationTypes;
+            _requestTypesLookup = canHandleRequestTypes;
         }
 
         public Task Publish(object notification, CancellationToken cancellationToken = default) =>
