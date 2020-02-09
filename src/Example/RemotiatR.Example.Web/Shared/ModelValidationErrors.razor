@@ -1,0 +1,16 @@
+﻿@if (ValidationErrors.Any())
+{
+    <h6 class="text-danger">Please correct the following errors</h6>
+
+    <ul>
+        @foreach (var validationError in ValidationErrors)
+        {
+            <li class="text-danger">@validationError.PropertyName : @validationError.ErrorMessage</li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<ValidationFailure> ValidationErrors { get; set; }
+}

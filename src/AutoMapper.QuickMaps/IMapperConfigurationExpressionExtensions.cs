@@ -38,6 +38,7 @@ namespace AutoMapper.QuickMaps
                             break;
                         }
 
+            
             return mapperConfigurationExpression;
         }
 

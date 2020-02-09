@@ -19,7 +19,7 @@ namespace RemotiatR.Example.Web
             var startup = new Startup(configuration);
 
             startup.ConfigureServices(builder.Services);
-            
+
             builder.RootComponents.Add<App>("app");
 
             builder.Services.Validate(typeof(Program), typeof(SharedMarker));

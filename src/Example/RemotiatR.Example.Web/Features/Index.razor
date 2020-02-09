@@ -1,12 +1,14 @@
 ﻿@page "/"
 
+@inject IMapper  _mapper;
+
 <h1>Hello, world!</h1>
 
 <h2>Registered Services</h2>
 <ul>
     @foreach (var service in Program.Services)
     {
-        <li>@service.ServiceType : @service.ImplementationType</li>
+        <li>@service.ServiceType.FullName : @service.ImplementationType?.FullName</li>
     }
 </ul>
 
@@ -14,7 +16,7 @@
 <ul>
     @foreach (var type in typeof(Program).Assembly.GetTypes().Concat(typeof(Example.Shared.SharedMarker).Assembly.GetTypes()))
     {
-        <li>@type.FullName.Split('.').Last()</li>
+        <li>@type.FullName</li>
     }
 </ul>
 

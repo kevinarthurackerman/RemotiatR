@@ -1,0 +1,103 @@
+﻿@using RemotiatR.Example.Shared.Features.Todo
+
+@page "/todos"
+
+@inject IMapper _mapper;
+@inject IRemotiatr<Default> _remotiatr;
+
+<h1>Todos</h1>
+
+<ModelValidationErrors ValidationErrors="@_validationErrors" />
+
+@if (_loaded)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Last Edited</th>
+                <th class="text-right">
+                    <button class="btn btn-primary btn-sm" @onclick="OnClickAdd">Add</button>
+                    <button class="btn btn-default btn-sm" @onclick="OnClickRefresh">Refresh</button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in _todos)
+            {
+                <TodoRow Todo="@todo"
+                         OnClearValidation="ClearValidation"
+                         OnSortTodos="SortTodos"
+                         OnRemoveTodo="RemoveTodo"
+                         OnSetValidationErrors="SetValidationErrors" />
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-right">@_count Todos</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private bool _loaded;
+
+    private IList<TodosViewModel> _todos;
+
+    private int _count => _todos.Where(x => x.Id != (default)).Count();
+
+    private IEnumerable<ValidationFailure> _validationErrors = new ValidationFailure[0];
+
+    protected override Task OnInitializedAsync() => Reload();
+
+    private Task OnClickRefresh() => Reload();
+
+    private void OnClickAdd()
+    {
+        _todos.Insert(0, new TodosViewModel { IsEditing = true });
+
+        ClearValidation();
+    }
+
+    private void SortTodos() => _todos
+        .OrderBy(x => x.Id != default)
+        .ThenBy(x => x.Title)
+        .ToList();
+
+    private void RemoveTodo(TodosViewModel todo) => _todos.Remove(todo);
+
+    private void SetValidationErrors(IEnumerable<ValidationFailure> validationFailures) =>
+        _validationErrors = validationFailures;
+
+    private async Task Reload()
+    {
+        _loaded = false;
+
+        var validationResult = await ValidationScope.Run(async () =>
+        {
+            var result = await _remotiatr.Send(new Get_Todos.Request());
+            _todos = _mapper.Map<IList<TodosViewModel>>(result);
+        });
+
+        if (!validationResult.IsValid)
+        {
+            _validationErrors = validationResult.Errors;
+            _todos = new List<TodosViewModel>();
+        }
+
+        ClearValidation();
+
+        _loaded = true;
+    }
+
+    private void ClearValidation()
+    {
+        if (_validationErrors.Any()) _validationErrors = new ValidationFailure[0];
+    }
+}
