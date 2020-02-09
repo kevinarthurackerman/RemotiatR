@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AutoMapper.QuickMaps.MappingMatchers;
+using System;
 using System.Reflection;
 
-namespace AutoMapper.QuickMaps
+namespace AutoMapper.QuickMaps.Configuration
 {
     public interface ICreateQuickMapsConfigurationOptions
     {

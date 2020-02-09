@@ -7,6 +7,10 @@ using RemotiatR.Example.Shared;
 using System;
 using RemotiatR.Client.FluentValidation;
 using RemotiatR.Example.Shared.Features.Info;
+using AutoMapper.QuickMaps.Configuration;
+using RemotiatR.Client.Configuration;
+using AutoMapper.QuickMaps.MappingMatchers;
+using RemotiatR.Client.FluentValidation.Configuration;
 
 namespace RemotiatR.Example.Web
 {

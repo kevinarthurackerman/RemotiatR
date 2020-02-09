@@ -1,9 +1,10 @@
-﻿using System;
+﻿using AutoMapper.QuickMaps.MappingMatchers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace AutoMapper.QuickMaps
+namespace AutoMapper.QuickMaps.Configuration
 {
     internal class CreateQuickMapsConfigurationOptions : ICreateQuickMapsConfigurationOptions
     {

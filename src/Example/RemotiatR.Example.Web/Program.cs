@@ -22,8 +22,6 @@ namespace RemotiatR.Example.Web
 
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.Validate(typeof(Program), typeof(SharedMarker));
-
             Services = builder.Services;
 
             var wasmHost = builder.Build();

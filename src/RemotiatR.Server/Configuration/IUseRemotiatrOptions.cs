@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace RemotiatR.Server
+namespace RemotiatR.Server.Configuration
 {
     public interface IUseRemotiatrOptions
     {

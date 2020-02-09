@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Client
+namespace RemotiatR.Client.MessageSenders
 {
     internal class MessageNotificationHandler<TNotification> : INotificationHandler<TNotification>
         where TNotification : INotification

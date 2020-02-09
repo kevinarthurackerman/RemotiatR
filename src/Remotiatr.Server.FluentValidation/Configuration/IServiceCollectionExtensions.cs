@@ -1,14 +1,16 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Linq;
+using FluentValidation;
+using RemotiatR.Shared;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RemotiatR.Shared.Internal;
 
-namespace RemotiatR.Client.FluentValidation
+namespace RemotiatR.Server.FluentValidation.Configuration
 {
     public static class IServiceCollectionExtensions
     {
@@ -25,9 +27,7 @@ namespace RemotiatR.Client.FluentValidation
         {
             serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
 
-            serviceCollection.TryAddScoped<IValidationErrorsAccessor, DefaultValidationErrorsAccessor>();
-
-            serviceCollection.AddSingleton<IHttpMessageHandler, ValidationHttpMessageHandler>();
+            serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             serviceCollection.Add(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>), lifetime));
 

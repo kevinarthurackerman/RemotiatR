@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Client
+namespace RemotiatR.Client.MessageSenders
 {
     public interface IMessageSender
     {

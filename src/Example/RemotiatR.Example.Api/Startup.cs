@@ -12,6 +12,10 @@ using AutoMapper.QuickMaps;
 using RemotiatR.Example.Shared;
 using RemotiatR.Server;
 using RemotiatR.Server.FluentValidation;
+using RemotiatR.Server.Configuration;
+using AutoMapper.QuickMaps.Configuration;
+using AutoMapper.QuickMaps.MappingMatchers;
+using RemotiatR.Server.FluentValidation.Configuration;
 
 namespace RemotiatR.Example.Api
 {

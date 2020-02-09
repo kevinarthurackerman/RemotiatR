@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace RemotiatR.Shared
+namespace RemotiatR.Shared.Internal
 {
     public class DefaultJsonSerializer : ISerializer
     {

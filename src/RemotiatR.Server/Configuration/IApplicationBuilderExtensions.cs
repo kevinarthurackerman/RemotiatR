@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Shared;
+using RemotiatR.Shared.Internal;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace RemotiatR.Server
+namespace RemotiatR.Server.Configuration
 {
     public static class IApplicationBuilderExtensions
     {

@@ -6,8 +6,9 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using RemotiatR.Shared.Internal;
 
-namespace RemotiatR.Client
+namespace RemotiatR.Client.MessageSenders
 {
     internal class DefaultHttpMessageSender : IMessageSender
     {

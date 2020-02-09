@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace RemotiatR.Shared
+namespace RemotiatR.Shared.Internal
 {
     public static class TypeExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace RemotiatR.Shared
+namespace RemotiatR.Shared.Internal
 {
     public interface ISerializer
     {

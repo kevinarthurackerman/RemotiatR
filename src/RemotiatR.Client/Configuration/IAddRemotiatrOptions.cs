@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace RemotiatR.Client
+namespace RemotiatR.Client.Configuration
 {
     public interface IAddRemotiatrOptions
     {

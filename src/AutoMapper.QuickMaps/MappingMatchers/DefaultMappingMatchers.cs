@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoMapper.QuickMaps
+namespace AutoMapper.QuickMaps.MappingMatchers
 {
     public static class DefaultMappingMatchers
     {
