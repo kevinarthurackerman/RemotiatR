@@ -17,15 +17,14 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Example\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj" />
-    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson">
       <Version>3.1.1</Version>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
   </ItemGroup>
 
 </Project>
