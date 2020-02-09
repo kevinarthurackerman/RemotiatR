@@ -25,6 +25,7 @@ namespace RemotiatR.Server.FluentValidation
         public static IServiceCollection AddFluentValidation(this IServiceCollection serviceCollection, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime)
         {
             serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             serviceCollection.Add(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>), lifetime));

@@ -48,19 +48,19 @@ namespace RemotiatR.Server.FluentValidation
 
             return await next();
         }
-    }
 
-    internal class ValidationError
-    {
-        internal ValidationError(string propertyName, string errorCode, string errorMessage)
+        private class ValidationError
         {
-            PropertyName = propertyName;
-            ErrorCode = errorCode;
-            ErrorMessage = errorMessage;
-        }
+            internal ValidationError(string propertyName, string errorCode, string errorMessage)
+            {
+                PropertyName = propertyName;
+                ErrorCode = errorCode;
+                ErrorMessage = errorMessage;
+            }
 
-        public string PropertyName { get; }
-        public string ErrorCode { get; }
-        public string ErrorMessage { get; }
+            public string PropertyName { get; }
+            public string ErrorCode { get; }
+            public string ErrorMessage { get; }
+        }
     }
 }

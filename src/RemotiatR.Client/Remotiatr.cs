@@ -2,33 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System;
-using System.Linq;
 using System.Collections.Immutable;
-using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace RemotiatR.Client
 {
-    public interface IDefaultRemotiatrMarker
-    {
-    }
-
-    public interface IRemotiatr : IRemotiatr<IDefaultRemotiatrMarker>
-    {
-    }
-
-    public interface IRemotiatr<TMarker> : IMediator
-    {
-    }
-
-    public class DefaultRemotiatr : Remotiatr<IDefaultRemotiatrMarker>, IRemotiatr
-    {
-        internal DefaultRemotiatr(IServiceProvider serviceProvider, IImmutableSet<Type> canHandleNotificationTypes, IImmutableSet<Type> canHandleRequestTypes)
-            : base(serviceProvider, canHandleNotificationTypes, canHandleRequestTypes)
-        {
-        }
-    }
-
     public class Remotiatr<TMarker> : IRemotiatr<TMarker>
     {
         private readonly IServiceProvider _serviceProvider;

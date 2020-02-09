@@ -9,11 +9,6 @@ using System.Linq;
 
 namespace RemotiatR.Client
 {
-    public interface IMessageSender
-    {
-        Task<object> SendRequest(Uri uri, object requestData, Type requestType, Type responseType, CancellationToken cancellationToken);
-    }
-
     internal class DefaultHttpMessageSender : IMessageSender
     {
         private readonly HttpClient _httpClient;
@@ -64,11 +59,4 @@ namespace RemotiatR.Client
 
         private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 300;
     }
-
-    public interface IHttpMessageHandler
-    {
-        Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, HttpRequestHandlerDelegate next);
-    }
-
-    public delegate Task<HttpResponseMessage> HttpRequestHandlerDelegate();
 }

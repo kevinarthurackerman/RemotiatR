@@ -16,7 +16,9 @@ namespace RemotiatR.Shared
         public static void Validate(this IServiceCollection serviceCollection, params Assembly[] assemblies)
         {
             var exceptions = new List<Exception>();
+
             var provider = serviceCollection.BuildServiceProvider();
+
             var assemblyLookup = assemblies.Distinct().ToHashSet();
 
             var servicesToCheck = assemblies.Any()

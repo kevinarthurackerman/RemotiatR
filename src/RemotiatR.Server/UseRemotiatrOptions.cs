@@ -5,15 +5,6 @@ using System.Reflection;
 
 namespace RemotiatR.Server
 {
-    public interface IUseRemotiatrOptions
-    {
-        IUseRemotiatrOptions SetUriBuilder(Func<Type, Uri> uriBuilder);
-
-        IUseRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
-
-        IUseRemotiatrOptions AddAssemblies(params Type[] assemblyTypeMarkers);
-    }
-
     internal class UseRemotiatrOptions : IUseRemotiatrOptions
     {
         internal Func<Type, Uri> UriBuilder { get; private set; } = x => new Uri("/api/" + x.FullName.Split('.').Last().Replace('+', '/'), UriKind.Relative);
