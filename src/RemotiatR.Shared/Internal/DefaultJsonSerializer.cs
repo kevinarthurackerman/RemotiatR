@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RemotiatR.Shared.Internal
 {
-    public class DefaultJsonSerializer : ISerializer
+    internal class DefaultJsonSerializer : ISerializer
     {
         private readonly JsonSerializer _jsonSerializer;
 
