@@ -71,7 +71,13 @@ namespace RemotiatR.Client.Configuration
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 
-            foreach (var service in options.Services) serviceCollection.Add(service);
+            serviceCollection.TryAddSingleton<JsonSerializer>();
+
+            serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+
+            serviceCollection.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
+
+            serviceCollection.AddMediatR(options.AssembliesToScan.ToArray());
 
             serviceCollection.TryAddSingleton(x =>
             {
@@ -80,13 +86,7 @@ namespace RemotiatR.Client.Configuration
                 return httpClient;
             });
 
-            serviceCollection.TryAddSingleton<JsonSerializer>();
-
-            serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
-
-            serviceCollection.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
-
-            serviceCollection.AddMediatR(options.AssembliesToScan.ToArray());
+            foreach (var service in options.Services) serviceCollection.Add(service);
 
             return serviceCollection;
         }
