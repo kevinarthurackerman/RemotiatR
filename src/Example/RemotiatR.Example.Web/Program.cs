@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using RemotiatR.Example.Shared;
-using RemotiatR.Shared;
 
 namespace RemotiatR.Example.Web
 {

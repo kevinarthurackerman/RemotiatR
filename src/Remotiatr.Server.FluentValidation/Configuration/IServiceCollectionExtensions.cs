@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using FluentValidation;
-using RemotiatR.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared.Internal;

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
-using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 
 namespace RemotiatR.Server.Configuration

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using RemotiatR.Example.Shared;
-using RemotiatR.Shared;
 
 namespace RemotiatR.Example.Api
 {

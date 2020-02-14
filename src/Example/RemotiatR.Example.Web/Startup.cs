@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using AutoMapper.QuickMaps;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Client;
 using RemotiatR.Example.Shared;
 using System;
-using RemotiatR.Client.FluentValidation;
 using RemotiatR.Example.Shared.Features.Info;
 using AutoMapper.QuickMaps.Configuration;
 using RemotiatR.Client.Configuration;
