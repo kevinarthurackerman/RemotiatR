@@ -4,7 +4,7 @@
 RemotiatR makes it easy to run you MediatR requests and commands from a remote client on your server without all the ceremony. Just send or publish the same way you always would, and RemotiatR handles everything between.
 
 ### Getting Started
-####In your shared project
+In your shared project
 ```csharp
 public class Ping
 {
@@ -19,7 +19,7 @@ public class Ping
 }
 ```
 
-####ON your server
+On your server
 ```csharp
 public class Startup
 {
@@ -48,7 +48,7 @@ public class PingHandler : IRequestHandler<Ping.Request, Ping.Response>
 }
 ```
 
-####On your client
+On your client
 ```csharp
 public class Startup
 {
