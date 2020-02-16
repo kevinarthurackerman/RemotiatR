@@ -63,6 +63,17 @@ public class Startup
     }
     ...
 }
+
+public class ServerTimeService
+{
+    private readonly IRemotiatr _remotiatr;
+
+    public ServerTimeService(IRemotiatr remotiatr) =>
+        _remotiatr = remotiatr;
+
+    public async Task<DateTime> GetServerTime() =>
+        (await _remotiatr.Send(new Ping.Request())).ServerTime;
+}
 ```
 
 ### Contributing
