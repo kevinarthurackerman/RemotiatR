@@ -6,6 +6,13 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>MIT</Copyright>
+    <Authors>Kevin Arthur Ackerman</Authors>
+    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
+    <RepositoryType />
+    <Version>1.0.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>

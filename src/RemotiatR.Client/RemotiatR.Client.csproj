@@ -4,6 +4,12 @@
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>RemotiatR.Client</AssemblyName>
     <RootNamespace>RemotiatR.Client</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0-beta</Version>
+    <Copyright>MIT</Copyright>
+    <Authors>Kevin Arthur Ackerman</Authors>
+    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

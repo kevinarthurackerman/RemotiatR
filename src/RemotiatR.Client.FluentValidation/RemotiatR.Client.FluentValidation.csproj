@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Kevin Arthur Ackerman</Authors>
+    <Copyright>MIT</Copyright>
+    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
+    <Version>1.0.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
