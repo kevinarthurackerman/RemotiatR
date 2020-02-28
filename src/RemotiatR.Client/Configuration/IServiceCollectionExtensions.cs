@@ -25,10 +25,9 @@ namespace RemotiatR.Client.Configuration
             where TRemotiatr : IRemotiatr<TMarker>
         {
             var options = new AddRemotiatrOptions();
+            configure?.Invoke(options);
 
             AddDefaultServices(options);
-
-            configure?.Invoke(options);
 
             var notificationTypes = RegisterNotificationHandlers(
                 options.AssembliesToScan,
@@ -69,15 +68,15 @@ namespace RemotiatR.Client.Configuration
 
         private static void AddDefaultServices(AddRemotiatrOptions addRemotiatrOptions)
         {
-            addRemotiatrOptions.Services.AddSingleton<JsonSerializer>();
+            addRemotiatrOptions.Services.TryAddSingleton<JsonSerializer>();
 
-            addRemotiatrOptions.Services.AddSingleton<ISerializer, DefaultJsonSerializer>();
+            addRemotiatrOptions.Services.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
 
-            addRemotiatrOptions.Services.AddSingleton<IMessageSender, DefaultHttpMessageSender>();
+            addRemotiatrOptions.Services.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
 
             addRemotiatrOptions.Services.AddMediatR(addRemotiatrOptions.AssembliesToScan.ToArray());
 
-            addRemotiatrOptions.Services.AddSingleton(x =>
+            addRemotiatrOptions.Services.TryAddSingleton(x =>
             {
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
