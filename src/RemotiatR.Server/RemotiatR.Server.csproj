@@ -4,12 +4,6 @@
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>RemotiatR.Server</AssemblyName>
     <RootNamespace>RemotiatR.Server</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Kevin Arthur Ackerman</Authors>
-    <Copyright>MIT</Copyright>
-    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
-    <Version>1.0.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,10 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
+    <PackageReference Include="RemotiatR.Shared" Version="1.0.1-beta" />
   </ItemGroup>
 
 </Project>

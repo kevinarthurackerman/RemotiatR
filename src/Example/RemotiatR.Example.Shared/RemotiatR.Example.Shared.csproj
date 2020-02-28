@@ -11,8 +11,4 @@
     <PackageReference Include="MediatR" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -4,12 +4,6 @@
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>RemotiatR.Client</AssemblyName>
     <RootNamespace>RemotiatR.Client</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0-beta</Version>
-    <Copyright>MIT</Copyright>
-    <Authors>Kevin Arthur Ackerman</Authors>
-    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.1" />
     <PackageReference Include="Microsoft.JSInterop" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="RemotiatR.Shared" Version="1.0.1-beta" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
   </ItemGroup>
 
@@ -27,10 +22,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson">
       <Version>3.1.1</Version>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\RemotiatR.Shared\RemotiatR.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,16 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ApplicationIcon />
     <OutputType>Library</OutputType>
-    <StartupObject />
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>MIT</Copyright>
-    <Authors>Kevin Arthur Ackerman</Authors>
-    <PackageProjectUrl>https://github.com/kevinarthurackerman/RemotiatR</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/kevinarthurackerman/RemotiatR</RepositoryUrl>
-    <RepositoryType />
-    <Version>1.0.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Automapper.Quickmaps" Version="1.0.1-beta" />
     <PackageReference Include="MediatR" Version="8.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
@@ -17,12 +18,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview1.20073.1" />
+    <PackageReference Include="RemotiatR.Client" Version="1.0.1-beta" />
+    <PackageReference Include="RemotiatR.Client.FluentValidation" Version="1.0.1-beta" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoMapper.QuickMaps\AutoMapper.QuickMaps.csproj" />
-    <ProjectReference Include="..\..\RemotiatR.Client.FluentValidation\RemotiatR.Client.FluentValidation.csproj" />
-    <ProjectReference Include="..\..\RemotiatR.Client\RemotiatR.Client.csproj" />
     <ProjectReference Include="..\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj" />
   </ItemGroup>
 

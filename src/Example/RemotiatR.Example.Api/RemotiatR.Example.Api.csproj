@@ -9,18 +9,18 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Automapper.Quickmaps" Version="1.0.1-beta" />
     <PackageReference Include="MediatR" Version="8.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.1-beta" />
+    <PackageReference Include="RemotiatR.Server.FluentValidation" Version="1.0.1-beta" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoMapper.QuickMaps\AutoMapper.QuickMaps.csproj" />
-    <ProjectReference Include="..\..\RemotiatR.Server\RemotiatR.Server.csproj" />
     <ProjectReference Include="..\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj" />
-    <ProjectReference Include="..\..\Remotiatr.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj" />
   </ItemGroup>
 
 
