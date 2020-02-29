@@ -33,9 +33,7 @@ namespace RemotiatR.Example.Api
 
             services.AddScoped<IServerClock, ServerClock>();
 
-            services.AddMediatR(typeof(Program));
-
-            services.AddRemotiatr();
+            services.AddRemotiatr(x => x.AddAssemblies(typeof(Program)));
 
             services.AddAutoMapper(x => x.CreateQuickMaps(y =>
             {
