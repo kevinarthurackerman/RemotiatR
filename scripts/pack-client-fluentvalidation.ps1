@@ -1,3 +1,4 @@
+. .\variables.ps1
 . .\variables-client-fluentvalidation.ps1
 
 Get-ChildItem ..\nuget -Filter "$packageId.$version.*" | ForEach-Object { Remove-Item $_.FullName }
