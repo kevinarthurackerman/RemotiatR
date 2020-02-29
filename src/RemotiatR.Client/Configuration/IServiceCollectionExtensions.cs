@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using RemotiatR.Client.MessageSenders;
+using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
 using System.Collections.Generic;
