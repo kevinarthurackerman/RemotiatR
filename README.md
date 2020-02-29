@@ -27,8 +27,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         ...
-        services.AddMediatR(typeof(PingHandler));
-        services.AddRemotiatr();
+        services.AddRemotiatr(x => x.AddAssemblies(typeof(PingHandler)));
     }
     ...
     public void Configure(IApplicationBuilder app)
@@ -36,7 +35,7 @@ public class Startup
         ...
         app.UseRemotiatr(x =>
         {
-            x.AddAssemblies(typeof(SharedMarker));
+            x.AddAssemblies(typeof(Ping));
         });
     }
 }
