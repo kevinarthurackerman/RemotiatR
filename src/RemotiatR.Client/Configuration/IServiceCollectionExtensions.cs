@@ -94,7 +94,7 @@ namespace RemotiatR.Client.Configuration
                             throw new ArgumentOutOfRangeException(nameof(addRemotiatrOptions.MediatorServiceLifetime), "Not a valid ServiceLifetime");
                     }
                     typeof(MediatRServiceConfiguration)
-                        .GetMethod(nameof(MediatRServiceConfiguration.MediatorImplementationType))
+                        .GetMethod(nameof(MediatRServiceConfiguration.Using))
                         .MakeGenericMethod(addRemotiatrOptions.MediatorImplementationType)
                         .Invoke(x, new object[0]);
                 }

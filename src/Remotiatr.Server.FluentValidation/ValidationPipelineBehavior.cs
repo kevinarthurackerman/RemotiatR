@@ -2,7 +2,7 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using RemotiatR.Shared.Internal;
+using RemotiatR.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;

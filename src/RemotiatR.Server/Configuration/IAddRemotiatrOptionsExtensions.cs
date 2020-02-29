@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RemotiatR.Client.Configuration
+namespace RemotiatR.Server.Configuration
 {
     public static class IAddRemotiatrOptionsExtensions
     {

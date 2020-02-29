@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using RemotiatR.Shared;
 
 namespace RemotiatR.Client.MessageSenders
 {

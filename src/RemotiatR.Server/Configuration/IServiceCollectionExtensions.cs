@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
-using RemotiatR.Client.Configuration;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
@@ -43,7 +42,7 @@ namespace RemotiatR.Server.Configuration
                             throw new ArgumentOutOfRangeException(nameof(options.MediatorServiceLifetime), "Not a valid ServiceLifetime");
                     }
                     typeof(MediatRServiceConfiguration)
-                        .GetMethod(nameof(MediatRServiceConfiguration.MediatorImplementationType))
+                        .GetMethod(nameof(MediatRServiceConfiguration.Using))
                         .MakeGenericMethod(options.MediatorImplementationType)
                         .Invoke(x, new object[0]);
                 }

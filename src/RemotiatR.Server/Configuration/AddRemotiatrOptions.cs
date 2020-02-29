@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace RemotiatR.Client.Configuration
+namespace RemotiatR.Server.Configuration
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {

@@ -8,6 +8,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared.Internal;
+using RemotiatR.Shared;
 
 namespace RemotiatR.Server.FluentValidation.Configuration
 {
