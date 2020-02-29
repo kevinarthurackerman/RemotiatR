@@ -7,16 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Automapper.Quickmaps" Version="1.0.1-beta" />
-    <PackageReference Include="MediatR" Version="8.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.1-beta" />
-    <PackageReference Include="RemotiatR.Server.FluentValidation" Version="1.0.1-beta" />
+    <PackageReference Include="QuickmapsForAutomapper" Version="1.0.2-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.2-beta" />
+    <PackageReference Include="RemotiatR.Server.FluentValidation" Version="1.0.2-beta" />
   </ItemGroup>
 
   <ItemGroup>
