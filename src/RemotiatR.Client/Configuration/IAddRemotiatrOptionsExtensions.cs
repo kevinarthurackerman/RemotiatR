@@ -15,10 +15,10 @@ namespace RemotiatR.Client.Configuration
         public static IAddRemotiatrOptions AsSingleton(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions.WithMediatorLifetime(ServiceLifetime.Singleton);
 
-        public IAddRemotiatrOptions AsScoped(this IAddRemotiatrOptions addRemotiatrOptions) =>
+        public static IAddRemotiatrOptions AsScoped(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions.WithMediatorLifetime(ServiceLifetime.Scoped);
 
-        public IAddRemotiatrOptions AsTransient(this IAddRemotiatrOptions addRemotiatrOptions) =>
+        public static IAddRemotiatrOptions AsTransient(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions.WithMediatorLifetime(ServiceLifetime.Transient);
     }
 }
