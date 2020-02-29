@@ -74,7 +74,30 @@ namespace RemotiatR.Client.Configuration
 
             addRemotiatrOptions.Services.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
 
-            addRemotiatrOptions.Services.AddMediatR(addRemotiatrOptions.AssembliesToScan.ToArray());
+            addRemotiatrOptions.Services.AddMediatR(
+                addRemotiatrOptions.AssembliesToScan.ToArray(), 
+                x =>
+                {
+                    switch (addRemotiatrOptions.MediatorServiceLifetime)
+                    {
+                        case ServiceLifetime.Transient:
+                            x.AsTransient();
+                            break;
+                        case ServiceLifetime.Scoped:
+                            x.AsScoped();
+                            break;
+                        case ServiceLifetime.Singleton:
+                            x.AsSingleton();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(addRemotiatrOptions.MediatorServiceLifetime), "Not a valid ServiceLifetime");
+                    }
+                    typeof(MediatRServiceConfiguration)
+                        .GetMethod(nameof(MediatRServiceConfiguration.MediatorImplementationType))
+                        .MakeGenericMethod(addRemotiatrOptions.MediatorImplementationType)
+                        .Invoke(x, new object[0]);
+                }
+            );
 
             addRemotiatrOptions.Services.TryAddSingleton(x =>
             {
