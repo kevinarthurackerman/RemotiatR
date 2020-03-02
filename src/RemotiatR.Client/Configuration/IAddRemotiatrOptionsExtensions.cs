@@ -6,11 +6,8 @@ namespace RemotiatR.Client.Configuration
     public static class IAddRemotiatrOptionsExtensions
     {
         public static IAddRemotiatrOptions WithMediatorImplementationType<TMediator>(this IAddRemotiatrOptions addRemotiatrOptions)
-            where TMediator : IMediator
-        {
+            where TMediator : IMediator =>
             addRemotiatrOptions.WithMediatorImplementationType(typeof(TMediator));
-            return addRemotiatrOptions;
-        }
 
         public static IAddRemotiatrOptions AsSingleton(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions.WithMediatorLifetime(ServiceLifetime.Singleton);
