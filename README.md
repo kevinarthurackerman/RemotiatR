@@ -3,6 +3,15 @@
 ### MediatR For Your Remote Clients
 RemotiatR makes it easy to run you MediatR requests and commands from a remote client on your server without all the ceremony. Just send or publish the same way you always would, and RemotiatR handles everything between.
 
+### Install Packages
+Base nuget packages
+- <https://www.nuget.org/packages/RemotiatR.Client/>
+- <https://www.nuget.org/packages/RemotiatR.Server/>
+
+Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation>)
+- <https://www.nuget.org/packages/RemotiatR.Client.FluentValidation/>
+- <https://www.nuget.org/packages/RemotiatR.Server.FluentValidation/>
+
 ### Getting Started
 In your shared project
 ```csharp
