@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using System.Linq;
 using RemotiatR.Shared;
 
-namespace RemotiatR.Client.MessageSenders
+namespace RemotiatR.Client.MessageTransports
 {
-    internal class DefaultHttpMessageSender : IMessageSender
+    internal class DefaultHttpMessageTransport : IMessageTransport
     {
         private readonly HttpClient _httpClient;
         private readonly ISerializer _serializer;
         private readonly IEnumerable<IHttpMessageHandler> _httpMessageHandlers;
 
-        public DefaultHttpMessageSender(HttpClient httpClient, ISerializer serializer, IEnumerable<IHttpMessageHandler> httpMessageHandlers)
+        public DefaultHttpMessageTransport(HttpClient httpClient, ISerializer serializer, IEnumerable<IHttpMessageHandler> httpMessageHandlers)
         {
             _httpClient = httpClient;
             _serializer = serializer;

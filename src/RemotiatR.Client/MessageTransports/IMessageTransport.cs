@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Client.MessageSenders
+namespace RemotiatR.Client.MessageTransports
 {
-    public interface IMessageSender
+    public interface IMessageTransport
     {
         Task<object> SendRequest(Uri uri, object requestData, Type requestType, Type responseType, CancellationToken cancellationToken);
     }

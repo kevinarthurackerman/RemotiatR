@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Client.MessageSenders
+namespace RemotiatR.Client.MessageTransports
 {
     public interface IHttpMessageHandler
     {

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
-using RemotiatR.Client.MessageSenders;
+using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
@@ -73,7 +73,7 @@ namespace RemotiatR.Client.Configuration
 
             addRemotiatrOptions.Services.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
 
-            addRemotiatrOptions.Services.TryAddSingleton<IMessageSender, DefaultHttpMessageSender>();
+            addRemotiatrOptions.Services.TryAddSingleton<IMessageTransport, DefaultHttpMessageTransport>();
 
             addRemotiatrOptions.Services.AddMediatR(
                 addRemotiatrOptions.AssembliesToScan.ToArray(), 
@@ -136,7 +136,7 @@ namespace RemotiatR.Client.Configuration
 
                     serviceCollection.AddTransient(
                         notificationHandlerInterfaceType,
-                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageSender>(), endpointInfo.Uri })
+                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointInfo.Uri })
                     );
                 }
             }
@@ -173,7 +173,7 @@ namespace RemotiatR.Client.Configuration
 
                     serviceCollection.AddTransient(
                         requestHandlerInterfaceType,
-                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageSender>(), endpointInfo.Uri })
+                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointInfo.Uri })
                     );
                 }
             }

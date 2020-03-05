@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using RemotiatR.Client.MessageSenders;
+using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
 using System.Linq;
 using System.Net;

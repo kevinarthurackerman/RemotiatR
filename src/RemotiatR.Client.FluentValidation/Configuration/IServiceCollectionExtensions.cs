@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Client.MessageSenders;
+using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
