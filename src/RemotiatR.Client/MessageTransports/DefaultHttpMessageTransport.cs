@@ -36,14 +36,11 @@ namespace RemotiatR.Client.MessageTransports
 
             var responseMessage = await handle();
 
-            if (IsSuccessStatusCode((int)responseMessage.StatusCode))
-            {
-                var resultStream = await responseMessage.Content.ReadAsStreamAsync();
+            responseMessage.EnsureSuccessStatusCode();
 
-                return _serializer.Deserialize(resultStream, responseType);
-            }
+            var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
-            return null;
+            return _serializer.Deserialize(resultStream, responseType);
         }
 
         private HttpRequestHandlerDelegate BuildHandler(IEnumerable<IHttpMessageHandler> messageHandlers, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
@@ -56,7 +53,5 @@ namespace RemotiatR.Client.MessageTransports
 
             return handle;
         }
-
-        private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 300;
     }
 }
