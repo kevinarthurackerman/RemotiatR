@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Departments
 {
@@ -16,6 +17,7 @@ namespace ContosoUniversity.Shared.Features.Departments
             public decimal Budget { get; set; }
             public DateTime StartDate { get; set; }
             public int Id { get; set; }
+            [DisplayName("Administrator")]
             public string AdministratorFullName { get; set; }
         }
     }

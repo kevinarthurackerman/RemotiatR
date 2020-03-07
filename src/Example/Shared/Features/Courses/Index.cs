@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Courses
 {
@@ -18,6 +19,7 @@ namespace ContosoUniversity.Shared.Features.Courses
                 public int Id { get; set; }
                 public string Title { get; set; }
                 public int Credits { get; set; }
+                [DisplayName("Department")]
                 public string DepartmentName { get; set; }
             }
         }

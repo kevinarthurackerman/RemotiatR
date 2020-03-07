@@ -2,6 +2,7 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Students
 {
@@ -15,6 +16,7 @@ namespace ContosoUniversity.Shared.Features.Students
         public class Model
         {
             public int Id { get; set; }
+            [DisplayName("First Name")]
             public string FirstMidName { get; set; }
             public string LastName { get; set; }
             public DateTime EnrollmentDate { get; set; }

@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Departments
 {
@@ -18,6 +19,7 @@ namespace ContosoUniversity.Shared.Features.Departments
             public string Name { get; set; }
             public decimal? Budget { get; set; }
             public DateTime? StartDate { get; set; }
+            [DisplayName("Instructor")]
             public int? InstructorId { get; set; }
             public int Id { get; set; }
             public byte[] RowVersion { get; set; }
@@ -27,6 +29,7 @@ namespace ContosoUniversity.Shared.Features.Departments
             {
                 public int Id { get; set; }
                 public string LastName { get; set; }
+                [DisplayName("First Name")]
                 public string FirstMidName { get; set; }
             }
         }

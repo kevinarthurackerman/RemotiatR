@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using System;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Students
 {
@@ -9,6 +10,7 @@ namespace ContosoUniversity.Shared.Features.Students
         public class Command : IRequest<int>
         {
             public string LastName { get; set; }
+            [DisplayName("First Name")]
             public string FirstMidName { get; set; }
             public DateTime? EnrollmentDate { get; set; }
         }

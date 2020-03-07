@@ -2,6 +2,7 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Courses
 {
@@ -22,9 +23,11 @@ namespace ContosoUniversity.Shared.Features.Courses
 
         public class Command : IRequest
         {
+            [DisplayName("Number")]
             public int Id { get; set; }
             public string Title { get; set; }
             public int? Credits { get; set; }
+            [DisplayName("Department")]
             public int DepartmentId { get; set; }
 
             public IEnumerable<Department> Departments { get; set; }

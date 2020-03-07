@@ -2,6 +2,7 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ContosoUniversity.Shared.Features.Instructors
 {
@@ -24,8 +25,10 @@ namespace ContosoUniversity.Shared.Features.Instructors
         {
             public int? Id { get; set; }
             public string LastName { get; set; }
+            [DisplayName("First Name")]
             public string FirstMidName { get; set; }
             public DateTime? HireDate { get; set; }
+            [DisplayName("Office Location")]
             public string OfficeAssignmentLocation { get; set; }
             public List<CourseData> Courses { get; set; }
 
