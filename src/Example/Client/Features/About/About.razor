@@ -1,0 +1,39 @@
+﻿@using _ = ContosoUniversity.Shared.Features.About.Index
+
+@page "/About"
+@inject IRemotiatr _remotiatr
+
+<h2>Student Body Statistics</h2>
+
+<Loading When="Data == null">
+
+    <table>
+        <tr>
+            <th>
+                Enrollment Date
+            </th>
+            <th>
+                Students
+            </th>
+        </tr>
+
+        @foreach (var item in Data.EnrollmentDateGroups)
+        {
+            <tr>
+                <td>
+                    @item.EnrollmentDate?.ToString("d")
+                </td>
+                <td>
+                    @item.StudentCount
+                </td>
+            </tr>
+        }
+    </table>
+
+</Loading>
+
+@code {
+    public _.Result Data { get; private set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
+}

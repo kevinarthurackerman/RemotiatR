@@ -1,0 +1,8 @@
+﻿<div class="form-group" @attributes="InputAttributes">@ChildContent</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public Dictionary<string, object> InputAttributes { get; set; }
+}

@@ -1,0 +1,63 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Departments.Index
+
+@page "/Departments"
+@inject IRemotiatr _remotiatr
+
+<h2>Departments</h2>
+
+<Loading When="Data == null">
+
+    <p>
+        <a href="/departments/create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <Label For="() => Data[0].Name" />
+                </th>
+                <th>
+                    <Label For="() => Data[0].Budget" />
+                </th>
+                <th>
+                    <Label For="() => Data[0].StartDate" />
+                </th>
+                <th>
+                    <Label For="() => Data[0].AdministratorFullName" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Data)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Budget.ToString("C")
+                    </td>
+                    <td>
+                        @item.StartDate.ToString("d")
+                    </td>
+                    <td>
+                        @item.AdministratorFullName
+                    </td>
+                    <td>
+                        <a href="/Departments/Edit/@item.Id">Edit</a> |
+                        <a href="/Departments/@item.Id">Details</a> |
+                        <a href="/Departments/Delete/@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</Loading>
+
+@code {
+    public List<_.Model> Data { get; private set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
+}

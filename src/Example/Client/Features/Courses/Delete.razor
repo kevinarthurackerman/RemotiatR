@@ -1,0 +1,65 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Courses.Delete
+
+@page "/Courses/Delete/{id:int}"
+@inject IRemotiatr _remotiatr
+@inject NavigationManager  _navigationManager
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<Loading When="Data == null">
+
+    <div>
+        <h4>Course</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                <Label @bind-Value="Data.Id" />
+            </dt>
+            <dd>
+                @Data.Id
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.Title" />
+            </dt>
+            <dd>
+                @Data.Title
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.Credits" />
+            </dt>
+            <dd>
+                @Data.Credits
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.DepartmentName" />
+            </dt>
+            <dd>
+                @Data.DepartmentName
+            </dd>
+        </dl>
+
+        <div>
+            <input type="submit" value="Delete" class="btn btn-danger" @onclick="OnPostAsync" /> |
+            <a href="/Courses">Back to List</a>
+        </div>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public _.Command Data { get; set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+
+    private async Task OnPostAsync()
+    {
+        await _remotiatr.Send(Data);
+
+        _navigationManager.NavigateTo("/Courses");
+    }
+}

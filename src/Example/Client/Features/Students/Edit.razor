@@ -1,0 +1,61 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Students.Edit
+
+@page "/Students/Edit/{id:int}"
+@inject IRemotiatr _remotiatr
+@inject NavigationManager  _navigationManager
+
+<h2>Edit</h2>
+
+<h4>Student</h4>
+<hr />
+
+<Loading When="Data == null">
+
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@Data" OnValidSubmit="OnPostAsync">
+                <FluentValidationValidator />
+                <InputNumber @bind-Value="Data.Id" hidden="hidden" />
+                <FormBlock>
+                    <Label @bind-Value="Data.LastName" />
+                    <InputText @bind-Value="Data.LastName" />
+                    <ValidationMessage For="() => Data.LastName" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.FirstMidName" />
+                    <InputText @bind-Value="Data.FirstMidName" />
+                    <ValidationMessage For="() => Data.FirstMidName" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.EnrollmentDate" />
+                    <InputDate @bind-Value="Data.EnrollmentDate" />
+                    <ValidationMessage For="() => Data.EnrollmentDate" />
+                </FormBlock>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <div>
+        <a href="/Students">Back to List</a>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public _.Command Data { get; set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+
+    private async Task OnPostAsync()
+    {
+        await _remotiatr.Send(Data);
+
+        _navigationManager.NavigateTo("/Students");
+    }
+}

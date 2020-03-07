@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Web", "Example\RemotiatR.Example.Web\RemotiatR.Example.Web.csproj", "{AE9127C6-CD14-4673-889A-3B1ABD04E5E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Web", "Example\Client\ContosoUniversity.Client.csproj", "{AE9127C6-CD14-4673-889A-3B1ABD04E5E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Api", "Example\RemotiatR.Example.Api\RemotiatR.Example.Api.csproj", "{CC78360C-F9C7-4A02-8FEC-27982276CB04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Api", "Example\Server\ContosoUniversity.Server.csproj", "{CC78360C-F9C7-4A02-8FEC-27982276CB04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Shared", "Example\RemotiatR.Example.Shared\RemotiatR.Example.Shared.csproj", "{59056C9E-33AD-4A68-BFD9-DC067D1F5B7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Shared", "Example\Shared\ContosoUniversity.Shared.csproj", "{59056C9E-33AD-4A68-BFD9-DC067D1F5B7C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Shared", "RemotiatR.Shared\RemotiatR.Shared.csproj", "{23BEF8D9-2C41-4853-8914-4889393852DE}"
 EndProject

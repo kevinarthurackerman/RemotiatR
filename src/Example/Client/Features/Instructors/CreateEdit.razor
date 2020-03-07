@@ -1,0 +1,93 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Instructors.CreateEdit
+
+@page "/Instructors/Create"
+@page "/Instructors/Edit/{id:int}"
+
+@inject IRemotiatr _remotiatr
+@inject NavigationManager  _navigationManager
+
+<h2>@(Id == null ? "Create" : "Edit")</h2>
+
+<h4>Instructor</h4>
+<hr />
+
+<Loading When="Data == null">
+
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@Data" OnValidSubmit="OnPostAsync">
+                <FluentValidationValidator />
+                <InputNumber @bind-Value="Data.Id" hidden="hidden" />
+                <FormBlock>
+                    <Label @bind-Value="Data.LastName" />
+                    <InputText @bind-Value="Data.LastName" />
+                    <ValidationMessage For="() => Data.LastName" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.FirstMidName" />
+                    <InputText @bind-Value="Data.FirstMidName" />
+                    <ValidationMessage For="() => Data.FirstMidName" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.HireDate" />
+                    <InputDate @bind-Value="Data.HireDate" />
+                    <ValidationMessage For="() => Data.HireDate" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.OfficeAssignmentLocation" />
+                    <InputText @bind-Value="Data.OfficeAssignmentLocation" />
+                    <ValidationMessage For="() => Data.OfficeAssignmentLocation" />
+                </FormBlock>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <table>
+                            <tbody>
+                                @{
+                                    var cnt = 0;
+                                    foreach (var row in Data.Courses.GroupBy(x => cnt++ / 3))
+                                    {
+                                        <tr>
+                                            @foreach (var course in row.AsEnumerable())
+                                            {
+                                                <td>
+                                                    <label style="font-weight: normal">
+                                                        <InputCheckbox @bind-Value="course.Assigned"></InputCheckbox>
+                                                        @course.Id :  @course.Title
+                                                    </label>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <FormBlock>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </FormBlock>
+            </EditForm>
+        </div>
+    </div>
+
+    <div>
+        <a href="/Instructors">Back to List</a>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    public _.Command Data { get; set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+
+    protected async Task OnPostAsync()
+    {
+        await _remotiatr.Send(Data);
+
+        _navigationManager.NavigateTo("/Instructors");
+    }
+}

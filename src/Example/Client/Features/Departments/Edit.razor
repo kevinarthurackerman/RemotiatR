@@ -1,0 +1,71 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Departments.Edit
+
+@page "/Departments/Edit/{id:int}"
+@inject IRemotiatr _remotiatr
+@inject NavigationManager  _navigationManager
+
+<h2>Edit</h2>
+
+<h4>Department</h4>
+<hr />
+
+<Loading When="Data == null">
+
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@Data" OnValidSubmit="OnPostAsync">
+                <FluentValidationValidator />
+                <InputNumber @bind-Value="Data.Id" hidden="hidden" />
+                <RowVersion @bind-Value="Data.RowVersion" />
+                <FormBlock>
+                    <Label @bind-Value="Data.Name" />
+                    <InputText @bind-Value="Data.Name" />
+                    <ValidationMessage For="() => Data.Name" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.Budget" />
+                    <InputNumber @bind-Value="Data.Budget" min="0" step="0.01" />
+                    <ValidationMessage For="() => Data.Budget" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.StartDate" />
+                    <InputDate @bind-Value="Data.StartDate" />
+                    <ValidationMessage For="() => Data.StartDate" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.InstructorId" />
+                    <InputSelectNumber @bind-Value="Data.InstructorId">
+                        @foreach (var administrator in Data.Administrators)
+                        {
+                            <option value="@administrator.Id">@administrator.FullName()</option>
+                        }
+                    </InputSelectNumber>
+                    <ValidationMessage For="() => Data.InstructorId" />
+                </FormBlock>
+                <FormBlock>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </FormBlock>
+            </EditForm>
+        </div>
+    </div>
+
+    <div>
+        <a href="/Departments">Back to List</a>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public _.Command Data { get; set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+
+    private async Task OnPostAsync()
+    {
+        await _remotiatr.Send(Data);
+
+        _navigationManager.NavigateTo("/Departments");
+    }
+}

@@ -1,0 +1,63 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Courses.Index
+
+@page "/Courses"
+@inject IRemotiatr _remotiatr
+
+<h2>Courses</h2>
+
+<Loading When="Data == null">
+
+    <p>
+        <a href="/courses/create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <Label For="() => Data.Courses[0].Id" />
+                </th>
+                <th>
+                    <Label For="() => Data.Courses[0].Title" />
+                </th>
+                <th>
+                    <Label For="() => Data.Courses[0].Credits" />
+                </th>
+                <th>
+                    <Label For="() => Data.Courses[0].DepartmentName" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Data.Courses)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Credits
+                    </td>
+                    <td>
+                        @item.DepartmentName
+                    </td>
+                    <td>
+                        <a href="/Courses/Edit/@item.Id">Edit</a> |
+                        <a href="/Courses/@item.Id">Details</a> |
+                        <a href="/Courses/Delete/@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</Loading>
+
+@code {
+    public _.Result Data { get; private set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
+}

@@ -1,0 +1,54 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Departments.Details
+
+@page "/Departments/{id:int}"
+@inject IRemotiatr _remotiatr
+
+<h2>Details</h2>
+
+<Loading When="Data == null">
+
+    <div>
+        <h4>Department</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                <Label @bind-Value="Data.Name" />
+            </dt>
+            <dd>
+                @Data.Name
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.Budget" />
+            </dt>
+            <dd>
+                @Data.Budget.ToString("C")
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.StartDate" />
+            </dt>
+            <dd>
+                @Data.StartDate.ToString("d")
+            </dd>
+            <dt>
+                <Label @bind-Value="Data.AdministratorFullName" />
+            </dt>
+            <dd>
+                @Data.AdministratorFullName
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a href="/Departments/Edit/@Data.Id">Edit</a> |
+        <a href="/Departments">Back to List</a>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public _.Model Data { get; private set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+}

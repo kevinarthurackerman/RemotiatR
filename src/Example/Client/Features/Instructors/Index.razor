@@ -1,0 +1,148 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Instructors.Index
+
+@page "/Instructors"
+@page "/Instructors/Info/{id:int}"
+@page "/Instructors/Info/{id:int}/{courseId:int}"
+@inject IRemotiatr _remotiatr
+
+<h2>Instructors</h2>
+
+<Loading When="Data == null">
+
+    <p>
+        <a href="/instructors/create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <Label For="() => Data.Instructors[0].LastName" />
+                </th>
+                <th>
+                    <Label For="() => Data.Instructors[0].FirstMidName" />
+                </th>
+                <th>
+                    <Label For="() => Data.Instructors[0].HireDate" />
+                </th>
+                <th>
+                    <Label For="() => Data.Instructors[0].OfficeAssignmentLocation" />
+                </th>
+                <th>
+                    <Label For="() => Data.Instructors[0].CourseAssignments" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Data.Instructors)
+            {
+                string selectedRow = "";
+                if (item.Id == Data.InstructorId)
+                {
+                    selectedRow = "table-success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @item.LastName
+                    </td>
+                    <td>
+                        @item.FirstMidName
+                    </td>
+                    <td>
+                        @item.HireDate.ToString("d")
+                    </td>
+                    <td>
+                        @item.OfficeAssignmentLocation
+                    </td>
+                    <td>
+                        @{
+                            foreach (var course in item.CourseAssignments)
+                            {
+                                @course.CourseId @:  @course.CourseTitle <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a href="/Instructors/Info/@item.Id">Select</a> |
+                        <a href="/Instructors/Edit/@item.Id">Edit</a> |
+                        <a href="/Instructors/@item.Id">Details</a> |
+                        <a href="/Instructors/Delete/@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Data.Courses.Any())
+    {
+        <h3>Courses Taught by Selected Instructor</h3>
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>Number</th>
+                <th>Title</th>
+                <th>Department</th>
+            </tr>
+
+            @foreach (var item in Data.Courses)
+            {
+                string selectedRow = "";
+                if (item.Id == Data.CourseId)
+                {
+                    selectedRow = "table-success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        <a href="/Instructors/Info/@Data.InstructorId/@item.Id">Select</a>
+                    </td>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.DepartmentName
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+    @if (Data.Enrollments.Any())
+    {
+        <h3>
+            Students Enrolled in Selected Course
+        </h3>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+            @foreach (var item in Data.Enrollments)
+            {
+                <tr>
+                    <td>
+                        @item.StudentFullName
+                    </td>
+                    <td>
+                        @item.Grade
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    [Parameter]
+    public int? CourseId { get; set; }
+
+    public _.Model Data { get; private set; }
+
+    protected override async Task OnParametersSetAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id, CourseId = CourseId });
+}

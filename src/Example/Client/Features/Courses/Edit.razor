@@ -1,0 +1,69 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Courses.Edit
+
+@page "/Courses/Edit/{id:int}"
+@inject IRemotiatr _remotiatr
+@inject NavigationManager  _navigationManager
+
+<h2>Edit</h2>
+
+<h4>Course</h4>
+<hr />
+
+<Loading When="Data == null">
+
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@Data" OnValidSubmit="OnPostAsync">
+                <FluentValidationValidator />
+                <FormBlock>
+                    <Label @bind-Value="Data.Id" />
+                    <InputNumber @bind-Value="Data.Id" disabled />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.Title" />
+                    <InputText @bind-Value="Data.Title" />
+                    <ValidationMessage For="() => Data.Title" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.Credits" />
+                    <InputNumber @bind-Value="Data.Credits" min="0" step="1" />
+                    <ValidationMessage For="() => Data.Credits" />
+                </FormBlock>
+                <FormBlock>
+                    <Label @bind-Value="Data.DepartmentId" />
+                    <InputSelectNumber @bind-Value="Data.DepartmentId">
+                        @foreach (var department in Data.Departments)
+                        {
+                            <option value="@department.Id">@department.Name</option>
+                        }
+                    </InputSelectNumber>
+                    <ValidationMessage For="() => Data.DepartmentId" />
+                </FormBlock>
+                <FormBlock>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </FormBlock>
+            </EditForm>
+        </div>
+    </div>
+
+    <div>
+        <a href="/Courses">Back to List</a>
+    </div>
+
+</Loading>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public _.Command Data { get; set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
+
+    private async Task OnPostAsync()
+    {
+        await _remotiatr.Send(Data);
+
+        _navigationManager.NavigateTo("/Courses");
+    }
+}
