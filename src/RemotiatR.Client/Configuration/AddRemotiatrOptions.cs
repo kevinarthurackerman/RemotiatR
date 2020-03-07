@@ -11,7 +11,7 @@ namespace RemotiatR.Client.Configuration
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
-        internal Func<Type, Uri> UriBuilder { get; private set; } = x => new Uri("/api/" + x.FullName.Split('.').Last().Replace('+', '/'), UriKind.Relative);
+        internal Func<Type, Uri> UriBuilder { get; private set; } = x => new Uri("/api/" + x.FullName.Replace('.', '/').Replace('+', '-'), UriKind.Relative);
 
         internal Uri BaseUri { get; private set; }
 
