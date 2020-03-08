@@ -24,8 +24,8 @@ namespace RemotiatR.Client.FluentValidation
         {
             var context = new ValidationContext(request);
             var failures = _validators
-                .Select(async v => await v.ValidateAsync(context))
-                .SelectMany(result => result.Result.Errors)
+                .Select(v => v.Validate(context))
+                .SelectMany(result => result.Errors)
                 .Where(f => f != null)
                 .Select(x => new ValidationError(x.PropertyName, x.ErrorCode, x.ErrorMessage))
                 .ToArray();

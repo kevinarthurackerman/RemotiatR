@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Threading.Tasks;
-using ContosoUniversity.Server.Models;
+﻿using ContosoUniversity.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

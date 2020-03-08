@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
 using ContosoUniversity.Shared;
 using RemotiatR.Client.Configuration;
 using System;
+using RemotiatR.Client.FluentValidation.Configuration;
 
 namespace ContosoUniversity.Client
 {
@@ -24,7 +24,6 @@ namespace ContosoUniversity.Client
             {
                 x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
                 x.SetBaseUri(new Uri("https://localhost:44337"));
-                x.SetUriBuilder(Defaults.UriBuilder);
                 x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });
         }

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace RemotiatR.Client.FluentValidation
 {
+    [Obsolete]
     public static class ValidationScope
     {
+        [Obsolete]
         public static ValidationResult Run(Action action)
         {
             try
@@ -26,6 +28,7 @@ namespace RemotiatR.Client.FluentValidation
             }
         }
 
+        [Obsolete]
         public static async Task<ValidationResult> Run(Func<Task> action)
         {
             try

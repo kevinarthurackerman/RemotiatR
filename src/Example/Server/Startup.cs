@@ -2,7 +2,6 @@ using AutoMapper;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Infrastructure;
 using ContosoUniversity.Shared;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,8 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemotiatR.Server.Configuration;
-using System;
-using System.IO;
+using RemotiatR.Server.FluentValidation.Configuration;
 using System.Linq;
 
 namespace ContosoUniversity.Server
@@ -67,11 +65,7 @@ namespace ContosoUniversity.Server
 
             app.UseRouting();
 
-            app.UseRemotiatr(x =>
-            {
-                x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
-                x.SetUriBuilder(Defaults.UriBuilder);
-            });
+            app.UseRemotiatr(x => x.AddAssemblies(typeof(SharedAssemblyTypeMarker)));
 
             app.UseEndpoints(endpoints =>
             {

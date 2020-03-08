@@ -13,8 +13,7 @@
 
     <div class="row">
         <div class="col-md-4">
-            <EditForm Model="@Data" OnValidSubmit="OnPostAsync">
-                <FluentValidationValidator />
+            <EditForm Model="@Data" OnSubmit="OnPostAsync">
                 <FormBlock>
                     <Label @bind-Value="Data.Id" />
                     <InputNumber @bind-Value="Data.Id" disabled />
@@ -60,10 +59,10 @@
 
     protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query { Id = Id });
 
-    private async Task OnPostAsync()
+    private async Task OnPostAsync(EditContext editContext)
     {
-        await _remotiatr.Send(Data);
+        await _remotiatr.WithValidationContext(editContext).Send(Data);
 
-        _navigationManager.NavigateTo("/Courses");
+        if(editContext.IsValid()) _navigationManager.NavigateTo("/Courses");
     }
 }

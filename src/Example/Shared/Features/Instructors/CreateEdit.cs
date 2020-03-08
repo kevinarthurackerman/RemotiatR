@@ -13,14 +13,6 @@ namespace ContosoUniversity.Shared.Features.Instructors
             public int? Id { get; set; }
         }
 
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(m => m.Id).NotNull();
-            }
-        }
-
         public class Command : IRequest<int>
         {
             public int? Id { get; set; }
