@@ -28,11 +28,13 @@ else {
     New-Item -ItemType Directory -Path $symbolsDir | Out-Null 
 }
 
-dotnet build $projectPath
+. "$($scriptsDir)\variables.ps1"
+$buildOrder | ForEach-Object {
+    . "$($scriptsDir)\variables.ps1"
+    . "$($scriptsDir)\$($_).ps1"
 
-Get-ChildItem $scriptsDir -Filter variables-*.ps1 -Recurse | ForEach-Object {
-    . .\variables.ps1
-    . .\$_
+    dotnet restore $projectPath --force --no-cache --source ..\packages
+    dotnet build $projectPath
 
     $packageName = "$($packageId).$($version)"
     $nupkgPath = "$($nugetDir)\$($packageName).nupkg"
