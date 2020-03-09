@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,12 +18,15 @@ namespace RemotiatR.Client.FluentValidation
 
         public ValidationHttpMessageHandler(IValidationErrorsAccessor validationErrorsAccessor, ISerializer serializer)
         {
-            _validationErrorsAccessor = validationErrorsAccessor;
-            _serializer = serializer;
+            _validationErrorsAccessor = validationErrorsAccessor ?? throw new ArgumentNullException(nameof(validationErrorsAccessor));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public async Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, HttpRequestHandlerDelegate next)
+        public async Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, HttpRequestHandlerDelegate next, CancellationToken cancellationToken = default)
         {
+            if (httpRequestMessage == null) throw new ArgumentNullException(nameof(httpRequestMessage));
+            if (next == null) throw new ArgumentNullException(nameof(next));
+
             _validationErrorsAccessor.ValidationErrors.Clear();
 
             var responseMessage = await next();

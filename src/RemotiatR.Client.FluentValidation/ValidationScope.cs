@@ -12,6 +12,8 @@ namespace RemotiatR.Client.FluentValidation
         [Obsolete]
         public static ValidationResult Run(Action action)
         {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
             try
             {
                 action();
@@ -31,6 +33,8 @@ namespace RemotiatR.Client.FluentValidation
         [Obsolete]
         public static async Task<ValidationResult> Run(Func<Task> action)
         {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
             try
             {
                 await action();
@@ -47,7 +51,7 @@ namespace RemotiatR.Client.FluentValidation
             }
         }
 
-        private static ValidationResult GetValidationResult(Exception exception)
+        private static ValidationResult? GetValidationResult(Exception exception)
         {
             if (exception is ValidationException validationException)
                 return new ValidationResult(validationException.Errors);
@@ -61,7 +65,7 @@ namespace RemotiatR.Client.FluentValidation
                     .ToArray();
 
                 if (validationExceptions.Any())
-                    return new ValidationResult(validationExceptions.SelectMany(x => x.Errors));
+                    return new ValidationResult(validationExceptions.SelectMany(x => x!.Errors));
             }
 
             return null;

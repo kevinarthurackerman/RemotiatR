@@ -16,17 +16,22 @@ namespace RemotiatR.Client.Configuration
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure)
             => AddRemotiatr<IDefaultRemotiatrMarker,IRemotiatr>(serviceCollection, configure);
 
-        public static IServiceCollection AddRemotiatr<TMarker>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+        public static IServiceCollection AddRemotiatr<TMarker>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure)
             => AddRemotiatr<TMarker,IRemotiatr<TMarker>>(serviceCollection, configure);
 
-        private static IServiceCollection AddRemotiatr<TMarker,TRemotiatr>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+        private static IServiceCollection AddRemotiatr<TMarker,TRemotiatr>(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure)
             where TRemotiatr : IRemotiatr<TMarker>
         {
+            if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
+            if (configure == null) throw new ArgumentNullException(nameof(configure));
+
             var options = new AddRemotiatrOptions();
-            configure?.Invoke(options);
+            configure.Invoke(options);
+
+            if (options.BaseUri == null) throw new InvalidOperationException($"{nameof(options.BaseUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetBaseUri)}.");
 
             AddDefaultServices(options);
 
@@ -93,9 +98,10 @@ namespace RemotiatR.Client.Configuration
                         default:
                             throw new ArgumentOutOfRangeException(nameof(addRemotiatrOptions.MediatorServiceLifetime), "Not a valid ServiceLifetime");
                     }
+
                     typeof(MediatRServiceConfiguration)
                         .GetMethod(nameof(MediatRServiceConfiguration.Using))
-                        .MakeGenericMethod(addRemotiatrOptions.MediatorImplementationType)
+                        !.MakeGenericMethod(addRemotiatrOptions.MediatorImplementationType)
                         .Invoke(x, new object[0]);
                 }
             );
@@ -186,7 +192,7 @@ namespace RemotiatR.Client.Configuration
             if (pathUri.IsAbsoluteUri) return pathUri;
             if (baseUri != null) return new Uri(baseUri, pathUri);
 
-            throw new InvalidOperationException("If a base URI is not provided all URIs must be absolute");
+            throw new InvalidOperationException("If a base URI is not provided all URIs must be absolute.");
         }
     }
 }

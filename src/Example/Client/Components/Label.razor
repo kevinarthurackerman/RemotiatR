@@ -39,7 +39,7 @@
         if (expression.Body is MemberExpression memberExpression) forMember = memberExpression;
         else if (expression.Body is UnaryExpression unaryExpression && unaryExpression.Operand is MemberExpression unaryMemberExpression)
             forMember = unaryMemberExpression;
-        else throw new InvalidOperationException("Must be an expression terminating in a member");
+        else throw new InvalidOperationException("Must be an expression terminating in a member.");
 
         var displayNameAttribute = forMember.Member.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
 

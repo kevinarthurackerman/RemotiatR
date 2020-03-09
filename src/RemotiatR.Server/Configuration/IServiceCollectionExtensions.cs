@@ -12,8 +12,10 @@ namespace RemotiatR.Server.Configuration
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions> configure = null)
+        public static IServiceCollection AddRemotiatr(this IServiceCollection serviceCollection, Action<IAddRemotiatrOptions>? configure = null)
         {
+            if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
+
             var options = new AddRemotiatrOptions();
             configure?.Invoke(options);
 
@@ -41,10 +43,11 @@ namespace RemotiatR.Server.Configuration
                         default:
                             throw new ArgumentOutOfRangeException(nameof(options.MediatorServiceLifetime), "Not a valid ServiceLifetime");
                     }
+
                     typeof(MediatRServiceConfiguration)
                         .GetMethod(nameof(MediatRServiceConfiguration.Using))
-                        .MakeGenericMethod(options.MediatorImplementationType)
-                        .Invoke(x, new object[0]);
+                        !.MakeGenericMethod(options.MediatorImplementationType)
+                        !.Invoke(x, new object[0]);
                 }
             );
 

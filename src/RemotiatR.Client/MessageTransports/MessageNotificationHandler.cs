@@ -13,11 +13,15 @@ namespace RemotiatR.Client.MessageTransports
 
         public MessageNotificationHandler(IMessageTransport messageTransport, Uri uri)
         {
-            _messageTransport = messageTransport;
-            _uri = uri;
+            _messageTransport = messageTransport ?? throw new ArgumentNullException(nameof(messageTransport));
+            _uri = uri ?? throw new ArgumentNullException(nameof(uri));
         }
 
-        public Task Handle(TNotification notification, CancellationToken cancellationToken) =>
-            _messageTransport.SendRequest(_uri, notification, typeof(TNotification), typeof(Unit), cancellationToken);
+        public Task Handle(TNotification notification, CancellationToken cancellationToken = default)
+        {
+            if (notification == null) throw new ArgumentNullException(nameof(notification));
+
+            return _messageTransport.SendRequest(_uri, notification, typeof(TNotification), typeof(Unit), cancellationToken);
+        }
     }
 }

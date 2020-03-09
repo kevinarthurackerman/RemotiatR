@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,18 +17,22 @@ namespace RemotiatR.Client.FluentValidation
 
         public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators, IValidationErrorsAccessor validationErrorsAccessor)
         {
-            _validators = validators;
-            _validationErrorsAccessor = validationErrorsAccessor;
+            _validators = validators ?? throw new ArgumentNullException(nameof(validators));
+            _validationErrorsAccessor = validationErrorsAccessor ?? throw new ArgumentNullException(nameof(validationErrorsAccessor));
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (next == null) throw new ArgumentNullException(nameof(next));
+
             var context = new ValidationContext(request);
+
             var failures = _validators
-                .Select(v => v.Validate(context))
-                .SelectMany(result => result.Errors)
+                .Select(async v => await v.ValidateAsync(context))
+                .SelectMany(result => result.Result.Errors)
                 .Where(f => f != null)
-                .Select(x => new ValidationError(x.PropertyName, x.ErrorCode, x.ErrorMessage))
+                .Select(x => new ValidationError(x.PropertyName, x.ErrorMessage, x.ErrorCode))
                 .ToArray();
 
             foreach (var failure in failures) _validationErrorsAccessor.ValidationErrors.Add(failure);

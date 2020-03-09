@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using RemotiatR.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,9 +21,10 @@ namespace RemotiatR.Server.FluentValidation
 
         public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators, IHttpContextAccessor httpContextAccessor, ISerializer serializer)
         {
-            _validators = validators;
-            _httpContext = httpContextAccessor.HttpContext;
-            _serializer = serializer;
+            _validators = validators ?? throw new ArgumentNullException(nameof(validators));
+            _httpContext = (httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor))).HttpContext 
+                ?? throw new InvalidOperationException($"{nameof(httpContextAccessor)} must provide an {nameof(HttpContext)}.");
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -32,7 +34,7 @@ namespace RemotiatR.Server.FluentValidation
                 .Select(async v => await v.ValidateAsync(context))
                 .SelectMany(result => result.Result.Errors)
                 .Where(f => f != null)
-                .Select(x => new ValidationError(x.PropertyName, x.ErrorCode, x.ErrorMessage))
+                .Select(x => new ValidationError(x.PropertyName, x.ErrorMessage, x.ErrorCode))
                 .ToArray();
 
             if (failures.Any())
@@ -43,7 +45,9 @@ namespace RemotiatR.Server.FluentValidation
 
                 await responseData.CopyToAsync(_httpContext.Response.Body);
 
+#pragma warning disable CS8653 // A default expression introduces a null value for a type parameter.
                 return default;
+#pragma warning restore CS8653 // A default expression introduces a null value for a type parameter.
             }
 
             return await next();
@@ -51,11 +55,11 @@ namespace RemotiatR.Server.FluentValidation
 
         private class ValidationError
         {
-            internal ValidationError(string propertyName, string errorCode, string errorMessage)
+            internal ValidationError(string propertyName, string errorMessage, string errorCode)
             {
                 PropertyName = propertyName;
-                ErrorCode = errorCode;
                 ErrorMessage = errorMessage;
+                ErrorCode = errorCode;
             }
 
             public string PropertyName { get; }

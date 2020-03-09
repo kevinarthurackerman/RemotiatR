@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -17,12 +18,16 @@ namespace RemotiatR.Server.Configuration
 
         public IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan)
         {
+            if (assembliesToScan == null) throw new ArgumentNullException(nameof(assembliesToScan));
+
             AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
             return this;
         }
 
         public IAddRemotiatrOptions AddAssemblies(params Type[] assemblyTypeMarkers)
         {
+            if (assemblyTypeMarkers == null) throw new ArgumentNullException(nameof(assemblyTypeMarkers));
+
             var assembliesToScan = assemblyTypeMarkers.Select(x => x.Assembly).ToArray();
             AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
             return this;
@@ -30,12 +35,14 @@ namespace RemotiatR.Server.Configuration
 
         public IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType)
         {
-            MediatorImplementationType = implementationType;
+            MediatorImplementationType = implementationType ?? throw new ArgumentNullException(nameof(implementationType));
             return this;
         }
 
         public IAddRemotiatrOptions WithMediatorLifetime(ServiceLifetime serviceLifetime)
         {
+            if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
+
             MediatorServiceLifetime = serviceLifetime;
             return this;
         }

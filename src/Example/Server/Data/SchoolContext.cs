@@ -6,8 +6,6 @@ namespace ContosoUniversity.Server.Data
 {
     public class SchoolContext : DbContext
     {
-        private IDbContextTransaction _currentTransaction;
-
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
         {
         }

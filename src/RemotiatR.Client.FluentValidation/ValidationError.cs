@@ -1,16 +1,18 @@
-﻿namespace RemotiatR.Client.FluentValidation
+﻿using System;
+
+namespace RemotiatR.Client.FluentValidation
 {
     public class ValidationError
     {
-        public ValidationError(string propertyName, string errorCode, string errorMessage)
+        public ValidationError(string propertyName, string errorMessage, string? errorCode = null)
         {
-            PropertyName = propertyName;
+            PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            ErrorMessage = errorMessage ?? throw new ArgumentNullException(nameof(errorCode));
             ErrorCode = errorCode;
-            ErrorMessage = errorMessage;
         }
 
         public string PropertyName { get; }
-        public string ErrorCode { get; }
         public string ErrorMessage { get; }
+        public string? ErrorCode { get; }
     }
 }

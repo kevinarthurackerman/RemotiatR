@@ -6,6 +6,6 @@ namespace RemotiatR.Client.MessageTransports
 {
     public interface IHttpMessageHandler
     {
-        Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, HttpRequestHandlerDelegate next);
+        Task<HttpResponseMessage> Handle(HttpRequestMessage httpRequestMessage, HttpRequestHandlerDelegate next, CancellationToken cancellationToken = default);
     }
 }

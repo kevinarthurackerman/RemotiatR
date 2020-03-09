@@ -12,16 +12,22 @@ namespace RemotiatR.Server.Configuration
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions> configure = null)
+        public static IApplicationBuilder UseRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = null)
         {
+            if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));
+
             var options = new UseRemotiatrOptions();
             configure?.Invoke(options);
 
-            var requestTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsRequestType())
-                .ToArray();
+            RegisterNotificationHandlers(applicationBuilder, options);
 
+            RegisterRequestHandlers(applicationBuilder, options);
+
+            return applicationBuilder;
+        }
+
+        private static void RegisterNotificationHandlers(IApplicationBuilder applicationBuilder, UseRemotiatrOptions options)
+        {
             var notificationTypes = options.AssembliesToScan
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.IsNotificationType())
@@ -36,18 +42,24 @@ namespace RemotiatR.Server.Configuration
                     x => x.Run(ProcessNotification(notificationType))
                 );
             }
+        }
+
+        private static void RegisterRequestHandlers(IApplicationBuilder applicationBuilder, UseRemotiatrOptions options)
+        {
+            var requestTypes = options.AssembliesToScan
+                            .SelectMany(x => x.GetTypes())
+                            .Where(x => x.IsRequestType())
+                            .ToArray();
 
             foreach (var requestType in requestTypes)
             {
                 var uri = options.UriBuilder(requestType);
-                applicationBuilder.MapWhen(ctx => 
+                applicationBuilder.MapWhen(ctx =>
                     ctx.Request.Path == new PathString(uri.ToString())
-                    && ctx.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase), 
+                    && ctx.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase),
                     x => x.Run(ProcessRequest(requestType, requestType.GetResponseType()))
                 );
             }
-
-            return applicationBuilder;
         }
 
         private static RequestDelegate ProcessNotification(Type requestType) =>

@@ -17,13 +17,18 @@ namespace RemotiatR.Client.MessageTransports
 
         public DefaultHttpMessageTransport(HttpClient httpClient, ISerializer serializer, IEnumerable<IHttpMessageHandler> httpMessageHandlers)
         {
-            _httpClient = httpClient;
-            _serializer = serializer;
-            _httpMessageHandlers = httpMessageHandlers;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _httpMessageHandlers = httpMessageHandlers ?? throw new ArgumentNullException(nameof(httpMessageHandlers));
         }
 
-        public async Task<object> SendRequest(Uri uri, object requestData, Type requestType, Type responseType, CancellationToken cancellationToken)
+        public async Task<object> SendRequest(Uri uri, object requestData, Type requestType, Type responseType, CancellationToken cancellationToken = default)
         {
+            if (uri == null) throw new ArgumentNullException(nameof(uri));
+            if (requestData == null) throw new ArgumentNullException(nameof(requestData));
+            if (requestType == null) throw new ArgumentNullException(nameof(requestType));
+            if (responseType == null) throw new ArgumentNullException(nameof(responseType));
+
             var payload = _serializer.Serialize(requestData, requestType);
 
             var content = new StreamContent(payload);
@@ -45,11 +50,11 @@ namespace RemotiatR.Client.MessageTransports
 
         private HttpRequestHandlerDelegate BuildHandler(IEnumerable<IHttpMessageHandler> messageHandlers, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
         {
-            HttpRequestHandlerDelegate terminalHandler = async () => await _httpClient.SendAsync(requestMessage, cancellationToken);
+            var terminalHandler = (HttpRequestHandlerDelegate)(async () => await _httpClient.SendAsync(requestMessage, cancellationToken));
 
-            var handle = _httpMessageHandlers
+            var handle = messageHandlers
                 .Reverse()
-                .Aggregate(terminalHandler, (next, outerHandle) => () => outerHandle.Handle(requestMessage, cancellationToken, next));
+                .Aggregate(terminalHandler, (next, outerHandle) => () => outerHandle.Handle(requestMessage, next, cancellationToken));
 
             return handle;
         }
