@@ -14,9 +14,9 @@ namespace RemotiatR.Client.FluentValidation
     public class ValidationHttpMessageHandler : IHttpMessageHandler
     {
         private readonly IValidationErrorsAccessor _validationErrorsAccessor;
-        private readonly ISerializer _serializer;
+        private readonly IMessageSerializer _serializer;
 
-        public ValidationHttpMessageHandler(IValidationErrorsAccessor validationErrorsAccessor, ISerializer serializer)
+        public ValidationHttpMessageHandler(IValidationErrorsAccessor validationErrorsAccessor, IMessageSerializer serializer)
         {
             _validationErrorsAccessor = validationErrorsAccessor ?? throw new ArgumentNullException(nameof(validationErrorsAccessor));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
@@ -35,7 +35,7 @@ namespace RemotiatR.Client.FluentValidation
             {
                 var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
-                var errors = (ValidationError[])_serializer.Deserialize(resultStream, typeof(ValidationError[]));
+                var errors = (ValidationError[])await _serializer.Deserialize(resultStream);
                 
                 foreach (var error in errors)
                     _validationErrorsAccessor.ValidationErrors.Add(error);

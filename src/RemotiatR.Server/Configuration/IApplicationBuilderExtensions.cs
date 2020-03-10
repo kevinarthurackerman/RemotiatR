@@ -6,84 +6,26 @@ using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
 using System.IO;
-using System.Linq;
+using System.Net;
 
 namespace RemotiatR.Server.Configuration
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = null)
+        public static IApplicationBuilder UseRemotiatr(this IApplicationBuilder applicationBuilder)
         {
             if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));
 
-            var options = new UseRemotiatrOptions();
-            configure?.Invoke(options);
-
-            RegisterNotificationHandlers(applicationBuilder, options);
-
-            RegisterRequestHandlers(applicationBuilder, options);
-
-            return applicationBuilder;
-        }
-
-        private static void RegisterNotificationHandlers(IApplicationBuilder applicationBuilder, UseRemotiatrOptions options)
-        {
-            var notificationTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsNotificationType())
-                .ToArray();
-
-            foreach (var notificationType in notificationTypes)
+            applicationBuilder.Map(new PathString("/remotiatr"), x =>
             {
-                var uri = options.UriBuilder(notificationType);
-                applicationBuilder.MapWhen(ctx =>
-                    ctx.Request.Path == new PathString(uri.ToString())
-                    && ctx.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase),
-                    x => x.Run(ProcessNotification(notificationType))
-                );
-            }
-        }
-
-        private static void RegisterRequestHandlers(IApplicationBuilder applicationBuilder, UseRemotiatrOptions options)
-        {
-            var requestTypes = options.AssembliesToScan
-                            .SelectMany(x => x.GetTypes())
-                            .Where(x => x.IsRequestType())
-                            .ToArray();
-
-            foreach (var requestType in requestTypes)
-            {
-                var uri = options.UriBuilder(requestType);
-                applicationBuilder.MapWhen(ctx =>
-                    ctx.Request.Path == new PathString(uri.ToString())
-                    && ctx.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase),
-                    x => x.Run(ProcessRequest(requestType, requestType.GetResponseType()))
-                );
-            }
-        }
-
-        private static RequestDelegate ProcessNotification(Type requestType) =>
-            async httpContext =>
-            {
-                var mediator = httpContext.RequestServices.GetRequiredService<IMediator>();
-                var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
-                var httpContextAccessor = httpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
-
-                httpContextAccessor.HttpContext = httpContext;
-
-                var dataStream = new MemoryStream();
-                await httpContext.Request.Body.CopyToAsync(dataStream);
-
-                var notification = serializer.Deserialize(dataStream, requestType);
-
-                await mediator.Send(notification);
-            };
-
-        private static RequestDelegate ProcessRequest(Type requestType, Type responseType) =>
-            async httpContext =>
+                x.Run(async httpContext =>
                 {
+                    if (httpContext.Request.Method != HttpMethods.Post)
+                        throw new InvalidOperationException("Must only post data to remotiatr endpoint.");
+
                     var mediator = httpContext.RequestServices.GetRequiredService<IMediator>();
-                    var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
+                    var serializer = httpContext.RequestServices.GetRequiredService<IMessageSerializer>();
+                    var keyMessageTypeMappings = httpContext.RequestServices.GetRequiredService<IKeyMessageTypeMappings>();
                     var httpContextAccessor = httpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
 
                     httpContextAccessor.HttpContext = httpContext;
@@ -91,18 +33,36 @@ namespace RemotiatR.Server.Configuration
                     var dataStream = new MemoryStream();
                     await httpContext.Request.Body.CopyToAsync(dataStream);
 
-                    var request = serializer.Deserialize(dataStream, requestType);
+                    var data = await serializer.Deserialize(dataStream);
 
-                    var response = await mediator.Send(request);
+                    if (!keyMessageTypeMappings.MessageTypeToKeyLookup.TryGetValue(data.GetType(), out var _))
+                        throw new InvalidOperationException($"Type {data.GetType()} is not a valid message type");
 
-                    if (IsSuccessStatusCode(httpContext.Response.StatusCode))
+                    if (data.GetType().IsNotificationType())
                     {
-                        var responseData = serializer.Serialize(response, responseType);
-
-                        await responseData.CopyToAsync(httpContext.Response.Body);
+                        await mediator.Publish(data);
                     }
-                };
+                    else if (data.GetType().IsRequestType())
+                    {
+                        var response = await mediator.Send(data);
 
-        private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 300;
+                        if (IsSuccessStatusCode(httpContext.Response.StatusCode))
+                        {
+                            var responseData = await serializer.Serialize(response);
+
+                            await responseData.CopyToAsync(httpContext.Response.Body);
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Type {data.GetType()} was not a valid notification or request type.");
+                    }
+                });
+            });
+
+            return applicationBuilder;
+        }
+
+        private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode < 400;
     }
 }

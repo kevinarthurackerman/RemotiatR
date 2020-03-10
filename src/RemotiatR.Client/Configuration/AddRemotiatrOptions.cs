@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using RemotiatR.Shared.Internal;
 
 namespace RemotiatR.Client.Configuration
 {
@@ -13,9 +12,9 @@ namespace RemotiatR.Client.Configuration
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
-        internal Func<Type, Uri> UriBuilder { get; private set; } = RequestUriBuilder.DefaultUriBuilder;
+        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.Internal.MessageKeyGenerator.Default;
 
-        internal Uri? BaseUri { get; private set; }
+        internal Uri? EndpointUri { get; private set; }
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
@@ -23,18 +22,19 @@ namespace RemotiatR.Client.Configuration
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
 
-        public IAddRemotiatrOptions SetUriBuilder(Func<Type, Uri> uriBuilder)
+        public IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator)
         {
-            UriBuilder = uriBuilder ?? throw new ArgumentNullException(nameof(uriBuilder));
+            MessageKeyGenerator = keyGenerator ?? throw new ArgumentNullException(nameof(keyGenerator));
+
             return this;
         }
 
-        public IAddRemotiatrOptions SetBaseUri(Uri baseUri)
+        public IAddRemotiatrOptions SetEndpointUri(Uri endpointUri)
         {
-            if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
-            if (!baseUri.IsAbsoluteUri) throw new ArgumentException("Base URI must be absolute");
+            if (endpointUri == null) throw new ArgumentNullException(nameof(endpointUri));
+            if (!endpointUri.IsAbsoluteUri) throw new ArgumentException($"{nameof(endpointUri)} must be absolute.");
 
-            BaseUri = baseUri;
+            EndpointUri = endpointUri;
             return this;
         }
 

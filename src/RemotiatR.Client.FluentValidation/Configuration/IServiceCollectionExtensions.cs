@@ -25,7 +25,9 @@ namespace RemotiatR.Client.FluentValidation.Configuration
 
         public static IServiceCollection AddFluentValidation(this IServiceCollection serviceCollection, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime)
         {
-            serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+            serviceCollection.AddSingleton(new KeyMessageTypeMapping("FluentValidationErrors", typeof(ValidationError[])));
+        
+            serviceCollection.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             serviceCollection.TryAddScoped<IValidationErrorsAccessor, DefaultValidationErrorsAccessor>();
 

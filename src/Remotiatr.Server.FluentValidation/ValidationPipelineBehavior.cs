@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using RemotiatR.Shared;
@@ -17,9 +16,9 @@ namespace RemotiatR.Server.FluentValidation
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
         private readonly HttpContext _httpContext;
-        private readonly ISerializer _serializer;
+        private readonly IMessageSerializer _serializer;
 
-        public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators, IHttpContextAccessor httpContextAccessor, ISerializer serializer)
+        public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators, IHttpContextAccessor httpContextAccessor, IMessageSerializer serializer)
         {
             _validators = validators ?? throw new ArgumentNullException(nameof(validators));
             _httpContext = (httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor))).HttpContext 
@@ -41,7 +40,7 @@ namespace RemotiatR.Server.FluentValidation
             {
                 _httpContext.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
 
-                var responseData = _serializer.Serialize(failures, typeof(ValidationFailure[]));
+                var responseData = await _serializer.Serialize(failures);
 
                 await responseData.CopyToAsync(_httpContext.Response.Body);
 
@@ -51,20 +50,6 @@ namespace RemotiatR.Server.FluentValidation
             }
 
             return await next();
-        }
-
-        private class ValidationError
-        {
-            internal ValidationError(string propertyName, string errorMessage, string errorCode)
-            {
-                PropertyName = propertyName;
-                ErrorMessage = errorMessage;
-                ErrorCode = errorCode;
-            }
-
-            public string PropertyName { get; }
-            public string ErrorCode { get; }
-            public string ErrorMessage { get; }
         }
     }
 }

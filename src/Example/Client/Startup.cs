@@ -18,12 +18,10 @@ namespace ContosoUniversity.Client
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFluentValidation(typeof(Startup), typeof(SharedAssemblyTypeMarker));
-
             services.AddRemotiatr(x =>
             {
                 x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
-                x.SetBaseUri(new Uri("https://localhost:44337"));
+                x.SetEndpointUri(new Uri("https://localhost:44337/remotiatr"));
                 x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });
         }

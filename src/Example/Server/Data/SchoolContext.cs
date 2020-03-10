@@ -1,6 +1,5 @@
 ﻿using ContosoUniversity.Server.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ContosoUniversity.Server.Data
 {

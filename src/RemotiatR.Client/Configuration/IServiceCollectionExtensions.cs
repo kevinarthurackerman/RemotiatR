@@ -31,14 +31,13 @@ namespace RemotiatR.Client.Configuration
             var options = new AddRemotiatrOptions();
             configure.Invoke(options);
 
-            if (options.BaseUri == null) throw new InvalidOperationException($"{nameof(options.BaseUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetBaseUri)}.");
+            if (options.EndpointUri == null) throw new InvalidOperationException($"{nameof(options.EndpointUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetEndpointUri)}.");
 
             AddDefaultServices(options);
 
             var notificationTypes = RegisterNotificationHandlers(
                 options.AssembliesToScan,
-                options.BaseUri,
-                options.UriBuilder,
+                options.EndpointUri,
                 options.Services
             );
 
@@ -46,12 +45,25 @@ namespace RemotiatR.Client.Configuration
 
             var requestTypes = RegisterRequestHandlers(
                 options.AssembliesToScan,
-                options.BaseUri,
-                options.UriBuilder,
+                options.EndpointUri,
                 options.Services
             );
 
             var requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
+
+            var responseTypes = requestTypes
+                .Select(x => x.GetResponseType())
+                .ToArray();
+
+            var keyMessageTypeMappings = notificationTypes.Concat(requestTypes).Concat(responseTypes)
+                .Distinct()
+                .Select(x => new KeyMessageTypeMapping(options.MessageKeyGenerator(x), x))
+                .ToArray();
+
+            foreach (var keyMessageTypeMapping in keyMessageTypeMappings)
+                options.Services.AddSingleton(keyMessageTypeMapping);
+
+            options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
@@ -76,7 +88,7 @@ namespace RemotiatR.Client.Configuration
         {
             addRemotiatrOptions.Services.TryAddSingleton<JsonSerializer>();
 
-            addRemotiatrOptions.Services.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+            addRemotiatrOptions.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             addRemotiatrOptions.Services.TryAddSingleton<IMessageTransport, DefaultHttpMessageTransport>();
 
@@ -116,83 +128,66 @@ namespace RemotiatR.Client.Configuration
 
         private static IEnumerable<Type> RegisterNotificationHandlers(
             IEnumerable<Assembly> assembliesToScan,
-            Uri baseUri,
-            Func<Type, Uri> uriBuilder,
+            Uri endpointUri,
             IServiceCollection serviceCollection
         )
         {
-            var endpointInfos = assembliesToScan
+            var notificationTypes = assembliesToScan
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.IsNotificationType())
-                .Select(x => (
-                    RequestType: x,
-                    Uri: MakeUriAbsolute(baseUri, uriBuilder(x))
-                ))
                 .ToArray();
 
-            foreach (var endpointInfo in endpointInfos)
+            foreach (var notificationType in notificationTypes)
             {
-                var notificationHandlerInterfaceType = typeof(INotificationHandler<>).MakeGenericType(endpointInfo.RequestType);
+                var notificationHandlerInterfaceType = typeof(INotificationHandler<>).MakeGenericType(notificationType);
                 if (!serviceCollection.Any(x => x.ServiceType == notificationHandlerInterfaceType))
                 {
                     var notificationHandlerType = typeof(MessageNotificationHandler<>)
-                        .MakeGenericType(endpointInfo.RequestType)
+                        .MakeGenericType(notificationType)
                         .GetConstructors()
                         .Single();
 
-                    serviceCollection.AddTransient(
+                    serviceCollection.TryAddTransient(
                         notificationHandlerInterfaceType,
-                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointInfo.Uri })
+                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointUri })
                     );
                 }
             }
 
-            return endpointInfos.Select(x => x.RequestType);
+            return notificationTypes;
         }
 
         private static IEnumerable<Type> RegisterRequestHandlers(
             IEnumerable<Assembly> assembliesToScan,
-            Uri baseUri,
-            Func<Type, Uri> uriBuilder,
+            Uri endpointUri,
             IServiceCollection serviceCollection
         )
         {
-            var endpointInfos = assembliesToScan
+            var requestTypes = assembliesToScan
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.IsRequestType())
-                .Select(x => (
-                    RequestType: x,
-                    ResponseType: x.GetResponseType(),
-                    Uri: MakeUriAbsolute(baseUri, uriBuilder(x))
-                ))
                 .ToArray();
 
-            foreach (var endpointInfo in endpointInfos)
+            foreach (var requestType in requestTypes)
             {
-                var requestHandlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(endpointInfo.RequestType, endpointInfo.ResponseType);
+                var responseType = requestType.GetResponseType();
+
+                var requestHandlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
                 if (!serviceCollection.Any(x => x.ServiceType == requestHandlerInterfaceType))
                 {
                     var requestHandlerType = typeof(MessageRequestHandler<,>)
-                        .MakeGenericType(endpointInfo.RequestType, endpointInfo.ResponseType)
+                        .MakeGenericType(requestType, responseType)
                         .GetConstructors()
                         .Single();
 
-                    serviceCollection.AddTransient(
+                    serviceCollection.TryAddTransient(
                         requestHandlerInterfaceType,
-                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointInfo.Uri })
+                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointUri })
                     );
                 }
             }
 
-            return endpointInfos.Select(x => x.RequestType);
-        }
-
-        private static Uri MakeUriAbsolute(Uri baseUri, Uri pathUri)
-        {
-            if (pathUri.IsAbsoluteUri) return pathUri;
-            if (baseUri != null) return new Uri(baseUri, pathUri);
-
-            throw new InvalidOperationException("If a base URI is not provided all URIs must be absolute.");
+            return requestTypes;
         }
     }
 }

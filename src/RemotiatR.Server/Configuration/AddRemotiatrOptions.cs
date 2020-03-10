@@ -10,11 +10,20 @@ namespace RemotiatR.Server.Configuration
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
+        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.Internal.MessageKeyGenerator.Default;
+
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
         internal Type MediatorImplementationType { get; private set; } = typeof(Mediator);
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
+
+        public IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator)
+        {
+            MessageKeyGenerator = keyGenerator ?? throw new ArgumentNullException(nameof(keyGenerator));
+
+            return this;
+        }
 
         public IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan)
         {

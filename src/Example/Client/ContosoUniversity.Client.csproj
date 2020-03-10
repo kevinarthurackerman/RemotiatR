@@ -11,8 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview1.20073.1" />
-    <PackageReference Include="RemotiatR.Client" Version="1.0.7-beta" />
-    <PackageReference Include="RemotiatR.Client.FluentValidation" Version="1.0.7-beta" />
+    <PackageReference Include="RemotiatR.Client" Version="1.0.8-beta" />
+    <PackageReference Include="RemotiatR.Client.FluentValidation" Version="1.0.8-beta" />
   </ItemGroup>
 
   <ItemGroup>

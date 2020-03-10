@@ -21,7 +21,7 @@ namespace RemotiatR.Client.MessageTransports
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var result = await _messageTransport.SendRequest(_uri, request, typeof(TRequest), typeof(TResponse), cancellationToken);
+            var result = await _messageTransport.SendRequest(_uri, request, cancellationToken);
             return (TResponse)result;
         }
     }

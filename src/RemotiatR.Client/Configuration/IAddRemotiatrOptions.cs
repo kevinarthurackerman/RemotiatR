@@ -8,9 +8,9 @@ namespace RemotiatR.Client.Configuration
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions SetUriBuilder(Func<Type, Uri> uriBuilder);
+        IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator);
 
-        IAddRemotiatrOptions SetBaseUri(Uri baseUri);
+        IAddRemotiatrOptions SetEndpointUri(Uri endpointUri);
 
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
 

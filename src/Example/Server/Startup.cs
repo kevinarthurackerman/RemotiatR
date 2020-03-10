@@ -34,7 +34,7 @@ namespace ContosoUniversity.Server
 
             services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
 
-            services.AddRemotiatr(x => x.AddAssemblies(typeof(Program)));
+            services.AddRemotiatr(x => x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker)));
 
             services.AddScoped(
                 typeof(IPipelineBehavior<,>),
@@ -65,7 +65,7 @@ namespace ContosoUniversity.Server
 
             app.UseRouting();
 
-            app.UseRemotiatr(x => x.AddAssemblies(typeof(SharedAssemblyTypeMarker)));
+            app.UseRemotiatr();
 
             app.UseEndpoints(endpoints =>
             {

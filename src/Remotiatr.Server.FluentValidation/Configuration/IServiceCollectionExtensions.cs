@@ -46,7 +46,9 @@ namespace RemotiatR.Server.FluentValidation.Configuration
             if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
             if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
 
-            serviceCollection.TryAddSingleton<ISerializer, DefaultJsonSerializer>();
+            serviceCollection.AddSingleton(new KeyMessageTypeMapping("FluentValidationErrors", typeof(ValidationError[])));
+
+            serviceCollection.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

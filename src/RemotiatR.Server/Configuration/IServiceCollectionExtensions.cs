@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Newtonsoft.Json;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
@@ -19,9 +18,31 @@ namespace RemotiatR.Server.Configuration
             var options = new AddRemotiatrOptions();
             configure?.Invoke(options);
 
-            serviceCollection.TryAddSingleton<JsonSerializer, JsonSerializer>();
+            var notificationTypes = options.AssembliesToScan
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsNotificationType())
+                .ToArray();
 
-            serviceCollection.TryAddSingleton<ISerializer,DefaultJsonSerializer>();
+            var requestTypes = options.AssembliesToScan
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsRequestType())
+                .ToArray();
+
+            var responseTypes = requestTypes
+                .Select(x => x.GetResponseType())
+                .ToArray();
+
+            var keyMessageTypeMappings = notificationTypes.Concat(requestTypes).Concat(responseTypes)
+                .Distinct()
+                .Select(x => new KeyMessageTypeMapping(options.MessageKeyGenerator(x), x))
+                .ToArray();
+
+            foreach (var keyMessageTypeMapping in keyMessageTypeMappings)
+                serviceCollection.AddSingleton(keyMessageTypeMapping);
+
+            serviceCollection.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
+
+            serviceCollection.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

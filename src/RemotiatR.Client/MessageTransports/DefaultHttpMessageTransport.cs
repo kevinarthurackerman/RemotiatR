@@ -12,24 +12,22 @@ namespace RemotiatR.Client.MessageTransports
     internal class DefaultHttpMessageTransport : IMessageTransport
     {
         private readonly HttpClient _httpClient;
-        private readonly ISerializer _serializer;
+        private readonly IMessageSerializer _serializer;
         private readonly IEnumerable<IHttpMessageHandler> _httpMessageHandlers;
 
-        public DefaultHttpMessageTransport(HttpClient httpClient, ISerializer serializer, IEnumerable<IHttpMessageHandler> httpMessageHandlers)
+        public DefaultHttpMessageTransport(HttpClient httpClient, IMessageSerializer serializer, IEnumerable<IHttpMessageHandler> httpMessageHandlers)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _httpMessageHandlers = httpMessageHandlers ?? throw new ArgumentNullException(nameof(httpMessageHandlers));
         }
 
-        public async Task<object> SendRequest(Uri uri, object requestData, Type requestType, Type responseType, CancellationToken cancellationToken = default)
+        public async Task<object> SendRequest(Uri uri, object requestData, CancellationToken cancellationToken = default)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
             if (requestData == null) throw new ArgumentNullException(nameof(requestData));
-            if (requestType == null) throw new ArgumentNullException(nameof(requestType));
-            if (responseType == null) throw new ArgumentNullException(nameof(responseType));
 
-            var payload = _serializer.Serialize(requestData, requestType);
+            var payload = await _serializer.Serialize(requestData);
 
             var content = new StreamContent(payload);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -45,7 +43,7 @@ namespace RemotiatR.Client.MessageTransports
 
             var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
-            return _serializer.Deserialize(resultStream, responseType);
+            return await _serializer.Deserialize(resultStream);
         }
 
         private HttpRequestHandlerDelegate BuildHandler(IEnumerable<IHttpMessageHandler> messageHandlers, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
