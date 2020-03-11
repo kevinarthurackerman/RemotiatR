@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Api", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Example.Shared", "Example\Shared\ContosoUniversity.Shared.csproj", "{59056C9E-33AD-4A68-BFD9-DC067D1F5B7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Shared", "RemotiatR.Shared\RemotiatR.Shared.csproj", "{23BEF8D9-2C41-4853-8914-4889393852DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Shared", "Core\RemotiatR.Shared\RemotiatR.Shared.csproj", "{23BEF8D9-2C41-4853-8914-4889393852DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Server", "RemotiatR.Server\RemotiatR.Server.csproj", "{2A724D55-FB67-49F9-845B-4056E77B665C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Server", "Core\RemotiatR.Server\RemotiatR.Server.csproj", "{2A724D55-FB67-49F9-845B-4056E77B665C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Client", "RemotiatR.Client\RemotiatR.Client.csproj", "{2C8EFE3C-B9D9-42CD-9582-73D19A595204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Client", "Core\RemotiatR.Client\RemotiatR.Client.csproj", "{2C8EFE3C-B9D9-42CD-9582-73D19A595204}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Server.FluentValidation", "Remotiatr.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj", "{CB3F41C3-F1EE-41B1-816F-D8F1DBA5528A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Server.FluentValidation", "FluentValidation\RemotiatR.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj", "{CB3F41C3-F1EE-41B1-816F-D8F1DBA5528A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Client.FluentValidation", "RemotiatR.Client.FluentValidation\RemotiatR.Client.FluentValidation.csproj", "{14CD847F-53BF-44A4-A8A5-F2442054CC3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Client.FluentValidation", "FluentValidation\RemotiatR.Client.FluentValidation\RemotiatR.Client.FluentValidation.csproj", "{14CD847F-53BF-44A4-A8A5-F2442054CC3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Client.FluentValidation", "RemotiatR.Client.FluentValidation\RemotiatR.Client.FluentValidation.csproj", "{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Server.FluentValidation", "RemotiatR.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj", "{97767612-EAFB-418C-9EC9-20F08F654EA9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97767612-EAFB-418C-9EC9-20F08F654EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97767612-EAFB-418C-9EC9-20F08F654EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97767612-EAFB-418C-9EC9-20F08F654EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97767612-EAFB-418C-9EC9-20F08F654EA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C1719C0-15F8-448B-8B23-3FBB4D9D7FE5}
+	EndGlobalSection
+EndGlobal

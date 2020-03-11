@@ -1,2 +1,2 @@
 $packageId="RemotiatR.Server.FluentValidation"
-$projectPath="..\src\RemotiatR.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj"
+$projectPath="..\src\Core\RemotiatR.Server.FluentValidation\RemotiatR.Server.FluentValidation.csproj"
