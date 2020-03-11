@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared.Internal;
 using RemotiatR.Shared;
 using System.ComponentModel;
+using RemotiatR.Shared.FluentValidation;
 
 namespace RemotiatR.Server.FluentValidation.Configuration
 {
@@ -52,7 +52,11 @@ namespace RemotiatR.Server.FluentValidation.Configuration
 
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            serviceCollection.Add(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>), serviceLifetime));
+            serviceCollection.Add(new ServiceDescriptor(
+                typeof(IMessagePipelineHandler), 
+                x => new ValidationMessagePipelineHandler(x),
+                serviceLifetime
+            ));
 
             serviceCollection.AddValidatorsFromAssemblies(assemblies, serviceLifetime);
 

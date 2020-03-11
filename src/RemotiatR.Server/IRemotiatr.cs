@@ -17,6 +17,6 @@ namespace RemotiatR.Server
 
         Task<Stream> Handle(Stream message, CancellationToken cancellationToken = default);
 
-        Task<Stream> Handle(Stream message, Action<IServiceProvider> configureServices, CancellationToken cancellationToken);
+        Task<Stream> Handle(Stream message, Action<IServiceProvider>? configureServices, CancellationToken cancellationToken = default);
     }
 }

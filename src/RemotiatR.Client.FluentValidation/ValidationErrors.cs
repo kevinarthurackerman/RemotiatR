@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using RemotiatR.Shared.FluentValidation;
+using System.Collections.ObjectModel;
 
 namespace RemotiatR.Client.FluentValidation
 {

@@ -3,5 +3,5 @@ using System.Threading.Tasks;
 
 namespace RemotiatR.Client.MessageTransports
 {
-    public delegate Task<HttpResponseMessage> HttpRequestHandlerDelegate();
+    public delegate Task<HttpResponseMessage> HttpRequestPipelineDelegate();
 }

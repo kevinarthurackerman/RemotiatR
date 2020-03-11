@@ -146,7 +146,12 @@ namespace RemotiatR.Client.Configuration
 
                     serviceCollection.TryAddTransient(
                         notificationHandlerInterfaceType,
-                        x => notificationHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointUri })
+                        x => notificationHandlerType.Invoke(new object[] 
+                        { 
+                            x.GetRequiredService<IMessageTransport>(),
+                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
+                            endpointUri 
+                        })
                     );
                 }
             }
@@ -179,7 +184,12 @@ namespace RemotiatR.Client.Configuration
 
                     serviceCollection.TryAddTransient(
                         requestHandlerInterfaceType,
-                        x => requestHandlerType.Invoke(new object[] { x.GetRequiredService<IMessageTransport>(), endpointUri })
+                        x => requestHandlerType.Invoke(new object[] 
+                        { 
+                            x.GetRequiredService<IMessageTransport>(),
+                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
+                            endpointUri 
+                        })
                     );
                 }
             }

@@ -33,6 +33,7 @@ namespace ContosoUniversity.Server.Features.Departments
                 return new Command { Administrators = administrators };
             }
         }
+
         public class MappingProfiler : Profile
         {
             public MappingProfiler()

@@ -20,12 +20,28 @@ namespace ContosoUniversity.Server.Features.Courses
             public MappingProfile() => CreateMap<Course, Model>();
         }
 
-        public class Handler : IRequestHandler<Query, Model>
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("{PropertyName} was not found");
+            }
+
+            private async Task<bool> BeExistingId(int? id, CancellationToken cancellationToken) =>
+                id != null && await _schoolContext.Courses.AnyAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public class QueryHandler : IRequestHandler<Query, Model>
         {
             private readonly SchoolContext _db;
             private readonly IConfigurationProvider _configuration;
 
-            public Handler(SchoolContext db, IConfigurationProvider configuration)
+            public QueryHandler(SchoolContext db, IConfigurationProvider configuration)
             {
                 _db = db;
                 _configuration = configuration;

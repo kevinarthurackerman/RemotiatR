@@ -15,6 +15,22 @@ namespace ContosoUniversity.Server.Features.Courses
 {
     public class Edit
     {
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("{PropertyName} was not found");
+            }
+
+            private async Task<bool> BeExistingId(int? id, CancellationToken cancellationToken) =>
+                id != null && await _schoolContext.Courses.AnyAsync(x => x.Id == id, cancellationToken);
+        }
+
         public class QueryHandler : IRequestHandler<Query, Command>
         {
             private readonly SchoolContext _db;
@@ -48,6 +64,32 @@ namespace ContosoUniversity.Server.Features.Courses
                 CreateMap<Course, Command>().ReverseMap();
                 CreateMap<Department, Command.Department>();
             }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public CommandValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("{PropertyName} was not found");
+                RuleFor(m => m.Title).MustAsync(BeUniqueTitle)
+                    .WithMessage("{PropertyName} must be unique");
+                RuleFor(m => m.DepartmentId).MustAsync(BeExistingDepartmentId)
+                    .WithMessage("{PropertyName} was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Courses.AnyAsync(x => x.Id == id, cancellationToken);
+
+            private async Task<bool> BeUniqueTitle(Command command, string title, CancellationToken cancellationToken) =>
+                title == null || title == "" || !await _schoolContext.Courses.AnyAsync(x => x.Title == title && x.Id != command.Id, cancellationToken);
+
+            private async Task<bool> BeExistingDepartmentId(int departmentId, CancellationToken cancellationToken) =>
+                await _schoolContext.Departments.AnyAsync(x => x.Id == departmentId, cancellationToken);
         }
 
         public class CommandHandler : IRequestHandler<Command, Unit>
