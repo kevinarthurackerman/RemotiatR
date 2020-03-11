@@ -19,8 +19,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.9-beta" />
-    <PackageReference Include="RemotiatR.Server.FluentValidation" Version="1.0.9-beta" />
+    <PackageReference Include="RemotiatR.FluentValidation.Server" Version="1.0.10-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.10-beta" />
     <PackageReference Include="roundhouse" Version="1.2.0" />
   </ItemGroup>
 

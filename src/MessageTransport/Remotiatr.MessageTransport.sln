@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Client", "RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Client\RemotiatR.MessageTransport.Http.Client.csproj", "{119BEE69-FB0C-49F2-8E12-1C5A3216B894}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Server\RemotiatR.MessageTransport.Http.Server.csproj", "{BD88E275-4B19-4F95-97EB-F94B8E3ECAE8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{119BEE69-FB0C-49F2-8E12-1C5A3216B894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119BEE69-FB0C-49F2-8E12-1C5A3216B894}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119BEE69-FB0C-49F2-8E12-1C5A3216B894}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119BEE69-FB0C-49F2-8E12-1C5A3216B894}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD88E275-4B19-4F95-97EB-F94B8E3ECAE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD88E275-4B19-4F95-97EB-F94B8E3ECAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD88E275-4B19-4F95-97EB-F94B8E3ECAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD88E275-4B19-4F95-97EB-F94B8E3ECAE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFFA7704-285E-453B-988A-03A0598136F0}
+	EndGlobalSection
+EndGlobal

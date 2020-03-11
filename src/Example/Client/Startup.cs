@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ContosoUniversity.Shared;
 using RemotiatR.Client.Configuration;
 using System;
-using RemotiatR.Client.FluentValidation.Configuration;
+using RemotiatR.FluentValidation.Client.Configuration;
 
 namespace ContosoUniversity.Client
 {

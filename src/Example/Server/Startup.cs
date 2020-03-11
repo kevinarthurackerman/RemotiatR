@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemotiatR.Server.Configuration;
-using RemotiatR.Server.FluentValidation.Configuration;
+using RemotiatR.FluentValidation.Server.Configuration;
 using System.Linq;
 
 namespace ContosoUniversity.Server

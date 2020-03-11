@@ -1,6 +1,6 @@
 $majorVersion=1
 $minorVersion=0
-$buildVersion=9
+$buildVersion=10
 $postfixVersion="-beta"
 $version="$majorVersion.$minorVersion.$buildVersion$postfixVersion"
 
@@ -8,4 +8,13 @@ $authors="Kevin Ackerman"
 $copyright="MIT"
 $repoUrl="https://github.com/kevinarthurackerman/RemotiatR"
 
-$buildOrder="variables-remotiatr-shared","variables-remotiatr-client","variables-remotiatr-server","variables-remotiatr-client-fluentvalidation","variables-remotiatr-server-fluentvalidation"
+$buildOrder= `
+    "variables-remotiatr-core-shared", `
+    "variables-remotiatr-core-client", `
+    "variables-remotiatr-core-server", `
+    "variables-remotiatr-serializer-json-client", `
+    "variables-remotiatr-serializer-json-server", `
+    "variables-remotiatr-messagetransport-http-client", `
+    "variables-remotiatr-messagetransport-http-server", `
+    "variables-remotiatr-fluentvalidation-client", `
+    "variables-remotiatr-fluentvalidation-server"
