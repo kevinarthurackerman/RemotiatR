@@ -36,16 +36,20 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         ...
-        services.AddRemotiatr(x => x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
+        services.AddRemotiatr(x => 
+        {
+            // register assemblies to search for notifications and requests
+            x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
+            
+            // optional: adds other services registered before this point
+            foreach (var service in services) x.Services.Add(service);
+        }
     }
     ...
     public void Configure(IApplicationBuilder app)
     {
         ...
-        app.UseRemotiatr(x =>
-        {
-            x.AddAssemblies();
-        });
+        app.UseRemotiatr();
     }
 }
 
@@ -65,8 +69,14 @@ public class Startup
         ...
         services.AddRemotiatr(x =>
         {
+            // register assemblies to search for notifications and requests
             x.AddAssemblies(typeof(Ping));
+            
+            // set the uri to send requests to
             x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
+            
+            // optional: adds other services registered before this point
+            foreach (var service in services) x.Services.Add(service);
         });
     }
     ...

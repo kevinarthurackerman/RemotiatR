@@ -22,34 +22,48 @@ namespace RemotiatR.Shared.Internal
 
         public Task<object> Deserialize(Stream stream)
         {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            try
+            {
+                if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            RestartStream(stream);
+                RestartStream(stream);
 
-            using var streamReader = new StreamReader(stream, Encoding.Default);
-            using var jsonTextReader = new JsonTextReader(streamReader);
+                using var streamReader = new StreamReader(stream, Encoding.Default);
+                using var jsonTextReader = new JsonTextReader(streamReader);
 
-            var data = _jsonSerializer.Deserialize(jsonTextReader, typeof(MessagePayload))!;
+                var data = _jsonSerializer.Deserialize(jsonTextReader, typeof(MessagePayload))!;
 
-            return Task.FromResult(data);
+                return Task.FromResult(data);
+            }
+            catch(Exception exception)
+            {
+                throw new Exception("Deserializing failed. See inner exception for details.", exception);
+            }
         }
 
         public Task<Stream> Serialize(object value)
         {
-            if (!_keyMessageTypeMappings.MessageTypeToKeyLookup.TryGetValue(value.GetType(), out var key))
-                throw new InvalidOperationException($"Unable to locate key for message type {value.GetType().FullName} - cannot serialize object.");
+            try
+            {
+                if (!_keyMessageTypeMappings.MessageTypeToKeyLookup.TryGetValue(value.GetType(), out var key))
+                    throw new InvalidOperationException($"Unable to locate key for message type {value.GetType().FullName} - cannot serialize object.");
 
-            var stream = new MemoryStream();
-            using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
-            using var jsonTextWriter = new JsonTextWriter(streamWriter);
+                var stream = new MemoryStream();
+                using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
+                using var jsonTextWriter = new JsonTextWriter(streamWriter);
 
-            jsonTextWriter.CloseOutput = false;
-            _jsonSerializer.Serialize(jsonTextWriter, new MessagePayload(key, value), typeof(MessagePayload));
-            jsonTextWriter.Flush();
+                jsonTextWriter.CloseOutput = false;
+                _jsonSerializer.Serialize(jsonTextWriter, new MessagePayload(key, value), typeof(MessagePayload));
+                jsonTextWriter.Flush();
 
-            RestartStream(stream);
+                RestartStream(stream);
 
-            return Task.FromResult((Stream)stream);
+                return Task.FromResult((Stream)stream);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Derializing failed. See inner exception for details.", exception);
+            }
         }
 
         private static void RestartStream(Stream stream)

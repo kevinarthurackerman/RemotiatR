@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Newtonsoft.Json;
 using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
@@ -39,17 +38,17 @@ namespace RemotiatR.Client.Configuration
                 options.AssembliesToScan,
                 options.EndpointUri,
                 options.Services
-            );
+            ).ToArray();
 
-            var notificationTypesLookup = ImmutableHashSet.Create(notificationTypes.ToArray());
+            var notificationTypesLookup = ImmutableHashSet.Create(notificationTypes);
 
             var requestTypes = RegisterRequestHandlers(
                 options.AssembliesToScan,
                 options.EndpointUri,
                 options.Services
-            );
+            ).ToArray();
 
-            var requestTypesLookup = ImmutableHashSet.Create(requestTypes.ToArray());
+            var requestTypesLookup = ImmutableHashSet.Create(requestTypes);
 
             var responseTypes = requestTypes
                 .Select(x => x.GetResponseType())
@@ -62,8 +61,6 @@ namespace RemotiatR.Client.Configuration
 
             foreach (var keyMessageTypeMapping in keyMessageTypeMappings)
                 options.Services.AddSingleton(keyMessageTypeMapping);
-
-            options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
@@ -84,19 +81,19 @@ namespace RemotiatR.Client.Configuration
             return serviceCollection;
         }
 
-        private static void AddDefaultServices(AddRemotiatrOptions addRemotiatrOptions)
+        private static void AddDefaultServices(AddRemotiatrOptions options)
         {
-            addRemotiatrOptions.Services.TryAddSingleton<JsonSerializer>();
+            options.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
-            addRemotiatrOptions.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
+            options.Services.TryAddSingleton<IMessageTransport, DefaultHttpMessageTransport>();
 
-            addRemotiatrOptions.Services.TryAddSingleton<IMessageTransport, DefaultHttpMessageTransport>();
+            options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 
-            addRemotiatrOptions.Services.AddMediatR(
-                addRemotiatrOptions.AssembliesToScan.ToArray(), 
+            options.Services.AddMediatR(
+                options.AssembliesToScan.ToArray(), 
                 x =>
                 {
-                    switch (addRemotiatrOptions.MediatorServiceLifetime)
+                    switch (options.MediatorServiceLifetime)
                     {
                         case ServiceLifetime.Transient:
                             x.AsTransient();
@@ -108,17 +105,17 @@ namespace RemotiatR.Client.Configuration
                             x.AsSingleton();
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(addRemotiatrOptions.MediatorServiceLifetime), "Not a valid ServiceLifetime");
+                            throw new ArgumentOutOfRangeException(nameof(options.MediatorServiceLifetime), "Not a valid ServiceLifetime");
                     }
 
                     typeof(MediatRServiceConfiguration)
                         .GetMethod(nameof(MediatRServiceConfiguration.Using))
-                        !.MakeGenericMethod(addRemotiatrOptions.MediatorImplementationType)
+                        !.MakeGenericMethod(options.MediatorImplementationType)
                         .Invoke(x, new object[0]);
                 }
             );
 
-            addRemotiatrOptions.Services.TryAddSingleton(x =>
+            options.Services.TryAddSingleton(x =>
             {
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");

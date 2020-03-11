@@ -27,21 +27,27 @@ namespace ContosoUniversity.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SchoolContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddRemotiatr(x => 
+            {
+                x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker));
 
-            services.AddAutoMapper(typeof(Startup));
+                foreach (var service in services) x.Services.Add(service);
 
-            services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
+                x.Services.AddDbContext<SchoolContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddRemotiatr(x => x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker)));
+                x.Services.AddAutoMapper(typeof(Startup));
 
-            services.AddScoped(
-                typeof(IPipelineBehavior<,>),
-                typeof(TransactionBehavior<,>));
-            services.AddScoped(
-                typeof(IPipelineBehavior<,>),
-                typeof(LoggingBehavior<,>));
+                x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
+
+                x.Services.AddScoped(
+                    typeof(IPipelineBehavior<,>),
+                    typeof(TransactionBehavior<,>));
+
+                x.Services.AddScoped(
+                    typeof(IPipelineBehavior<,>),
+                    typeof(LoggingBehavior<,>));
+            });
 
             services.AddResponseCompression(opts =>
             {

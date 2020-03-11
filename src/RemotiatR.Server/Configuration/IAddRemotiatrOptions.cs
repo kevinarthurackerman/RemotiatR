@@ -6,6 +6,8 @@ namespace RemotiatR.Server.Configuration
 {
     public interface IAddRemotiatrOptions
     {
+        IServiceCollection Services { get; }
+
         IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator);
 
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);

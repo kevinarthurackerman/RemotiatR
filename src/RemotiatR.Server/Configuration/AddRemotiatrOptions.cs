@@ -10,6 +10,8 @@ namespace RemotiatR.Server.Configuration
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
+        public IServiceCollection Services { get; } = new ServiceCollection();
+
         internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.Internal.MessageKeyGenerator.Default;
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];

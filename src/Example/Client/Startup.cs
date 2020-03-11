@@ -21,7 +21,11 @@ namespace ContosoUniversity.Client
             services.AddRemotiatr(x =>
             {
                 x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
+
                 x.SetEndpointUri(new Uri("https://localhost:44337/remotiatr"));
+
+                foreach (var service in services) x.Services.Add(service);
+
                 x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });
         }
