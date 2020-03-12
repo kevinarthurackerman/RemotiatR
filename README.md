@@ -2,7 +2,7 @@
 # RemotiatR
 
 ### MediatR For Your Remote Clients
-RemotiatR makes it easy to run you MediatR requests and commands from a remote client on your server without all the ceremony. Just send or publish the same way you always would, and RemotiatR handles everything between.
+RemotiatR makes it easy to run you [MediatR](https://github.com/jbogard/MediatR) requests and commands from a remote client on your server without all the ceremony. Just send or publish the same way you always would, and RemotiatR handles everything between.
 
 ### Install Packages
 Base nuget packages
@@ -17,9 +17,7 @@ Add support for JSON
 - <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Client/>
 - <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Server/>
 
-Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation/>)
-- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
-- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Server/>
+Add support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
 
 ### Getting Started
 Check out the example at [src/Example/](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Example)
