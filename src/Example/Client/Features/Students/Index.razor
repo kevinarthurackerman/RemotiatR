@@ -16,7 +16,7 @@
         <p>
             Find by name: <input type="text" name="SearchString" @bind="_currentSearchString" />
             <button class="btn btn-primary" @onclick="SearchButtonClicked">Search</button> |
-            <a href="" @onclick="BackToFullListClicked">Back to Full List</a>
+            <a href="" @onclick="BackToFullListClicked" @onclick:preventDefault>Back to Full List</a>
         </p>
     </div>
 
@@ -24,13 +24,13 @@
         <thead>
             <tr>
                 <th>
-                    <a href="" @onclick="NameHeaderClicked"><Label For="() => Data.Results.Items[0].LastName" /></a>
+                    <a href="" @onclick="NameHeaderClicked" @onclick:preventDefault><Label For="() => Data.Results.Items[0].LastName" /></a>
                 </th>
                 <th>
                     <Label For="() => Data.Results.Items[0].FirstMidName" />
                 </th>
                 <th>
-                    <a href="" @onclick="DateHeaderClicked"><Label For="() => Data.Results.Items[0].EnrollmentDate" /></a>
+                    <a href="" @onclick="DateHeaderClicked" @onclick:preventDefault><Label For="() => Data.Results.Items[0].EnrollmentDate" /></a>
                 </th>
                 <th>
                     <Label For="() => Data.Results.Items[0].EnrollmentsCount" />
@@ -69,12 +69,12 @@
         var nextDisabled = !Data?.Results.HasNextPage ?? false ? "disabled" : "";
     }
 
-    <a href="" class="btn btn-primary @prevDisabled" @onclick="PreviousClicked">
+    <button class="btn btn-primary @prevDisabled" @onclick="PreviousClicked">
         Previous
-    </a>
-    <a href="" class="btn btn-primary @nextDisabled" @onclick="NextClicked">
+    </button>
+    <button class="btn btn-primary @nextDisabled" @onclick="NextClicked">
         Next
-    </a>
+    </button>
 
 </Loading>
 
