@@ -22,6 +22,8 @@ Add support for FluentValidation (see <https://github.com/FluentValidation/Fluen
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Server/>
 
 ### Getting Started
+Check out the example at [src/Example/](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Example)
+
 In your shared project
 ```csharp
 public class Ping
