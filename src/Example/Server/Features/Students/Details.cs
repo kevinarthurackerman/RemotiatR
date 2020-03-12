@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Models;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -21,6 +22,22 @@ namespace ContosoUniversity.Server.Features.Students
                 CreateMap<Student, Model>();
                 CreateMap<Enrollment, Model.Enrollment>();
             }
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage($"Student was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Students.AnyAsync(x => x.Id == id, cancellationToken);
         }
 
         public class Handler : IRequestHandler<Query, Model>
