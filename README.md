@@ -50,7 +50,7 @@ public class Startup
         services.AddRemotiatr(x => 
         {
             // register assemblies to search for notifications and requests
-            x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
+            x.AddAssemblies(typeof(Ping),typeof(Startup)));
 			
             // register http message transport
             x.AddHttpMessageTransport();
@@ -88,7 +88,7 @@ public class Startup
         services.AddRemotiatr(x =>
         {
             // register assemblies to search for notifications and requests
-            x.AddAssemblies(typeof(Ping));
+            x.AddAssemblies(typeof(Ping), typeof(Startup));
             
             // set the uri to send requests to
             x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
