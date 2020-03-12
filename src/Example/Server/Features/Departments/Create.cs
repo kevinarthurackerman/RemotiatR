@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Models;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -32,6 +33,27 @@ namespace ContosoUniversity.Server.Features.Departments
 
                 return new Command { Administrators = administrators };
             }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public CommandValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Name).MustAsync(BeUniqueName)
+                    .WithMessage("{PropertyName} must be unique");
+                RuleFor(m => m.InstructorId).MustAsync(BeExistingInstructorId)
+                    .WithMessage("Deparment was not found");
+            }
+
+            private async Task<bool> BeUniqueName(string name, CancellationToken cancellationToken) =>
+                !await _schoolContext.Departments.AnyAsync(x => x.Name == name, cancellationToken);
+
+            private async Task<bool> BeExistingInstructorId(int? instructorId, CancellationToken cancellationToken) =>
+                instructorId.HasValue && await _schoolContext.Instructors.AnyAsync(x => x.Id == instructorId, cancellationToken);
         }
 
         public class MappingProfiler : Profile

@@ -57,7 +57,7 @@ namespace ContosoUniversity.Server.Features.Courses
                 RuleFor(m => m.Title).MustAsync(BeUniqueTitle)
                     .WithMessage("{PropertyName} must be unique");
                 RuleFor(m => m.DepartmentId).MustAsync(BeExistingDepartmentId)
-                    .WithMessage("{PropertyName} was not found");
+                    .WithMessage("Department was not found");
             }
 
             private async Task<bool> BeUniqueNumber(int? number, CancellationToken cancellationToken) =>

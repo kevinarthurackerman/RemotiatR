@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Models;
 using ContosoUniversity.Shared.Infrastructure;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -24,6 +25,22 @@ namespace ContosoUniversity.Server.Features.Departments
                 );
         }
 
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("Department was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Departments.AnyAsync(x => x.Id == id, cancellationToken);
+        }
+
         public class QueryHandler : IRequestHandler<Query, Command>
         {
             private readonly SchoolContext _db;
@@ -41,6 +58,22 @@ namespace ContosoUniversity.Server.Features.Departments
                 .Where(d => d.Id == message.Id)
                 .ProjectTo<Command>(_configuration)
                 .SingleOrDefaultAsync(token);
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public CommandValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("Department was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Departments.AnyAsync(x => x.Id == id, cancellationToken);
         }
 
         public class CommandHandler : IRequestHandler<Command>

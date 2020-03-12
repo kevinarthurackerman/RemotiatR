@@ -4,6 +4,7 @@ using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Models;
 using ContosoUniversity.Shared.Infrastructure;
 using DelegateDecompiler.EntityFrameworkCore;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -23,6 +24,22 @@ namespace ContosoUniversity.Server.Features.Departments
                     dest => dest.AdministratorFullName,
                     opt => opt.MapFrom(src => src.Instructor.FullName())
                 );
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("Department was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Departments.AnyAsync(x => x.Id == id, cancellationToken);
         }
 
         public class QueryHandler : IRequestHandler<Query, Model>

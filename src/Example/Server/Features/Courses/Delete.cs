@@ -27,7 +27,7 @@ namespace ContosoUniversity.Server.Features.Courses
                 _schoolContext = schoolContext;
 
                 RuleFor(m => m.Id).MustAsync(BeExistingId)
-                    .WithMessage("{PropertyName} was not found");
+                    .WithMessage("Course was not found");
             }
 
             private async Task<bool> BeExistingId(int? id, CancellationToken cancellationToken) =>
@@ -61,7 +61,7 @@ namespace ContosoUniversity.Server.Features.Courses
                 _schoolContext = schoolContext;
 
                 RuleFor(m => m.Id).MustAsync(BeExistingId)
-                    .WithMessage("{PropertyName} was not found"); ;
+                    .WithMessage("Course was not found"); ;
             }
 
             private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
