@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RemotiatR.Shared;
 using System;
 using System.Reflection;
 
@@ -6,7 +7,7 @@ namespace RemotiatR.Client.Configuration
 {
     public interface IAddRemotiatrOptions
     {
-        IServiceCollection Services { get; }
+        IRemotiatrServiceCollection Services { get; }
 
         IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator);
 

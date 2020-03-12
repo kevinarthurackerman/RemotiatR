@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using RemotiatR.Shared.Internal;
 
 namespace RemotiatR.Server.Configuration
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
-        public IServiceCollection Services { get; } = new ServiceCollection();
+        public IRemotiatrServiceCollection Services { get; } = new RemotiatrServiceCollection();
 
         internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.Internal.MessageKeyGenerator.Default;
 

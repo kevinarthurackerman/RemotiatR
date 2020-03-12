@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using RemotiatR.Server.Configuration;
 using RemotiatR.FluentValidation.Server.Configuration;
 using System.Linq;
+using RemotiatR.MessageTransport.Http.Server.Configuration;
+using RemotiatR.MessageTransport.Http.Client.Configuration;
 
 namespace ContosoUniversity.Server
 {
@@ -32,6 +34,8 @@ namespace ContosoUniversity.Server
                 x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker));
 
                 foreach (var service in services) x.Services.Add(service);
+
+                x.Services.AddHttp();
 
                 x.Services.AddDbContext<SchoolContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

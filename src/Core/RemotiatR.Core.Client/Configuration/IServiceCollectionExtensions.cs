@@ -1,14 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Client.MessageTransports;
 using RemotiatR.Shared;
 using RemotiatR.Shared.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 
 namespace RemotiatR.Client.Configuration
@@ -85,8 +83,6 @@ namespace RemotiatR.Client.Configuration
         {
             options.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
-            options.Services.TryAddSingleton<IMessageTransport, DefaultHttpMessageTransport>();
-
             options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 
             options.Services.AddMediatR(
@@ -114,13 +110,6 @@ namespace RemotiatR.Client.Configuration
                         .Invoke(x, new object[0]);
                 }
             );
-
-            options.Services.TryAddSingleton(x =>
-            {
-                var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                return httpClient;
-            });
         }
 
         private static IEnumerable<Type> RegisterNotificationHandlers(

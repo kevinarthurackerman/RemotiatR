@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
@@ -77,8 +76,6 @@ namespace RemotiatR.Server.Configuration
         private static void AddDefaultServices(AddRemotiatrOptions options)
         {
             options.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
-
-            options.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 

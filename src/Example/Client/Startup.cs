@@ -4,6 +4,7 @@ using ContosoUniversity.Shared;
 using RemotiatR.Client.Configuration;
 using System;
 using RemotiatR.FluentValidation.Client.Configuration;
+using RemotiatR.MessageTransport.Http.Client.Configuration;
 
 namespace ContosoUniversity.Client
 {
@@ -25,6 +26,8 @@ namespace ContosoUniversity.Client
                 x.SetEndpointUri(new Uri("https://localhost:44337/remotiatr"));
 
                 foreach (var service in services) x.Services.Add(service);
+
+                x.Services.AddHttp();
 
                 x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });

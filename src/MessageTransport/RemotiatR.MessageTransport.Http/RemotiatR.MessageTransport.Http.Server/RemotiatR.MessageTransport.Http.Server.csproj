@@ -10,4 +10,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.10-beta" />
+    <PackageReference Include="RemotiatR.Shared" Version="1.0.10-beta" />
+  </ItemGroup>
+
 </Project>

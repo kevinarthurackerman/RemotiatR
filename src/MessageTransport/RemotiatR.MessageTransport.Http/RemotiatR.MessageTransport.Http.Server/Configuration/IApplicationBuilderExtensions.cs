@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using RemotiatR.Server;
 using System;
 using System.IO;
 
-namespace RemotiatR.Server.Configuration
+namespace RemotiatR.MessageTransport.Http.Server.Configuration
 {
     public static class IApplicationBuilderExtensions
     {
