@@ -52,10 +52,10 @@ public class Startup
             // register assemblies to search for notifications and requests
             x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
 			
-			// register http message transport
+            // register http message transport
             x.AddHttpMessageTransport();
             
-			// register json serializer
+            // register json serializer
             x.AddJsonSerializer();
             
             // optional: adds other services registered before this point
@@ -93,10 +93,10 @@ public class Startup
             // set the uri to send requests to
             x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
 			
-			// register http message transport
+            // register http message transport
             x.AddHttpMessageTransport();
             
-			// register json serializer
+            // register json serializer
             x.AddJsonSerializer();          
 			
             // optional: adds other services registered before this point
