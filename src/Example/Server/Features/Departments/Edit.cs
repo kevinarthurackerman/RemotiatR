@@ -24,6 +24,22 @@ namespace ContosoUniversity.Server.Features.Departments
             }
         }
 
+        public class QueryValidator : AbstractValidator<Command>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage($"Department was not found");
+            }
+
+            private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
+                await _schoolContext.Departments.AnyAsync(x => x.Id == id, cancellationToken);
+        }
+
         public class QueryHandler : IRequestHandler<Query, Command>
         {
             private readonly SchoolContext _db;
@@ -34,22 +50,6 @@ namespace ContosoUniversity.Server.Features.Departments
             {
                 _db = db;
                 _configuration = configuration;
-            }
-
-            public class QueryValidator : AbstractValidator<Command>
-            {
-                private readonly SchoolContext _schoolContext;
-
-                public QueryValidator(SchoolContext schoolContext)
-                {
-                    _schoolContext = schoolContext;
-
-                    RuleFor(m => m.Id).MustAsync(BeExistingId)
-                        .WithMessage($"Department was not found");
-                }
-
-                private async Task<bool> BeExistingId(int id, CancellationToken cancellationToken) =>
-                    await _schoolContext.Departments.AnyAsync(x => x.Id == id, cancellationToken);
             }
 
             public async Task<Command> Handle(Query message, CancellationToken token)

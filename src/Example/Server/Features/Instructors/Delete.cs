@@ -20,6 +20,22 @@ namespace ContosoUniversity.Server.Features.Instructors
             public MappingProfile() => CreateMap<Instructor, Command>();
         }
 
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public QueryValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("Instructor was not found");
+            }
+
+            private async Task<bool> BeExistingId(int? id, CancellationToken cancellationToken) =>
+                id.HasValue && await _schoolContext.Instructors.AnyAsync(x => x.Id == id, cancellationToken);
+        }
+
         public class QueryHandler : IRequestHandler<Query, Command>
         {
             private readonly SchoolContext _db;
@@ -36,6 +52,22 @@ namespace ContosoUniversity.Server.Features.Instructors
                 .Where(i => i.Id == message.Id)
                 .ProjectTo<Command>(_configuration)
                 .SingleOrDefaultAsync(token);
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            private readonly SchoolContext _schoolContext;
+
+            public CommandValidator(SchoolContext schoolContext)
+            {
+                _schoolContext = schoolContext;
+
+                RuleFor(m => m.Id).MustAsync(BeExistingId)
+                    .WithMessage("Instructor was not found");
+            }
+
+            private async Task<bool> BeExistingId(int? id, CancellationToken cancellationToken) =>
+                id.HasValue && await _schoolContext.Instructors.AnyAsync(x => x.Id == id, cancellationToken);
         }
 
         public class CommandHandler : IRequestHandler<Command>
