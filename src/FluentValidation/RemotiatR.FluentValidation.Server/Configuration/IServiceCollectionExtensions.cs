@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System.ComponentModel;
 
-namespace RemotiatR.FluentValidation.Server.Configuration
+namespace RemotiatR.FluentValidation.Server
 {
     public static class IServiceCollectionExtensions
     {

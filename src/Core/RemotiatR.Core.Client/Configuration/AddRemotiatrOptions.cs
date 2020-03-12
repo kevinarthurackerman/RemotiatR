@@ -6,15 +6,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using RemotiatR.Shared.Internal;
 
-namespace RemotiatR.Client.Configuration
+namespace RemotiatR.Client
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
         public IRemotiatrServiceCollection Services { get; } = new RemotiatrServiceCollection();
 
-        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.Internal.MessageKeyGenerator.Default;
+        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.MessageKeyGenerator.Default;
 
         internal Uri? EndpointUri { get; private set; }
 

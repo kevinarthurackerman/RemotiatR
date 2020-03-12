@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace RemotiatR.Shared.Internal
+namespace RemotiatR.Shared
 {
     internal class KeyMessageTypeMappings : IKeyMessageTypeMappings
     {

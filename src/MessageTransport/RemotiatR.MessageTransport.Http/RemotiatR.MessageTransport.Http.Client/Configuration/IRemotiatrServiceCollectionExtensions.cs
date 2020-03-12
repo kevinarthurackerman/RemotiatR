@@ -3,7 +3,7 @@ using RemotiatR.Client;
 using RemotiatR.Shared;
 using System;
 
-namespace RemotiatR.MessageTransport.Http.Client.Configuration
+namespace RemotiatR.MessageTransport.Http.Client
 {
     public static class IRemotiatrServiceCollectionExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 
-namespace RemotiatR.MessageTransport.Http.Server.Configuration
+namespace RemotiatR.MessageTransport.Http.Server
 {
     internal class UseRemotiatrOptions : IUseRemotiatrOptions
     {

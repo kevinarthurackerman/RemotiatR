@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RemotiatR.Server.Configuration;
+using RemotiatR.Server;
 using System.Linq;
-using RemotiatR.MessageTransport.Http.Server.Configuration;
-using RemotiatR.FluentValidation.Server.Configuration;
-using RemotiatR.Serializer.Json.Client.Configuration;
+using RemotiatR.MessageTransport.Http.Server;
+using RemotiatR.FluentValidation.Server;
+using RemotiatR.Serializer.Json.Client;
 
 namespace ContosoUniversity.Server
 {

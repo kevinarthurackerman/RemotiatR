@@ -5,7 +5,7 @@ using RemotiatR.Server;
 using System;
 using System.IO;
 
-namespace RemotiatR.MessageTransport.Http.Server.Configuration
+namespace RemotiatR.MessageTransport.Http.Server
 {
     public static class IApplicationBuilderExtensions
     {

@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ContosoUniversity.Shared;
-using RemotiatR.Client.Configuration;
+using RemotiatR.Client;
 using System;
-using RemotiatR.MessageTransport.Http.Client.Configuration;
-using RemotiatR.FluentValidation.Client.Configuration;
-using RemotiatR.Serializer.Json.Client.Configuration;
+using RemotiatR.MessageTransport.Http.Client;
+using RemotiatR.FluentValidation.Client;
+using RemotiatR.Serializer.Json.Client;
 
 namespace ContosoUniversity.Client
 {

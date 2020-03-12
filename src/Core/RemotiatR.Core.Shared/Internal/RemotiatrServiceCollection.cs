@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace RemotiatR.Shared.Internal
+namespace RemotiatR.Shared
 {
     internal class RemotiatrServiceCollection : ServiceCollection, IRemotiatrServiceCollection
     {
-        public RemotiatrServiceCollection()
+        internal RemotiatrServiceCollection()
         {
         }
     }

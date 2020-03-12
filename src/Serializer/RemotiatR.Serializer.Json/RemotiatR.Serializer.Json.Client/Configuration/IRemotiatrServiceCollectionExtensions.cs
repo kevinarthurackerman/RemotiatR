@@ -2,7 +2,7 @@
 using RemotiatR.Shared;
 using System;
 
-namespace RemotiatR.Serializer.Json.Client.Configuration
+namespace RemotiatR.Serializer.Json.Client
 {
     public static class IRemotiatrServiceCollectionExtensions
     {

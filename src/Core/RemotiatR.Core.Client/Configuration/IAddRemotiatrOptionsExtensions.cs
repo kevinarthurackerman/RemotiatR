@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace RemotiatR.Client.Configuration
+namespace RemotiatR.Client
 {
     public static class IAddRemotiatrOptionsExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RemotiatR.Shared.Internal
+namespace RemotiatR.Shared
 {
     internal static class MessageKeyGenerator
     {

@@ -2,14 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
-using RemotiatR.Shared.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
-namespace RemotiatR.Client.Configuration
+namespace RemotiatR.Client
 {
     public static class IServiceCollectionExtensions
     {

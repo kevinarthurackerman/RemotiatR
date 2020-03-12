@@ -3,7 +3,7 @@ using RemotiatR.Shared;
 using System;
 using System.Reflection;
 
-namespace RemotiatR.Server.Configuration
+namespace RemotiatR.Server
 {
     public interface IAddRemotiatrOptions
     {

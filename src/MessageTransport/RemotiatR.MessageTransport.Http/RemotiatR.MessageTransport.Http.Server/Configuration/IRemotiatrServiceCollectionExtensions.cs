@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System;
 
-namespace RemotiatR.MessageTransport.Http.Server.Configuration
+namespace RemotiatR.MessageTransport.Http.Server
 {
     public static class IRemotiatrServiceCollectionExtensions
     {
