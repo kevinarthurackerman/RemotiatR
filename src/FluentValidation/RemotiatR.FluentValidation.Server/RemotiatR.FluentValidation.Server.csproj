@@ -11,7 +11,8 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.11-beta" />
+    <PackageReference Include="RemotiatR.FluentValidation.Shared" Version="1.0.12-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.12-beta" />
   </ItemGroup>
 
 </Project>

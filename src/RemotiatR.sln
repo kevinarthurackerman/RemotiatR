@@ -27,6 +27,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Server", "Serializer\RemotiatR.Serializer.Json\RemotiatR.Serializer.Json.Server\RemotiatR.Serializer.Json.Server.csproj", "{C7D67219-7634-48DB-A8FD-505EB2752EA2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "FluentValidation\RemotiatR.FluentValidation.Shared\RemotiatR.FluentValidation.Shared.csproj", "{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Shared", "MessageTransport\RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Shared\RemotiatR.MessageTransport.Http.Shared.csproj", "{0E6B5486-099B-499F-A278-52AB98292587}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Shared", "Serializer\RemotiatR.Serializer.Json\RemotiatR.Serializer.Json.Shared\RemotiatR.Serializer.Json.Shared.csproj", "{E2691137-D37D-4D9B-8DEF-658D002D2EAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +87,18 @@ Global
 		{C7D67219-7634-48DB-A8FD-505EB2752EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D67219-7634-48DB-A8FD-505EB2752EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D67219-7634-48DB-A8FD-505EB2752EA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E6B5486-099B-499F-A278-52AB98292587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6B5486-099B-499F-A278-52AB98292587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6B5486-099B-499F-A278-52AB98292587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6B5486-099B-499F-A278-52AB98292587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

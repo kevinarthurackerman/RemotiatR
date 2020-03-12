@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "RemotiatR.MessageTransport.Http.Server\RemotiatR.MessageTransport.Http.Server.csproj", "{2B23B3BF-55C6-4B89-AAF5-A69FDD249D18}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Shared", "RemotiatR.MessageTransport.Http.Shared\RemotiatR.MessageTransport.Http.Shared.csproj", "{DFC41DD0-F68B-4C92-808F-B22C0B8FD73F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2B23B3BF-55C6-4B89-AAF5-A69FDD249D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B23B3BF-55C6-4B89-AAF5-A69FDD249D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B23B3BF-55C6-4B89-AAF5-A69FDD249D18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC41DD0-F68B-4C92-808F-B22C0B8FD73F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC41DD0-F68B-4C92-808F-B22C0B8FD73F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC41DD0-F68B-4C92-808F-B22C0B8FD73F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC41DD0-F68B-4C92-808F-B22C0B8FD73F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
