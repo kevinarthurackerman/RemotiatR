@@ -1,0 +1,18 @@
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using RemotiatR.Shared;
+using System;
+
+namespace RemotiatR.Serializer.Json.Client.Configuration
+{
+    public static class IRemotiatrServiceCollectionExtensions
+    {
+        public static IRemotiatrServiceCollection AddJsonSerializer(this IRemotiatrServiceCollection serviceCollection)
+        {
+            if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
+
+            serviceCollection.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
+
+            return serviceCollection;
+        }
+    }
+}

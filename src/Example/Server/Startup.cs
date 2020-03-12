@@ -11,10 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemotiatR.Server.Configuration;
-using RemotiatR.FluentValidation.Server.Configuration;
 using System.Linq;
 using RemotiatR.MessageTransport.Http.Server.Configuration;
-using RemotiatR.MessageTransport.Http.Client.Configuration;
+using RemotiatR.FluentValidation.Server.Configuration;
+using RemotiatR.Serializer.Json.Client.Configuration;
 
 namespace ContosoUniversity.Server
 {
@@ -35,7 +35,9 @@ namespace ContosoUniversity.Server
 
                 foreach (var service in services) x.Services.Add(service);
 
-                x.Services.AddHttp();
+                x.Services.AddHttpMessageTransport();
+
+                x.Services.AddJsonSerializer();
 
                 x.Services.AddDbContext<SchoolContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -75,7 +77,7 @@ namespace ContosoUniversity.Server
 
             app.UseRouting();
 
-            app.UseRemotiatr();
+            app.UseHttpRemotiatr();
 
             app.UseEndpoints(endpoints =>
             {

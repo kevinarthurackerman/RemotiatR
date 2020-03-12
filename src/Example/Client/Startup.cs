@@ -3,8 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using ContosoUniversity.Shared;
 using RemotiatR.Client.Configuration;
 using System;
-using RemotiatR.FluentValidation.Client.Configuration;
 using RemotiatR.MessageTransport.Http.Client.Configuration;
+using RemotiatR.FluentValidation.Client.Configuration;
+using RemotiatR.Serializer.Json.Client.Configuration;
 
 namespace ContosoUniversity.Client
 {
@@ -27,7 +28,9 @@ namespace ContosoUniversity.Client
 
                 foreach (var service in services) x.Services.Add(service);
 
-                x.Services.AddHttp();
+                x.Services.AddHttpMessageTransport();
+
+                x.Services.AddJsonSerializer();
 
                 x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });

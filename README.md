@@ -13,7 +13,11 @@ Add support for HTTP
 - <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Client/>
 - <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Server/>
 
-Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation>)
+Add support for JSON
+- <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Client/>
+- <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Server/>
+
+Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation/>)
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
 
@@ -47,7 +51,10 @@ public class Startup
             x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
 			
 			// register http message transport
-            x.AddHttp();
+            x.AddHttpMessageTransport();
+            
+			// register json serializer
+            x.AddJsonSerializer();
             
             // optional: adds other services registered before this point
             foreach (var service in services) x.Services.Add(service);
@@ -85,7 +92,10 @@ public class Startup
             x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
 			
 			// register http message transport
-            x.AddHttp();            
+            x.AddHttpMessageTransport();
+            
+			// register json serializer
+            x.AddJsonSerializer();          
 			
             // optional: adds other services registered before this point
             foreach (var service in services) x.Services.Add(service);

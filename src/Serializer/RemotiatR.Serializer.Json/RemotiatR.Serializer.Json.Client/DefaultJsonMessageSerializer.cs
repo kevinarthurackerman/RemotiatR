@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RemotiatR.Shared;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Shared.Internal
+namespace RemotiatR.Serializer.Json.Client
 {
     internal class DefaultJsonMessageSerializer : IMessageSerializer
     {

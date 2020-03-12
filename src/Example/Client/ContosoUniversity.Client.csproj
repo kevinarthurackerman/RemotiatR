@@ -14,6 +14,7 @@
     <PackageReference Include="RemotiatR.Client" Version="1.0.10-beta" />
     <PackageReference Include="RemotiatR.FluentValidation.Client" Version="1.0.10-beta" />
     <PackageReference Include="RemotiatR.MessageTransport.Http.Client" Version="1.0.10-beta" />
+    <PackageReference Include="RemotiatR.Serializer.Json.Client" Version="1.0.10-beta" />
   </ItemGroup>
 
   <ItemGroup>

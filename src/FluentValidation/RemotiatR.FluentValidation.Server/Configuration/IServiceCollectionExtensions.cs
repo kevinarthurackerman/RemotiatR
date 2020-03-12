@@ -6,7 +6,6 @@ using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Shared.Internal;
 using RemotiatR.Shared;
 using System.ComponentModel;
 
@@ -46,8 +45,6 @@ namespace RemotiatR.FluentValidation.Server.Configuration
             if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
 
             serviceCollection.AddSingleton(new KeyMessageTypeMapping("FluentValidationErrors", typeof(ValidationError[])));
-
-            serviceCollection.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

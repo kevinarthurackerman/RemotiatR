@@ -9,13 +9,13 @@ namespace RemotiatR.MessageTransport.Http.Server.Configuration
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
-            => UseRemotiatr<IDefaultRemotiatrMarker, IRemotiatr>(applicationBuilder, configure);
+        public static IApplicationBuilder UseHttpRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
+            => UseHttpRemotiatr<IDefaultRemotiatrMarker, IRemotiatr>(applicationBuilder, configure);
 
-        public static IApplicationBuilder UseRemotiatr<TMarker>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
-            => UseRemotiatr<TMarker, IRemotiatr<TMarker>>(applicationBuilder, configure);
+        public static IApplicationBuilder UseHttpRemotiatr<TMarker>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
+            => UseHttpRemotiatr<TMarker, IRemotiatr<TMarker>>(applicationBuilder, configure);
 
-        private static IApplicationBuilder UseRemotiatr<TMarker, TRemotiatr>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
+        private static IApplicationBuilder UseHttpRemotiatr<TMarker, TRemotiatr>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
             where TRemotiatr : IRemotiatr<TMarker>
         {
             if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));

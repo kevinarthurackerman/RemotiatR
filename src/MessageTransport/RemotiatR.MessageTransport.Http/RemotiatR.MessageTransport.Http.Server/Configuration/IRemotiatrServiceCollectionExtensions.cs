@@ -5,9 +5,9 @@ using System;
 
 namespace RemotiatR.MessageTransport.Http.Server.Configuration
 {
-    public static class IServiceCollectionExtensions
+    public static class IRemotiatrServiceCollectionExtensions
     {
-        private static IRemotiatrServiceCollection AddHttp<TMarker, TRemotiatr>(this IRemotiatrServiceCollection serviceCollection)
+        public static IRemotiatrServiceCollection AddHttpMessageTransport(this IRemotiatrServiceCollection serviceCollection)
         {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
 

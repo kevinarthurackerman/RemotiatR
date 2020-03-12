@@ -81,8 +81,6 @@ namespace RemotiatR.Client.Configuration
 
         private static void AddDefaultServices(AddRemotiatrOptions options)
         {
-            options.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
-
             options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
 
             options.Services.AddMediatR(

@@ -10,4 +10,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="RemotiatR.Server" Version="1.0.10-beta" />
+  </ItemGroup>
+
 </Project>
