@@ -1,3 +1,4 @@
+
 # RemotiatR
 
 ### MediatR For Your Remote Clients
@@ -8,9 +9,13 @@ Base nuget packages
 - <https://www.nuget.org/packages/RemotiatR.Client/>
 - <https://www.nuget.org/packages/RemotiatR.Server/>
 
+Add support for HTTP
+- <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Client/>
+- <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Server/>
+
 Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation>)
-- <https://www.nuget.org/packages/RemotiatR.Client.FluentValidation/>
-- <https://www.nuget.org/packages/RemotiatR.Server.FluentValidation/>
+- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
+- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
 
 ### Getting Started
 In your shared project
@@ -40,6 +45,9 @@ public class Startup
         {
             // register assemblies to search for notifications and requests
             x.AddAssemblies(typeof(PingHandler),typeof(Startup)));
+			
+			// register http message transport
+            x.AddHttp();
             
             // optional: adds other services registered before this point
             foreach (var service in services) x.Services.Add(service);
@@ -49,6 +57,7 @@ public class Startup
     public void Configure(IApplicationBuilder app)
     {
         ...
+        // uses the registered transport
         app.UseRemotiatr();
     }
 }
@@ -74,7 +83,10 @@ public class Startup
             
             // set the uri to send requests to
             x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
-            
+			
+			// register http message transport
+            x.AddHttp();            
+			
             // optional: adds other services registered before this point
             foreach (var service in services) x.Services.Add(service);
         });
