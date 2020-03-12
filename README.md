@@ -19,7 +19,7 @@ Add support for JSON
 
 Add support for FluentValidation (see <https://github.com/FluentValidation/FluentValidation/>)
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
-- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
+- <https://www.nuget.org/packages/RemotiatR.FluentValidation.Server/>
 
 ### Getting Started
 In your shared project
