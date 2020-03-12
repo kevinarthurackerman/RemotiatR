@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RemotiatR.FluentValidation.Shared;
 using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace RemotiatR.FluentValidation.Client
 
         public static IServiceCollection AddFluentValidation(this IServiceCollection serviceCollection, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime)
         {
-            serviceCollection.AddSingleton(new KeyMessageTypeMapping("FluentValidationErrors", typeof(ValidationError[])));
+            serviceCollection.AddSingleton(new KeyMessageTypeMapping(Shared.Constants.ErrorMessageKey, typeof(ValidationError[])));
 
             serviceCollection.TryAddScoped<IValidationErrorsAccessor, DefaultValidationErrorsAccessor>();
 

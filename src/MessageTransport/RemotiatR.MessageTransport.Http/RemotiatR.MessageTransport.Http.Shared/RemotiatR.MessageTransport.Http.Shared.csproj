@@ -7,5 +7,9 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Folder Include="Internal\" />
+  </ItemGroup>
 
 </Project>

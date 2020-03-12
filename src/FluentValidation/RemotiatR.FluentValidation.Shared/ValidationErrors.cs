@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace RemotiatR.FluentValidation.Client
+namespace RemotiatR.FluentValidation.Shared
 {
     public class ValidationErrors : Collection<ValidationError>
     {

@@ -13,7 +13,7 @@ namespace RemotiatR.Server
     {
         public IRemotiatrServiceCollection Services { get; } = new RemotiatrServiceCollection();
 
-        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.MessageKeyGenerator.Default;
+        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Constants.DefaultMessageKeyGenerator;
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 

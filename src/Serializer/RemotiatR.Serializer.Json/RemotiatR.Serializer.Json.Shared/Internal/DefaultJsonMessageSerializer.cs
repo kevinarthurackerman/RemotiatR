@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemotiatR.Serializer.Json.Client
+namespace RemotiatR.Serializer.Json.Shared
 {
     internal class DefaultJsonMessageSerializer : IMessageSerializer
     {

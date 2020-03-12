@@ -13,7 +13,7 @@ namespace RemotiatR.Client
     {
         public IRemotiatrServiceCollection Services { get; } = new RemotiatrServiceCollection();
 
-        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Shared.MessageKeyGenerator.Default;
+        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Constants.DefaultMessageKeyGenerator;
 
         internal Uri? EndpointUri { get; private set; }
 

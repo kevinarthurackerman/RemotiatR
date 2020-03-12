@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using RemotiatR.FluentValidation.Shared;
 using RemotiatR.Shared;
 using System;
 using System.Collections;

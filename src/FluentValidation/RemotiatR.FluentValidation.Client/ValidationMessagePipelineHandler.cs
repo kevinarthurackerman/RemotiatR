@@ -9,6 +9,7 @@ using RemotiatR.Shared;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
+using RemotiatR.FluentValidation.Shared;
 
 namespace RemotiatR.FluentValidation.Client
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RemotiatR.FluentValidation.Client
+namespace RemotiatR.FluentValidation.Shared
 {
     public class ValidationError
     {
