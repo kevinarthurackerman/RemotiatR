@@ -67,7 +67,7 @@ public class Startup
     {
         ...
         // uses the registered transport
-        app.UseRemotiatr();
+        app.UseHttpRemotiatr();
     }
 }
 
