@@ -55,9 +55,6 @@ public class Startup
             
             // register json serializer
             x.AddJsonSerializer();
-            
-            // optional: adds other services registered before this point
-            foreach (var service in services) x.Services.Add(service);
         }
     }
     ...
@@ -89,16 +86,13 @@ public class Startup
             x.AddAssemblies(typeof(Ping), typeof(Startup));
             
             // set the uri to send requests to
-            x.SetEndpointUri(new Uri("https://localhost:{{port number}}/remotiatr"));
+            x.SetDefaultEndpointUriWithRoot(new Uri("https://localhost:{{port number}}"));
 			
             // register http message transport
             x.AddHttpMessageTransport();
             
             // register json serializer
-            x.AddJsonSerializer();          
-			
-            // optional: adds other services registered before this point
-            foreach (var service in services) x.Services.Add(service);
+            x.AddJsonSerializer();
         });
     }
     ...

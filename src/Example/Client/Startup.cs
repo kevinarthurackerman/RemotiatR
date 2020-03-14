@@ -24,7 +24,7 @@ namespace ContosoUniversity.Client
             {
                 x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
 
-                x.SetEndpointUri(new Uri("https://localhost:44337/remotiatr"));
+                x.SetDefaultEndpointUriWithRoot(new Uri("https://localhost:44337"));
 
                 x.AddHttpMessageTransport();
 
