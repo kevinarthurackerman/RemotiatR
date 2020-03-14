@@ -26,13 +26,11 @@ namespace ContosoUniversity.Client
 
                 x.SetEndpointUri(new Uri("https://localhost:44337/remotiatr"));
 
-                foreach (var service in services) x.Services.Add(service);
+                x.AddHttpMessageTransport();
 
-                x.Services.AddHttpMessageTransport();
+                x.AddJsonSerializer();
 
-                x.Services.AddJsonSerializer();
-
-                x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
+                x.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
             });
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Server;
 using System;
@@ -10,12 +9,24 @@ namespace RemotiatR.MessageTransport.Http.Server
     public static class IApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseHttpRemotiatr(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
-            => UseHttpRemotiatr<IDefaultRemotiatrMarker, IRemotiatr>(applicationBuilder, configure);
+        {
+            if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));
+
+            Configure<IDefaultRemotiatrMarker, IRemotiatr>(applicationBuilder, configure);
+
+            return applicationBuilder;
+        }
 
         public static IApplicationBuilder UseHttpRemotiatr<TMarker>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
-            => UseHttpRemotiatr<TMarker, IRemotiatr<TMarker>>(applicationBuilder, configure);
+        {
+            if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));
 
-        private static IApplicationBuilder UseHttpRemotiatr<TMarker, TRemotiatr>(this IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
+            Configure<TMarker, IRemotiatr<TMarker>>(applicationBuilder, configure);
+
+            return applicationBuilder;
+        }
+
+        private static void Configure<TMarker, TRemotiatr>(IApplicationBuilder applicationBuilder, Action<IUseRemotiatrOptions>? configure = default)
             where TRemotiatr : IRemotiatr<TMarker>
         {
             if (applicationBuilder == null) throw new ArgumentNullException(nameof(applicationBuilder));
@@ -32,16 +43,11 @@ namespace RemotiatR.MessageTransport.Http.Server
                     var dataStream = new MemoryStream();
                     await httpContext.Request.Body.CopyToAsync(dataStream);
 
-                    var result = await remotiatr.Handle(
-                        dataStream, 
-                        x => x.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext
-                    );
+                    var result = await remotiatr.Handle(dataStream);
 
                     await result.CopyToAsync(httpContext.Response.Body);
                 });
             });
-
-            return applicationBuilder;
         }
     }
 }

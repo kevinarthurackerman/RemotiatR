@@ -67,12 +67,12 @@ namespace RemotiatR.Client
             {
                 serviceCollection.RemoveAll<IRemotiatr>();
 
-                serviceCollection.AddSingleton<IRemotiatr>(x => new DefaultRemotiatr(internalServiceProvider, notificationTypesLookup, requestTypesLookup));
-                serviceCollection.AddSingleton(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
+                serviceCollection.AddScoped<IRemotiatr>(applicationServices => new DefaultRemotiatr(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
             }
             else
             {
-                serviceCollection.AddSingleton<IRemotiatr<TMarker>>(x => new Remotiatr<TMarker>(internalServiceProvider, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices => new Remotiatr<TMarker>(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
             }
 
             return serviceCollection;
@@ -81,6 +81,10 @@ namespace RemotiatR.Client
         private static void AddDefaultServices(AddRemotiatrOptions options)
         {
             options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
+
+            options.Services.TryAddScoped<IApplicationServiceProviderAccessor, ApplicationServiceProviderAccessor>();
+
+            options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
 
             options.Services.AddMediatR(
                 options.AssembliesToScan.ToArray(), 

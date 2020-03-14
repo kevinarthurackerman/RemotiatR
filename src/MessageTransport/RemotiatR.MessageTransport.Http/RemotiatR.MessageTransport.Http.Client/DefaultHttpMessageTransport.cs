@@ -13,9 +13,9 @@ namespace RemotiatR.MessageTransport.Http.Client
         private readonly HttpClient _httpClient;
         private readonly IMessageSerializer _serializer;
 
-        public DefaultHttpMessageTransport(HttpClient httpClient, IMessageSerializer serializer)
+        public DefaultHttpMessageTransport(IApplicationService<HttpClient> httpClient, IMessageSerializer serializer)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _httpClient = httpClient.Value ?? throw new ArgumentNullException(nameof(httpClient));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 

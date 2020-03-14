@@ -2,11 +2,11 @@
 using RemotiatR.Shared;
 using System;
 using RemotiatR.Serializer.Json.Shared;
-using RemotiatR.Client;
+using RemotiatR.Server;
 
-namespace RemotiatR.Serializer.Json.Client
+namespace RemotiatR.Serializer.Json.Server
 {
-    public static class IRemotiatrServiceCollectionExtensions
+    public static class IAddRemotiatrOptionsExtensions
     {
         public static IAddRemotiatrOptions AddJsonSerializer(this IAddRemotiatrOptions options)
         {

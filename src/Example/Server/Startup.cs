@@ -14,7 +14,8 @@ using RemotiatR.Server;
 using System.Linq;
 using RemotiatR.MessageTransport.Http.Server;
 using RemotiatR.FluentValidation.Server;
-using RemotiatR.Serializer.Json.Client;
+using RemotiatR.Serializer.Json.Server;
+using Microsoft.Extensions.Logging;
 
 namespace ContosoUniversity.Server
 {
@@ -32,19 +33,15 @@ namespace ContosoUniversity.Server
             services.AddRemotiatr(x => 
             {
                 x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker));
-
-                foreach (var service in services) x.Services.Add(service);
-
-                x.Services.AddHttpMessageTransport();
-
-                x.Services.AddJsonSerializer();
+                
+                x.AddJsonSerializer();
 
                 x.Services.AddDbContext<SchoolContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
                 x.Services.AddAutoMapper(typeof(Startup));
 
-                x.Services.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
+                x.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
 
                 x.Services.AddScoped(
                     typeof(IPipelineBehavior<,>),

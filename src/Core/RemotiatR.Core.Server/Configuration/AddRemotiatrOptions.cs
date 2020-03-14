@@ -11,7 +11,7 @@ namespace RemotiatR.Server
 {
     internal class AddRemotiatrOptions : IAddRemotiatrOptions
     {
-        public IRemotiatrServiceCollection Services { get; } = new RemotiatrServiceCollection();
+        public IServiceCollection Services { get; } = new ServiceCollection();
 
         internal Func<Type, string> MessageKeyGenerator { get; private set; } = Constants.DefaultMessageKeyGenerator;
 

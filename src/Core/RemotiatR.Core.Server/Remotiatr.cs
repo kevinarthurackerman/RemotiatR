@@ -13,32 +13,31 @@ namespace RemotiatR.Server
 {
     internal class Remotiatr<TMarker> : IRemotiatr<TMarker>
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _internalServiceProvider;
+        private readonly IServiceProvider _applicationServiceProvider;
         private readonly IImmutableSet<Type> _canHandleNotificationTypes;
         private readonly IImmutableSet<Type> _canHandleRequestTypes;
 
         public Remotiatr(
-            IServiceProvider serviceProvider, 
+            IServiceProvider internalServiceProvider,
+            IServiceProvider applicationServiceProvider,
             IImmutableSet<Type> canHandleNotificationTypes, 
             IImmutableSet<Type> canHandleRequestTypes
         )
         {
-            _serviceProvider = serviceProvider;
-            _canHandleNotificationTypes = canHandleNotificationTypes;
-            _canHandleRequestTypes = canHandleRequestTypes;
+            _internalServiceProvider = internalServiceProvider ?? throw new ArgumentNullException(nameof(internalServiceProvider));
+            _applicationServiceProvider = applicationServiceProvider ?? throw new ArgumentNullException(nameof(applicationServiceProvider));
+            _canHandleNotificationTypes = canHandleNotificationTypes ?? throw new ArgumentNullException(nameof(canHandleNotificationTypes));
+            _canHandleRequestTypes = canHandleRequestTypes ?? throw new ArgumentNullException(nameof(canHandleRequestTypes));
         }
 
-        public Task<Stream> Handle(Stream message) => Handle(message, default, default);
-
-        public Task<Stream> Handle(Stream message, CancellationToken cancellationToken) => Handle(message, default, cancellationToken);
-
-        public Task<Stream> Handle(Stream message, Action<IServiceProvider> configureServices) => Handle(message, configureServices, default);
-
-        public async Task<Stream> Handle(Stream message, Action<IServiceProvider>? configureServices, CancellationToken cancellationToken = default)
+        public async Task<Stream> Handle(Stream message, CancellationToken cancellationToken = default)
         {
-            using var scope = _serviceProvider.CreateScope();
+            if(message == null) throw new ArgumentNullException(nameof(message));
 
-            configureServices?.Invoke(scope.ServiceProvider);
+            using var scope = _internalServiceProvider.CreateScope();
+
+            scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
 
             var messageSerializer = scope.ServiceProvider.GetRequiredService<IMessageSerializer>();
             var messageHandlers = scope.ServiceProvider.GetRequiredService<IEnumerable<IMessagePipelineHandler>>();

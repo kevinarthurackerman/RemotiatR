@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using RemotiatR.Shared;
 
 namespace ContosoUniversity.Server.Infrastructure
 {
@@ -10,8 +11,8 @@ namespace ContosoUniversity.Server.Infrastructure
     {
         private readonly ILogger<TRequest> _logger;
 
-        public LoggingBehavior(ILogger<TRequest> logger)
-            => _logger = logger;
+        public LoggingBehavior(IApplicationService<ILogger<TRequest>> logger)
+            => _logger = logger.Value;
 
         public async Task<TResponse> Handle(
             TRequest request, CancellationToken cancellationToken,
