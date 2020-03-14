@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RemotiatR.Serializer.Json.Shared" Version="1.0.13-beta" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.13-beta" />
+    <PackageReference Include="RemotiatR.Serializer.Json.Shared" Version="1.0.14-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.14-beta" />
   </ItemGroup>
 
 </Project>

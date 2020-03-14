@@ -10,10 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview2.20160.5" />
-    <PackageReference Include="RemotiatR.Client" Version="1.0.13-beta" />
-    <PackageReference Include="RemotiatR.FluentValidation.Client" Version="1.0.13-beta" />
-    <PackageReference Include="RemotiatR.MessageTransport.Http.Client" Version="1.0.13-beta" />
-    <PackageReference Include="RemotiatR.Serializer.Json.Client" Version="1.0.13-beta" />
+    <PackageReference Include="RemotiatR.Client" Version="1.0.14-beta" />
+    <PackageReference Include="RemotiatR.FluentValidation.Client" Version="1.0.14-beta" />
+    <PackageReference Include="RemotiatR.MessageTransport.Http.Client" Version="1.0.14-beta" />
+    <PackageReference Include="RemotiatR.Serializer.Json.Client" Version="1.0.14-beta" />
   </ItemGroup>
 
   <ItemGroup>

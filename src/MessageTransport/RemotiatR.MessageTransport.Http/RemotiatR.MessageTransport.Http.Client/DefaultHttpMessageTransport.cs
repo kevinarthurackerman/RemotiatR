@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using RemotiatR.Shared;
 using RemotiatR.Client;
 
@@ -14,13 +12,11 @@ namespace RemotiatR.MessageTransport.Http.Client
     {
         private readonly HttpClient _httpClient;
         private readonly IMessageSerializer _serializer;
-        private readonly IEnumerable<IHttpMessagePipelineHandler> _httpMessageHandlers;
 
-        public DefaultHttpMessageTransport(HttpClient httpClient, IMessageSerializer serializer, IEnumerable<IHttpMessagePipelineHandler> httpMessageHandlers)
+        public DefaultHttpMessageTransport(HttpClient httpClient, IMessageSerializer serializer)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            _httpMessageHandlers = httpMessageHandlers ?? throw new ArgumentNullException(nameof(httpMessageHandlers));
         }
 
         public async Task<object> SendRequest(Uri uri, object requestData, CancellationToken cancellationToken = default)
@@ -37,31 +33,13 @@ namespace RemotiatR.MessageTransport.Http.Client
             requestMessage.Content = content;
             requestMessage.Headers.Add("Accept", "application/json");
 
-            var handle = BuildHandler(_httpClient, _httpMessageHandlers, requestMessage, cancellationToken);
-
-            var responseMessage = await handle();
+            var responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
             responseMessage.EnsureSuccessStatusCode();
 
             var resultStream = await responseMessage.Content.ReadAsStreamAsync();
 
             return await _serializer.Deserialize(resultStream);
-        }
-
-        private HttpRequestPipelineDelegate BuildHandler(
-            HttpClient httpClient,
-            IEnumerable<IHttpMessagePipelineHandler> messageHandlers,
-            HttpRequestMessage requestMessage,
-            CancellationToken cancellationToken
-        )
-        {
-            var terminalHandler = (HttpRequestPipelineDelegate)(async () => await httpClient.SendAsync(requestMessage, cancellationToken));
-
-            var handle = messageHandlers
-                .Reverse()
-                .Aggregate(terminalHandler, (next, outerHandle) => async () => await outerHandle.Handle(requestMessage, next, cancellationToken));
-
-            return handle;
         }
     }
 }
