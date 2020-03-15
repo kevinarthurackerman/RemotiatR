@@ -36,15 +36,6 @@ namespace RemotiatR.Server
             return this;
         }
 
-        public IAddRemotiatrOptions AddAssemblies(params Type[] assemblyTypeMarkers)
-        {
-            if (assemblyTypeMarkers == null) throw new ArgumentNullException(nameof(assemblyTypeMarkers));
-
-            var assembliesToScan = assemblyTypeMarkers.Select(x => x.Assembly).ToArray();
-            AssembliesToScan = AssembliesToScan.Concat(assembliesToScan).Distinct().ToArray();
-            return this;
-        }
-
         public IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType)
         {
             MediatorImplementationType = implementationType ?? throw new ArgumentNullException(nameof(implementationType));

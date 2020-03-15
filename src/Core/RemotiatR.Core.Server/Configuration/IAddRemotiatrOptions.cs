@@ -12,8 +12,6 @@ namespace RemotiatR.Server
 
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
 
-        IAddRemotiatrOptions AddAssemblies(params Type[] assemblyTypeMarkers);
-
         IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType);
 
         IAddRemotiatrOptions WithMediatorLifetime(ServiceLifetime serviceLifetime);

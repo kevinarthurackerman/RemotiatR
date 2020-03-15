@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace RemotiatR.Client
 {
@@ -27,6 +28,14 @@ namespace RemotiatR.Client
             var uri = new Uri(endpointRoot, "remotiatr");
 
             return addRemotiatrOptions.SetEndpointUri(uri);
+        }
+
+        public static IAddRemotiatrOptions AddAssemblies(this IAddRemotiatrOptions addRemotiatrOptions, params Type[] assemblyTypeMarkers)
+        {
+            if (addRemotiatrOptions == null) throw new ArgumentNullException(nameof(addRemotiatrOptions));
+            if (assemblyTypeMarkers == null) throw new ArgumentNullException(nameof(assemblyTypeMarkers));
+
+            return addRemotiatrOptions.AddAssemblies(assemblyTypeMarkers.Select(x => x.Assembly).ToArray());
         }
     }
 }

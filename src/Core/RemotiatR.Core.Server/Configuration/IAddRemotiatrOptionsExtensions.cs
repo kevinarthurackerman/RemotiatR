@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace RemotiatR.Server
 {
@@ -18,5 +19,13 @@ namespace RemotiatR.Server
 
         public static IAddRemotiatrOptions AsTransient(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions?.WithMediatorLifetime(ServiceLifetime.Transient) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
+
+        public static IAddRemotiatrOptions AddAssemblies(this IAddRemotiatrOptions addRemotiatrOptions, params Type[] assemblyTypeMarkers)
+        {
+            if (addRemotiatrOptions == null) throw new ArgumentNullException(nameof(addRemotiatrOptions));
+            if (assemblyTypeMarkers == null) throw new ArgumentNullException(nameof(assemblyTypeMarkers));
+
+            return addRemotiatrOptions.AddAssemblies(assemblyTypeMarkers.Select(x => x.Assembly).ToArray());
+        }
     }
 }
