@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using RemotiatR.Shared;
@@ -23,15 +22,13 @@ namespace RemotiatR.MessageTransport.Http.Client
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
             if (requestData == null) throw new ArgumentNullException(nameof(requestData));
-
+            
             var payload = await _serializer.Serialize(requestData);
 
             var content = new StreamContent(payload);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
             requestMessage.Content = content;
-            requestMessage.Headers.Add("Accept", "application/json");
 
             var responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
