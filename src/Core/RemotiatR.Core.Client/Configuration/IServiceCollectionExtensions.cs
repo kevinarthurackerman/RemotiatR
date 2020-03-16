@@ -31,33 +31,21 @@ namespace RemotiatR.Client
 
             AddDefaultServices(options);
 
-            var notificationTypes = RegisterNotificationHandlers(
-                options.AssembliesToScan,
-                options.EndpointUri,
-                options.Services
-            ).ToArray();
-
-            var notificationTypesLookup = ImmutableHashSet.Create(notificationTypes);
-
-            var requestTypes = RegisterRequestHandlers(
-                options.AssembliesToScan,
-                options.EndpointUri,
-                options.Services
-            ).ToArray();
-
-            var requestTypesLookup = ImmutableHashSet.Create(requestTypes);
-
-            var responseTypes = requestTypes
-                .Select(x => x.GetResponseType())
+            var notificationTypes = options.AssembliesToScan
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsNotificationType())
                 .ToArray();
 
-            var keyMessageTypeMappings = notificationTypes.Concat(requestTypes).Concat(responseTypes)
-                .Distinct()
-                .Select(x => new KeyMessageTypeMapping(options.MessageKeyGenerator(x), x))
+            var requestTypes = options.AssembliesToScan
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsRequestType())
                 .ToArray();
 
-            foreach (var keyMessageTypeMapping in keyMessageTypeMappings)
-                options.Services.AddSingleton(keyMessageTypeMapping);
+            var methodInfoLookup = notificationTypes.Concat(requestTypes)
+                .Select(x => new MessageInfo(options.MessageUriLocator(x), x))
+                .ToDictionary(x => x.RequestType);
+
+            options.Services.TryAddSingleton(new MessageInfoIndex(methodInfoLookup));
 
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
@@ -67,12 +55,12 @@ namespace RemotiatR.Client
             {
                 serviceCollection.RemoveAll<IRemotiatr>();
 
-                serviceCollection.AddScoped<IRemotiatr>(applicationServices => new DefaultRemotiatr(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped<IRemotiatr>(applicationServices => new DefaultRemotiatr(internalServiceProvider, applicationServices));
                 serviceCollection.AddScoped(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
             }
             else
             {
-                serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices => new Remotiatr<TMarker>(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices => new Remotiatr<TMarker>(internalServiceProvider, applicationServices));
             }
 
             return serviceCollection;
@@ -80,8 +68,6 @@ namespace RemotiatR.Client
 
         private static void AddDefaultServices(AddRemotiatrOptions options)
         {
-            options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
-
             options.Services.TryAddScoped<IApplicationServiceProviderAccessor, ApplicationServiceProviderAccessor>();
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));

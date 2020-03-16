@@ -11,6 +11,6 @@ namespace RemotiatR.Server
 
     public interface IRemotiatr<TMarker>
     {
-        Task<Stream> Handle(Stream message, CancellationToken cancellationToken = default);
+        Task<Stream> Handle(Stream message, Uri messagePath, CancellationToken cancellationToken = default);
     }
 }

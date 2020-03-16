@@ -13,7 +13,7 @@ namespace RemotiatR.Server
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
-        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Constants.DefaultMessageKeyGenerator;
+        internal Func<Type, Uri> MessageUriLocator { get; private set; } = Constants.DefaultMessageUriLocator;
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
@@ -21,9 +21,9 @@ namespace RemotiatR.Server
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
 
-        public IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator)
+        public IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator)
         {
-            MessageKeyGenerator = keyGenerator ?? throw new ArgumentNullException(nameof(keyGenerator));
+            MessageUriLocator = messageUriLocator ?? throw new ArgumentNullException(nameof(messageUriLocator));
 
             return this;
         }

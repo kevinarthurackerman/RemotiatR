@@ -15,37 +15,36 @@ namespace RemotiatR.Server
     {
         private readonly IServiceProvider _internalServiceProvider;
         private readonly IServiceProvider _applicationServiceProvider;
-        private readonly IImmutableSet<Type> _canHandleNotificationTypes;
-        private readonly IImmutableSet<Type> _canHandleRequestTypes;
 
         public Remotiatr(
             IServiceProvider internalServiceProvider,
-            IServiceProvider applicationServiceProvider,
-            IImmutableSet<Type> canHandleNotificationTypes, 
-            IImmutableSet<Type> canHandleRequestTypes
+            IServiceProvider applicationServiceProvider
         )
         {
             _internalServiceProvider = internalServiceProvider ?? throw new ArgumentNullException(nameof(internalServiceProvider));
             _applicationServiceProvider = applicationServiceProvider ?? throw new ArgumentNullException(nameof(applicationServiceProvider));
-            _canHandleNotificationTypes = canHandleNotificationTypes ?? throw new ArgumentNullException(nameof(canHandleNotificationTypes));
-            _canHandleRequestTypes = canHandleRequestTypes ?? throw new ArgumentNullException(nameof(canHandleRequestTypes));
         }
 
-        public async Task<Stream> Handle(Stream message, CancellationToken cancellationToken = default)
+        public async Task<Stream> Handle(Stream message, Uri messagePath, CancellationToken cancellationToken = default)
         {
-            if(message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (messagePath == null) throw new ArgumentNullException(nameof(messagePath));
 
             using var scope = _internalServiceProvider.CreateScope();
 
             scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
 
+            var messageInfoIndex = scope.ServiceProvider.GetRequiredService<MessageInfoIndex>();
             var messageSerializer = scope.ServiceProvider.GetRequiredService<IMessageSerializer>();
             var messageHandlers = scope.ServiceProvider.GetRequiredService<IEnumerable<IMessagePipelineHandler>>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            var data = await messageSerializer.Deserialize(message);
+            if (!messageInfoIndex.TryGetValue(messagePath, out var messageInfo))
+                throw new InvalidOperationException($"No handler found for {messagePath.ToString()}");
 
-            if(_canHandleNotificationTypes.Contains(data.GetType()))
+            var data = await messageSerializer.Deserialize(message, messageInfo.RequestType);
+
+            if (messageInfo.Type == MessageTypes.Notification)
             {
                 var handler = BuildNotificationHandler(mediator, messageHandlers, cancellationToken);
 
@@ -53,17 +52,14 @@ namespace RemotiatR.Server
 
                 return new MemoryStream();
             }
-
-            if (_canHandleRequestTypes.Contains(data.GetType()))
+            else
             {
                 var handler = BuildRequestHandler(mediator, messageHandlers, cancellationToken);
 
                 var response = await handler(data);
 
-                return await messageSerializer.Serialize(response);
+                return await messageSerializer.Serialize(response, messageInfo.ResponseType!);
             }
-
-            throw new InvalidOperationException($"Type {data.GetType()} is neither a {typeof(INotification).FullName} nor an {nameof(IRequest)}");
         }
 
         private MessagePipelineDelegate BuildNotificationHandler(

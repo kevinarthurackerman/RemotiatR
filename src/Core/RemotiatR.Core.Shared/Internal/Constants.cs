@@ -4,7 +4,7 @@ namespace RemotiatR.Shared
 {
     internal static class Constants
     {
-        internal static Func<MessageInfo, Uri> DefaultMessageUriGenerator { get; } =
-            x => new Uri(x.RequestType.FullName!.Replace('.','/').Replace('+','-'));
+        internal static Func<Type, Uri> DefaultMessageUriLocator { get; } =
+            x => new Uri(x.FullName!.Replace('.','/').Replace('+','-'));
     }
 }

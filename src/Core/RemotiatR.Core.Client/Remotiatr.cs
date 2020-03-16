@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Immutable;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Shared;
 
@@ -12,23 +11,16 @@ namespace RemotiatR.Client
     {
         private readonly IServiceProvider _internalServiceProvider;
         private readonly IServiceProvider _applicationServiceProvider;
-        private readonly IImmutableSet<Type> _canHandleNotificationTypes;
-        private readonly IImmutableSet<Type> _canHandleRequestTypes;
 
-        internal Remotiatr(IServiceProvider internalServiceProvider, IServiceProvider applicationServiceProvider, IImmutableSet<Type> canHandleNotificationTypes, IImmutableSet<Type> canHandleRequestTypes)
+        internal Remotiatr(IServiceProvider internalServiceProvider, IServiceProvider applicationServiceProvider)
         {
             _internalServiceProvider = internalServiceProvider ?? throw new ArgumentNullException(nameof(internalServiceProvider));
             _applicationServiceProvider = applicationServiceProvider ?? throw new ArgumentNullException(nameof(applicationServiceProvider));
-            _canHandleNotificationTypes = canHandleNotificationTypes ?? throw new ArgumentNullException(nameof(canHandleNotificationTypes));
-            _canHandleRequestTypes = canHandleRequestTypes ?? throw new ArgumentNullException(nameof(canHandleRequestTypes));
         }
 
         public Task Publish(object notification, CancellationToken cancellationToken = default)
         {
             if (notification == null) throw new ArgumentNullException(nameof(notification));
-
-            if (!_canHandleNotificationTypes.TryGetValue(notification.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
 
             return PublishNotification(notification, cancellationToken);
         }
@@ -38,9 +30,6 @@ namespace RemotiatR.Client
         {
             if (notification == null) throw new ArgumentNullException(nameof(notification));
 
-            if (!_canHandleNotificationTypes.TryGetValue(notification.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
-
             return PublishNotification(notification, cancellationToken);
         }
 
@@ -48,9 +37,17 @@ namespace RemotiatR.Client
         {
             using var scope = _internalServiceProvider.CreateScope();
 
-            scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
-
+            var messageInfoIndex = scope.ServiceProvider.GetRequiredService<MessageInfoIndex>();
+            var applicationServiceProvider = scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            if (!messageInfoIndex.TryGetValue(notification.GetType(), out var messageInfo))
+                throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
+
+            if (messageInfo.Type != MessageTypes.Notification)
+                throw new InvalidOperationException($"{notification.GetType().FullName} is not a notificiation type");
+
+            applicationServiceProvider.Value = _applicationServiceProvider;
 
             await mediator.Publish(notification, cancellationToken);
         }
@@ -59,18 +56,12 @@ namespace RemotiatR.Client
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            if (!_canHandleRequestTypes.TryGetValue(request.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
-
             return (TResponse)(await SendRequest(request, cancellationToken));
         }
 
         public Task<object> Send(object request, CancellationToken cancellationToken = default)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-
-            if (!_canHandleRequestTypes.TryGetValue(request.GetType(), out var _))
-                throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
 
             return SendRequest(request, cancellationToken);
         }
@@ -79,9 +70,17 @@ namespace RemotiatR.Client
         {
             using var scope = _internalServiceProvider.CreateScope();
 
-            scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
-
+            var messageInfoIndex = scope.ServiceProvider.GetRequiredService<MessageInfoIndex>();
+            var applicationServiceProvider = scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            if (!messageInfoIndex.TryGetValue(request.GetType(), out var messageInfo))
+                throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
+
+            if (messageInfo.Type != MessageTypes.Request)
+                throw new InvalidOperationException($"{request.GetType().FullName} is not a request type");
+
+            applicationServiceProvider.Value = _applicationServiceProvider;
 
             return await mediator.Send(request, cancellationToken);
         }
