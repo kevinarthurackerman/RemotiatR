@@ -12,7 +12,7 @@ namespace RemotiatR.Shared
         public MessageInfo(Uri path, Type requestType)
         {
             Path = path ?? throw new ArgumentNullException(nameof(path));
-            if (path.IsAbsoluteUri) throw new ArgumentException("Must be relative path", nameof(path));
+            if (!path.IsAbsoluteUri) throw new ArgumentException("Must be absolute path", nameof(path));
             RequestType = requestType ?? throw new ArgumentNullException(nameof(requestType));
 
             if (requestType.IsNotificationType())

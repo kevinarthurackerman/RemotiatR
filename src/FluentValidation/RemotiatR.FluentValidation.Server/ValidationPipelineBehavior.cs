@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using RemotiatR.FluentValidation.Shared;
 using RemotiatR.Shared;
 using System;
 using System.Collections;
@@ -12,38 +12,48 @@ using System.Threading.Tasks;
 
 namespace RemotiatR.FluentValidation.Server
 {
-    public class ValidationMessagePipelineHandler : IMessagePipelineHandler
+    public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest,TResponse>
     {
+        private const string _attributeName = "fluent-validation-error";
+
         private readonly ConcurrentDictionary<Type, Type> _typeValidatorTypeCache = new ConcurrentDictionary<Type, Type>();
 
         private readonly IServiceProvider _serviceProvider;
+        private readonly MessageAttributes _messageAttributes;
 
-        public ValidationMessagePipelineHandler(IServiceProvider serviceProvider)
+        public ValidationPipelineBehavior(IServiceProvider serviceProvider, MessageAttributes messageAttributes)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _messageAttributes = messageAttributes ?? throw new ArgumentNullException(nameof(messageAttributes));
         }
 
-        public async Task<object> Handle(object message, MessagePipelineDelegate next, CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (cancellationToken == null) throw new ArgumentNullException(nameof(cancellationToken));
             if (next == null) throw new ArgumentNullException(nameof(next));
 
-            var context = new ValidationContext(message);
+            var context = new ValidationContext(request);
 
             var validators = new List<IValidator>();
-            foreach (var validator in (IEnumerable)_serviceProvider.GetRequiredService(GetValidatorTypesForType(message.GetType())))
+            foreach (var validator in (IEnumerable)_serviceProvider.GetRequiredService(GetValidatorTypesForType(request.GetType())))
                 validators.Add((IValidator)validator!);
 
             var errors = validators
                 .Select(async v => await v.ValidateAsync(context))
                 .SelectMany(result => result.Result.Errors)
                 .Where(f => f != null)
-                .Select(x => new ValidationError(x.PropertyName, x.ErrorMessage, x.ErrorCode))
                 .ToArray();
 
-            if (errors.Any()) return errors;
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                    _messageAttributes.ResponseAttributes.Add(_attributeName, $"{error.ErrorCode}:{error.PropertyName}:{error.ErrorMessage}");
 
-            return await next(message);
+                return default!;
+            }
+
+            return await next();
         }
 
         private Type GetValidatorTypesForType(Type type) =>

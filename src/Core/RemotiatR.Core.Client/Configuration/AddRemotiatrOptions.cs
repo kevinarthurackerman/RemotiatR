@@ -13,9 +13,9 @@ namespace RemotiatR.Client
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
-        internal Func<Type, Uri> MessageUriLocator { get; private set; } = Constants.DefaultMessageUriLocator;
+        internal Uri? RootUri { get; private set; }
 
-        internal Uri? EndpointUri { get; private set; }
+        internal Func<Type, Uri> MessageUriLocator { get; private set; } = Constants.DefaultMessageUriLocator;
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
 
@@ -23,19 +23,18 @@ namespace RemotiatR.Client
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
 
-        public IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator)
+        public IAddRemotiatrOptions SetRootUri(Uri rootUri)
         {
-            MessageUriLocator = messageUriLocator ?? throw new ArgumentNullException(nameof(messageUriLocator));
+            RootUri = rootUri ?? throw new ArgumentNullException(nameof(rootUri));
+            if (!rootUri.IsAbsoluteUri) throw new ArgumentException($"{nameof(rootUri)} must be absolute.");
 
             return this;
         }
 
-        public IAddRemotiatrOptions SetEndpointUri(Uri endpointUri)
+        public IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator)
         {
-            if (endpointUri == null) throw new ArgumentNullException(nameof(endpointUri));
-            if (!endpointUri.IsAbsoluteUri) throw new ArgumentException($"{nameof(endpointUri)} must be absolute.");
+            MessageUriLocator = messageUriLocator ?? throw new ArgumentNullException(nameof(messageUriLocator));
 
-            EndpointUri = endpointUri;
             return this;
         }
 

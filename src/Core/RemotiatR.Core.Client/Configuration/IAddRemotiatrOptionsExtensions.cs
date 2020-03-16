@@ -20,14 +20,14 @@ namespace RemotiatR.Client
         public static IAddRemotiatrOptions AsTransient(this IAddRemotiatrOptions addRemotiatrOptions) =>
             addRemotiatrOptions?.WithMediatorLifetime(ServiceLifetime.Transient) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
 
-        public static IAddRemotiatrOptions SetDefaultEndpointUriWithRoot(this IAddRemotiatrOptions addRemotiatrOptions, Uri endpointRoot)
+        public static IAddRemotiatrOptions SetDefaultRootUri(this IAddRemotiatrOptions addRemotiatrOptions, Uri authority)
         {
             if (addRemotiatrOptions == null) throw new ArgumentNullException(nameof(addRemotiatrOptions));
-            if (!endpointRoot.IsAbsoluteUri) throw new InvalidOperationException($"{nameof(endpointRoot)} must be absolute");
+            if (!authority.IsAbsoluteUri) throw new InvalidOperationException($"{nameof(authority)} must be absolute");
 
-            var uri = new Uri(endpointRoot, "remotiatr");
+            var uri = new Uri(authority, "remotiatr");
 
-            return addRemotiatrOptions.SetEndpointUri(uri);
+            return addRemotiatrOptions.SetRootUri(uri);
         }
 
         public static IAddRemotiatrOptions AddAssemblies(this IAddRemotiatrOptions addRemotiatrOptions, params Type[] assemblyTypeMarkers)

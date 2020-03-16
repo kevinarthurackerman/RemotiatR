@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Client;
-using RemotiatR.FluentValidation.Shared;
-using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,17 +56,9 @@ namespace RemotiatR.FluentValidation.Client
 
         private static void Configure(IAddRemotiatrOptions options, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime)
         { 
-            options.Services.AddSingleton(new KeyMessageTypeMapping(Shared.Constants.ErrorMessageKey, typeof(ValidationError[])));
-
-            options.Services.TryAddScoped<IValidationErrorsAccessor, DefaultValidationErrorsAccessor>();
-
             options.Services.Add(new ServiceDescriptor(
-                typeof(IMessagePipelineHandler),
-                x =>
-                {
-                    var validationErrorsAccessor = x.GetRequiredService<IValidationErrorsAccessor>();
-                    return new ValidationMessagePipelineHandler(validationErrorsAccessor, x);
-                },
+                typeof(IPipelineBehavior<,>),
+                typeof(ValidationPipelineBehavior<,>),
                 lifetime)
             );
 

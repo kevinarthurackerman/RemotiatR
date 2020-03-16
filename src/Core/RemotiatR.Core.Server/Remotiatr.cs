@@ -4,10 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using System.Collections.Immutable;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RemotiatR.Server
 {
@@ -25,7 +23,7 @@ namespace RemotiatR.Server
             _applicationServiceProvider = applicationServiceProvider ?? throw new ArgumentNullException(nameof(applicationServiceProvider));
         }
 
-        public async Task<Stream> Handle(Stream message, Uri messagePath, CancellationToken cancellationToken = default)
+        public async Task<HandleResult> Handle(Stream message, Uri messagePath, IDictionary<string, string> messageAttributes, CancellationToken cancellationToken = default)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
             if (messagePath == null) throw new ArgumentNullException(nameof(messagePath));
@@ -36,64 +34,43 @@ namespace RemotiatR.Server
 
             var messageInfoIndex = scope.ServiceProvider.GetRequiredService<MessageInfoIndex>();
             var messageSerializer = scope.ServiceProvider.GetRequiredService<IMessageSerializer>();
-            var messageHandlers = scope.ServiceProvider.GetRequiredService<IEnumerable<IMessagePipelineHandler>>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            var messageAttributesService = scope.ServiceProvider.GetRequiredService<MessageAttributes>();
 
             if (!messageInfoIndex.TryGetValue(messagePath, out var messageInfo))
                 throw new InvalidOperationException($"No handler found for {messagePath.ToString()}");
 
             var data = await messageSerializer.Deserialize(message, messageInfo.RequestType);
 
+            foreach (var attribute in messageAttributes)
+                messageAttributesService.RequestAttributes.Add(attribute.Key, attribute.Value);
+
             if (messageInfo.Type == MessageTypes.Notification)
             {
-                var handler = BuildNotificationHandler(mediator, messageHandlers, cancellationToken);
+                await mediator.Publish(data);
 
-                await handler(data);
-
-                return new MemoryStream();
+                return new HandleResult(new MemoryStream(), messageAttributesService.ResponseAttributes);
             }
             else
             {
-                var handler = BuildRequestHandler(mediator, messageHandlers, cancellationToken);
+                var response = await mediator.Send(data);
 
-                var response = await handler(data);
+                var responseMessage = await messageSerializer.Serialize(response, messageInfo.ResponseType!);
 
-                return await messageSerializer.Serialize(response, messageInfo.ResponseType!);
+                return new HandleResult(responseMessage, messageAttributesService.ResponseAttributes);
             }
         }
+    }
 
-        private MessagePipelineDelegate BuildNotificationHandler(
-            IMediator mediator,
-            IEnumerable<IMessagePipelineHandler> messageHandlers,
-            CancellationToken cancellationToken
-        )
+    public class HandleResult
+    {
+        public Stream Message { get; }
+        public IDictionary<string, string> MessageAttributes { get; }
+
+        internal HandleResult(Stream message, IDictionary<string, string> messageAttributes)
         {
-            var terminalHandler = (MessagePipelineDelegate)(async message => 
-            {
-                await mediator.Publish(message, cancellationToken);
-                return Task.CompletedTask;
-            });
-
-            var handle = messageHandlers
-                .Reverse()
-                .Aggregate(terminalHandler, (next, outerHandle) => async message => await outerHandle.Handle(message, next, cancellationToken));
-
-            return handle;
-        }
-
-        private MessagePipelineDelegate BuildRequestHandler(
-            IMediator mediator,
-            IEnumerable<IMessagePipelineHandler> messageHandlers,
-            CancellationToken cancellationToken
-        )
-        {
-            var terminalHandler = (MessagePipelineDelegate)(async message => await mediator.Send(message, cancellationToken));
-
-            var handle = messageHandlers
-                .Reverse()
-                .Aggregate(terminalHandler, (next, outerHandle) => async message => await outerHandle.Handle(message, next, cancellationToken));
-
-            return handle;
+            Message = message ?? throw new ArgumentNullException(nameof(message));
+            MessageAttributes = messageAttributes ?? throw new ArgumentNullException(nameof(messageAttributes));
         }
     }
 }

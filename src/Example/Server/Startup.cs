@@ -15,7 +15,7 @@ using System.Linq;
 using RemotiatR.MessageTransport.Http.Server;
 using RemotiatR.FluentValidation.Server;
 using RemotiatR.Serializer.Json.Server;
-using Microsoft.Extensions.Logging;
+using System;
 
 namespace ContosoUniversity.Server
 {
@@ -32,6 +32,8 @@ namespace ContosoUniversity.Server
         {
             services.AddRemotiatr(x => 
             {
+                x.SetRootUri(new Uri("https://localhost:44337"));
+
                 x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker));
                 
                 x.AddJsonSerializer();

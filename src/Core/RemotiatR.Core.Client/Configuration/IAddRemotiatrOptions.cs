@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RemotiatR.Shared;
 using System;
 using System.Reflection;
 
@@ -9,9 +8,9 @@ namespace RemotiatR.Client
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator);
+        IAddRemotiatrOptions SetRootUri(Uri rootUri);
 
-        IAddRemotiatrOptions SetEndpointUri(Uri endpointUri);
+        IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator);
 
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
 

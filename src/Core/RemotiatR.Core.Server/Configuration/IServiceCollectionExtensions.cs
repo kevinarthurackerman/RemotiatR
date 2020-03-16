@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace RemotiatR.Server
@@ -25,6 +24,8 @@ namespace RemotiatR.Server
             var options = new AddRemotiatrOptions();
             configure.Invoke(options);
 
+            if (options.RootUri == null) throw new InvalidOperationException($"{nameof(options.RootUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetRootUri)}.");
+
             AddDefaultServices(options);
 
             var notificationTypes = options.AssembliesToScan
@@ -38,7 +39,7 @@ namespace RemotiatR.Server
                 .ToArray();
 
             var methodInfoLookup = notificationTypes.Concat(requestTypes)
-                .Select(x => new MessageInfo(options.MessageUriLocator(x), x))
+                .Select(x => new MessageInfo(new Uri(options.RootUri, options.MessageUriLocator(x)), x))
                 .ToDictionary(x => x.Path);
 
             options.Services.TryAddSingleton(new MessageInfoIndex(methodInfoLookup));
@@ -67,6 +68,8 @@ namespace RemotiatR.Server
             options.Services.TryAddScoped<IApplicationServiceProviderAccessor, ApplicationServiceProviderAccessor>();
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
+
+            options.Services.TryAddScoped<MessageAttributes>();
 
             options.Services.AddMediatR(
                 options.AssembliesToScan.ToArray(),

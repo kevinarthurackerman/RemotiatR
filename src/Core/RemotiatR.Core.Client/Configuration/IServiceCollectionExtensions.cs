@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
@@ -27,22 +26,16 @@ namespace RemotiatR.Client
             var options = new AddRemotiatrOptions();
             configure.Invoke(options);
 
-            if (options.EndpointUri == null) throw new InvalidOperationException($"{nameof(options.EndpointUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetEndpointUri)}.");
+            if (options.RootUri == null) throw new InvalidOperationException($"{nameof(options.RootUri)} is a required configuration and must be set using {nameof(IAddRemotiatrOptions.SetRootUri)}.");
+
+            var notificationTypes = RegisterNotificationHandlers(options.AssembliesToScan, options.Services);
+
+            var requestTypes = RegisterRequestHandlers(options.AssembliesToScan, options.Services);
 
             AddDefaultServices(options);
 
-            var notificationTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsNotificationType())
-                .ToArray();
-
-            var requestTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsRequestType())
-                .ToArray();
-
             var methodInfoLookup = notificationTypes.Concat(requestTypes)
-                .Select(x => new MessageInfo(options.MessageUriLocator(x), x))
+                .Select(x => new MessageInfo(new Uri(options.RootUri, options.MessageUriLocator(x)), x))
                 .ToDictionary(x => x.RequestType);
 
             options.Services.TryAddSingleton(new MessageInfoIndex(methodInfoLookup));
@@ -71,6 +64,8 @@ namespace RemotiatR.Client
             options.Services.TryAddScoped<IApplicationServiceProviderAccessor, ApplicationServiceProviderAccessor>();
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
+
+            options.Services.TryAddScoped<MessageAttributes>();
 
             options.Services.AddMediatR(
                 options.AssembliesToScan.ToArray(), 
@@ -101,7 +96,6 @@ namespace RemotiatR.Client
 
         private static IEnumerable<Type> RegisterNotificationHandlers(
             IEnumerable<Assembly> assembliesToScan,
-            Uri endpointUri,
             IServiceCollection serviceCollection
         )
         {
@@ -115,19 +109,19 @@ namespace RemotiatR.Client
                 var notificationHandlerInterfaceType = typeof(INotificationHandler<>).MakeGenericType(notificationType);
                 if (!serviceCollection.Any(x => x.ServiceType == notificationHandlerInterfaceType))
                 {
-                    var notificationHandlerType = typeof(MessageNotificationHandler<>)
+                    var notificationHandlerCtor = typeof(MessageNotificationHandler<>)
                         .MakeGenericType(notificationType)
                         .GetConstructors()
                         .Single();
 
+                    var services = notificationHandlerCtor.GetParameters()
+                        .Select(x => x.ParameterType)
+                        .Select(x => (Func<IServiceProvider, object>)(y => y.GetRequiredService(x)))
+                        .ToArray();
+
                     serviceCollection.TryAddTransient(
                         notificationHandlerInterfaceType,
-                        x => notificationHandlerType.Invoke(new object[] 
-                        { 
-                            x.GetRequiredService<IMessageTransport>(),
-                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
-                            endpointUri 
-                        })
+                        x => notificationHandlerCtor.Invoke(services.Select(y => y.Invoke(x)).ToArray())
                     );
                 }
             }
@@ -137,7 +131,6 @@ namespace RemotiatR.Client
 
         private static IEnumerable<Type> RegisterRequestHandlers(
             IEnumerable<Assembly> assembliesToScan,
-            Uri endpointUri,
             IServiceCollection serviceCollection
         )
         {
@@ -153,19 +146,19 @@ namespace RemotiatR.Client
                 var requestHandlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
                 if (!serviceCollection.Any(x => x.ServiceType == requestHandlerInterfaceType))
                 {
-                    var requestHandlerType = typeof(MessageRequestHandler<,>)
+                    var requestHandlerCtor = typeof(MessageRequestHandler<,>)
                         .MakeGenericType(requestType, responseType)
                         .GetConstructors()
                         .Single();
 
+                    var services = requestHandlerCtor.GetParameters()
+                        .Select(x => x.ParameterType)
+                        .Select(x => (Func<IServiceProvider,object>)(y => y.GetRequiredService(x)))
+                        .ToArray();
+
                     serviceCollection.TryAddTransient(
                         requestHandlerInterfaceType,
-                        x => requestHandlerType.Invoke(new object[] 
-                        { 
-                            x.GetRequiredService<IMessageTransport>(),
-                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
-                            endpointUri 
-                        })
+                        x => requestHandlerCtor.Invoke(services.Select(y => y.Invoke(x)).ToArray())
                     );
                 }
             }

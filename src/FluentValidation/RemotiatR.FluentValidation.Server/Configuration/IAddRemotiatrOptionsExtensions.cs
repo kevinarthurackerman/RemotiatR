@@ -6,10 +6,9 @@ using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Shared;
 using System.ComponentModel;
-using RemotiatR.FluentValidation.Shared;
 using RemotiatR.Server;
+using MediatR;
 
 namespace RemotiatR.FluentValidation.Server
 {
@@ -63,13 +62,11 @@ namespace RemotiatR.FluentValidation.Server
             if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
             if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
 
-            options.Services.AddSingleton(new KeyMessageTypeMapping(Shared.Constants.ErrorMessageKey, typeof(ValidationError[])));
-
             options.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             options.Services.Add(new ServiceDescriptor(
-                typeof(IMessagePipelineHandler), 
-                x => new ValidationMessagePipelineHandler(x),
+                typeof(IPipelineBehavior<,>),
+                typeof(ValidationPipelineBehavior<,>),
                 serviceLifetime
             ));
 

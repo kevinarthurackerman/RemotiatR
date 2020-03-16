@@ -13,6 +13,8 @@ namespace RemotiatR.Server
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
+        internal Uri? RootUri { get; private set; }
+
         internal Func<Type, Uri> MessageUriLocator { get; private set; } = Constants.DefaultMessageUriLocator;
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
@@ -20,6 +22,14 @@ namespace RemotiatR.Server
         internal Type MediatorImplementationType { get; private set; } = typeof(Mediator);
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
+
+        public IAddRemotiatrOptions SetRootUri(Uri rootUri)
+        {
+            RootUri = rootUri ?? throw new ArgumentNullException(nameof(rootUri));
+            if (!rootUri.IsAbsoluteUri) throw new ArgumentException($"{nameof(rootUri)} must be absolute.");
+
+            return this;
+        }
 
         public IAddRemotiatrOptions SetMessageUriLocator(Func<Type, Uri> messageUriLocator)
         {
