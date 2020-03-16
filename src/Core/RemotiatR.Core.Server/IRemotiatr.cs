@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RemotiatR.Shared;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -12,6 +13,6 @@ namespace RemotiatR.Server
 
     public interface IRemotiatr<TMarker>
     {
-        Task<HandleResult> Handle(Stream message, Uri messagePath, IDictionary<string, string> messageAttributes, CancellationToken cancellationToken = default);
+        Task<HandleResult> Handle(Stream message, Uri messagePath, Attributes messageAttributes, CancellationToken cancellationToken = default);
     }
 }

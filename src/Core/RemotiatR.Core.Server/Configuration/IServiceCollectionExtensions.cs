@@ -69,7 +69,7 @@ namespace RemotiatR.Server
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
 
-            options.Services.TryAddScoped<MessageAttributes>();
+            options.Services.TryAddScoped(x => new MessageAttributes());
 
             options.Services.AddMediatR(
                 options.AssembliesToScan.ToArray(),

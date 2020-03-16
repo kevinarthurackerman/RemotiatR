@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Server;
+using RemotiatR.Shared;
 using System;
 using System.IO;
 using System.Linq;
@@ -45,7 +47,9 @@ namespace RemotiatR.MessageTransport.Http.Server
 
                     var dataStream = new MemoryStream();
                     await httpContext.Request.Body.CopyToAsync(dataStream);
-                    
+
+                    Attributes attributes = GetHeaders(httpContext);
+
                     var path = new Uri(string.Concat(
                         httpContext.Request.Scheme,
                         "://",
@@ -54,18 +58,31 @@ namespace RemotiatR.MessageTransport.Http.Server
                         httpContext.Request.Path.ToUriComponent(),
                         httpContext.Request.QueryString.ToUriComponent()));
 
-                    var attributes = httpContext.Request.Headers
-                        .Where(x => x.Key.StartsWith(_headerPrefix))
-                        .ToDictionary(x => x.Key.Substring(_headerPrefix.Length), x => x.Value.ToString());
-
                     var result = await remotiatr.Handle(dataStream, path, attributes);
 
-                    foreach (var attribute in result.MessageAttributes)
-                        httpContext.Response.Headers.Add(_headerPrefix + attribute.Key, attribute.Value);
+                    SetHeaders(httpContext, result);
 
                     await result.Message.CopyToAsync(httpContext.Response.Body);
                 });
             });
+        }
+
+        private static void SetHeaders(HttpContext httpContext, HandleResult result)
+        {
+            foreach (var attribute in result.MessageAttributes.GroupBy(x => x.Name.ToLower()))
+            {
+                var name = _headerPrefix + attribute.Key;
+                var values = attribute.Select(x => x.Value).ToArray();
+                httpContext.Response.Headers.Add(name, values);
+            }
+        }
+
+        private static Attributes GetHeaders(HttpContext httpContext)
+        {
+            return new Attributes(httpContext.Request.Headers
+                .Where(x => x.Key.StartsWith(_headerPrefix))
+                .SelectMany(x => x.Value.Select(y => new Shared.Attribute(x.Key, y)))
+                .ToList());
         }
     }
 }

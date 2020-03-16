@@ -23,7 +23,7 @@ namespace RemotiatR.Server
             _applicationServiceProvider = applicationServiceProvider ?? throw new ArgumentNullException(nameof(applicationServiceProvider));
         }
 
-        public async Task<HandleResult> Handle(Stream message, Uri messagePath, IDictionary<string, string> messageAttributes, CancellationToken cancellationToken = default)
+        public async Task<HandleResult> Handle(Stream message, Uri messagePath, Attributes messageAttributes, CancellationToken cancellationToken = default)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
             if (messagePath == null) throw new ArgumentNullException(nameof(messagePath));
@@ -43,7 +43,7 @@ namespace RemotiatR.Server
             var data = await messageSerializer.Deserialize(message, messageInfo.RequestType);
 
             foreach (var attribute in messageAttributes)
-                messageAttributesService.RequestAttributes.Add(attribute.Key, attribute.Value);
+                messageAttributesService.RequestAttributes.Add(attribute.Name, attribute.Value);
 
             if (messageInfo.Type == MessageTypes.Notification)
             {
@@ -65,9 +65,9 @@ namespace RemotiatR.Server
     public class HandleResult
     {
         public Stream Message { get; }
-        public IDictionary<string, string> MessageAttributes { get; }
+        public Attributes MessageAttributes { get; }
 
-        internal HandleResult(Stream message, IDictionary<string, string> messageAttributes)
+        internal HandleResult(Stream message, Attributes messageAttributes)
         {
             Message = message ?? throw new ArgumentNullException(nameof(message));
             MessageAttributes = messageAttributes ?? throw new ArgumentNullException(nameof(messageAttributes));

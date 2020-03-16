@@ -50,11 +50,11 @@ namespace RemotiatR.FluentValidation.Client
 
             var result = await next();
 
-            errors = _messageAttributes.ResponseAttributes.Where(x => x.Key.Equals(_attributeName, StringComparison.OrdinalIgnoreCase))
+            errors = _messageAttributes.ResponseAttributes.Get(_attributeName)
                 .Select(x =>
                 {
                     var parts = x.Value.Split(':');
-                    if (parts.Length != 3) throw new InvalidOperationException($"Tried to parse value of {_attributeName} attribute, but it was not valid. Value must be in the format '{{errorCode}}:{{propertyName}}:{{errorMessage}}'");
+                    if (parts.Length != 3) throw new InvalidOperationException($"Tried to parse value '{x.Value}' of {_attributeName} attribute, but it was not valid. Value must be in the format '{{errorCode}}:{{propertyName}}:{{errorMessage}}'");
                     var errorCode = parts[0];
                     var propertyName = parts[1];
                     var errorMessage = parts[2];
@@ -67,8 +67,6 @@ namespace RemotiatR.FluentValidation.Client
                 .ToArray();
 
             if (errors.Any()) throw new ValidationException(errors);
-
-            if (_messageAttributes.ResponseAttributes.Any(x => x.Key == _attributeName)) return default!;
 
             return result;
         }
