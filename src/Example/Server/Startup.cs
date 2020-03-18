@@ -16,6 +16,8 @@ using RemotiatR.MessageTransport.Http.Server;
 using RemotiatR.FluentValidation.Server;
 using RemotiatR.Serializer.Json.Server;
 using System;
+using System.Net.Http;
+using Microsoft.AspNetCore.Components;
 
 namespace ContosoUniversity.Server
 {
@@ -54,6 +56,19 @@ namespace ContosoUniversity.Server
                     typeof(LoggingBehavior<,>));
             });
 
+            services.AddServerSideBlazor();
+            services.AddRazorPages();
+            services.AddScoped(s =>
+            {
+                var uriHelper = s.GetRequiredService<NavigationManager>();
+                return new HttpClient
+                {
+                    BaseAddress = new Uri(uriHelper.BaseUri)
+                };
+            });
+
+            new Client.Startup(Configuration).ConfigureServices(services);
+
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -80,7 +95,8 @@ namespace ContosoUniversity.Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapFallbackToClientSideBlazor<Client.Program>("index.html");
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }
