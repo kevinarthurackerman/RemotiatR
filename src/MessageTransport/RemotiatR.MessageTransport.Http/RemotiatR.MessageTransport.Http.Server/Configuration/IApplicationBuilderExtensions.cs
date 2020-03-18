@@ -48,7 +48,7 @@ namespace RemotiatR.MessageTransport.Http.Server
                     var dataStream = new MemoryStream();
                     await httpContext.Request.Body.CopyToAsync(dataStream);
 
-                    Attributes attributes = GetHeaders(httpContext);
+                    var attributes = GetHeaders(httpContext);
 
                     var path = new Uri(string.Concat(
                         httpContext.Request.Scheme,

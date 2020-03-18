@@ -60,6 +60,16 @@ namespace RemotiatR.MessageTransport.Http.Client
             return await _serializer.Deserialize(resultStream, messageInfo.ResponseType!);
         }
 
+        private void GetHeaders(HttpRequestMessage requestMessage)
+        {
+            foreach (var requestAttribute in _messageAttributes.RequestAttributes.GroupBy(x => x.Name.ToLower()))
+            {
+                var name = _headerPrefix + requestAttribute.Key;
+                var values = requestAttribute.Select(x => x.Value).ToArray();
+                requestMessage.Headers.Add(name, values);
+            }
+        }
+
         private void SetHeaders(HttpResponseMessage responseMessage)
         {
             foreach (var responseHeader in responseMessage.Headers.Where(x => x.Key.StartsWith(_headerPrefix)))
@@ -73,16 +83,6 @@ namespace RemotiatR.MessageTransport.Http.Client
                     foreach (var item in items)
                         _messageAttributes.ResponseAttributes.Add(name, item);
                 }
-            }
-        }
-
-        private void GetHeaders(HttpRequestMessage requestMessage)
-        {
-            foreach (var requestAttribute in _messageAttributes.RequestAttributes.GroupBy(x => x.Name.ToLower()))
-            {
-                var name = _headerPrefix + requestAttribute.Key;
-                var values = requestAttribute.Select(x => x.Value).ToArray();
-                requestMessage.Headers.Add(name, values);
             }
         }
     }
