@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RemotiatR.Shared;
 using System;
 using System.IO;
@@ -11,14 +10,17 @@ namespace RemotiatR.Serializer.Json.Shared
     internal class DefaultJsonMessageSerializer : IMessageSerializer
     {
         private readonly JsonSerializer _jsonSerializer;
-        private readonly IKeyMessageTypeMappings _keyMessageTypeMappings;
 
-        public DefaultJsonMessageSerializer(IKeyMessageTypeMappings keyMessageTypeMappings)
+        public DefaultJsonMessageSerializer()
         {
-            _keyMessageTypeMappings = keyMessageTypeMappings ?? throw new ArgumentNullException(nameof(keyMessageTypeMappings));
-
-            _jsonSerializer = new JsonSerializer();
-            _jsonSerializer.Converters.Add(new MessagePayloadJsonConverter(keyMessageTypeMappings));
+            _jsonSerializer = new JsonSerializer
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                TypeNameHandling = TypeNameHandling.Auto,
+                DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
+                NullValueHandling = NullValueHandling.Ignore
+            };
         }
 
         public Task<object> Deserialize(Stream stream)
@@ -32,9 +34,9 @@ namespace RemotiatR.Serializer.Json.Shared
                 using var streamReader = new StreamReader(stream, Encoding.Default);
                 using var jsonTextReader = new JsonTextReader(streamReader);
 
-                var data = _jsonSerializer.Deserialize(jsonTextReader, typeof(MessagePayload))!;
+                var payload = (MessagePayload)_jsonSerializer.Deserialize(jsonTextReader, typeof(MessagePayload))!;
 
-                return Task.FromResult(data);
+                return Task.FromResult(payload.Data!);
             }
             catch(Exception exception)
             {
@@ -46,15 +48,12 @@ namespace RemotiatR.Serializer.Json.Shared
         {
             try
             {
-                if (!_keyMessageTypeMappings.MessageTypeToKeyLookup.TryGetValue(value.GetType(), out var key))
-                    throw new InvalidOperationException($"Unable to locate key for message type {value.GetType().FullName} - cannot serialize object.");
-
                 var stream = new MemoryStream();
                 using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
                 using var jsonTextWriter = new JsonTextWriter(streamWriter);
 
                 jsonTextWriter.CloseOutput = false;
-                _jsonSerializer.Serialize(jsonTextWriter, new MessagePayload(key, value), typeof(MessagePayload));
+                _jsonSerializer.Serialize(jsonTextWriter, new MessagePayload { Data = value }, typeof(MessagePayload));
                 jsonTextWriter.Flush();
 
                 RestartStream(stream);
@@ -74,52 +73,9 @@ namespace RemotiatR.Serializer.Json.Shared
 
         private class MessagePayload
         {
-            public string Key { get; set; }
-            public object Data { get; set; }
+            public object? Data { get; set; }
 
-            internal MessagePayload(string key, object? data)
-            {
-                Key = key ?? throw new ArgumentNullException(nameof(key));
-                Data = data ?? throw new ArgumentNullException(nameof(data));
-            }
-        }
-
-        private class MessagePayloadJsonConverter : JsonConverter
-        {
-            private readonly IKeyMessageTypeMappings _keyMessageTypeMappings;
-
-            internal MessagePayloadJsonConverter(IKeyMessageTypeMappings keyMessageTypeMappings) =>
-                _keyMessageTypeMappings = keyMessageTypeMappings;
-
-            public override bool CanConvert(Type objectType) => objectType == typeof(MessagePayload);
-
-            public override bool CanRead => true;
-
-            public override bool CanWrite => false;
-
-            public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null) return null;
-
-                var jObj = JObject.Load(reader);
-
-                var key = jObj.GetValue(nameof(MessagePayload.Key), StringComparison.OrdinalIgnoreCase)?.ToString();
-
-                if (key == null) throw new InvalidOperationException("Key was not set - cannot deserialize object.");
-
-                if (!_keyMessageTypeMappings.KeyToMessageTypeLookup.TryGetValue(key, out var type))
-                    throw new InvalidOperationException($"Unable to locate message type match for key {key}");
-
-                var data = jObj.GetValue(nameof(MessagePayload.Data), StringComparison.OrdinalIgnoreCase);
-
-                if (data == null) throw new InvalidOperationException("Data was not set - cannot deserialize object.");
-
-                var resultData = serializer.Deserialize(data.CreateReader(), type);
-
-                return resultData;
-            }
-
-            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new NotImplementedException();
+            public MessagePayload() { }
         }
     }
 }

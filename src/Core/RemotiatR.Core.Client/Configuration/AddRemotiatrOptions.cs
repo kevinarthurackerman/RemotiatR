@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +12,6 @@ namespace RemotiatR.Client
     {
         public IServiceCollection Services { get; } = new ServiceCollection();
 
-        internal Func<Type, string> MessageKeyGenerator { get; private set; } = Constants.DefaultMessageKeyGenerator;
-
         internal Uri? EndpointUri { get; private set; }
 
         internal IEnumerable<Assembly> AssembliesToScan { get; private set; } = new Assembly[0];
@@ -22,13 +19,6 @@ namespace RemotiatR.Client
         internal Type MediatorImplementationType { get; private set; } = typeof(Mediator);
 
         internal ServiceLifetime MediatorServiceLifetime { get; private set; } = ServiceLifetime.Transient;
-
-        public IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator)
-        {
-            MessageKeyGenerator = keyGenerator ?? throw new ArgumentNullException(nameof(keyGenerator));
-
-            return this;
-        }
 
         public IAddRemotiatrOptions SetEndpointUri(Uri endpointUri)
         {

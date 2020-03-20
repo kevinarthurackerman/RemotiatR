@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System.ComponentModel;
-using RemotiatR.FluentValidation.Shared;
 using RemotiatR.Server;
 
 namespace RemotiatR.FluentValidation.Server
@@ -62,8 +61,6 @@ namespace RemotiatR.FluentValidation.Server
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
             if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
-
-            options.Services.AddSingleton(new KeyMessageTypeMapping(Shared.Constants.ErrorMessageKey, typeof(ValidationError[])));
 
             options.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

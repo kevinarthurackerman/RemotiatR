@@ -8,8 +8,6 @@ namespace RemotiatR.Server
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator);
-
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
 
         IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType);

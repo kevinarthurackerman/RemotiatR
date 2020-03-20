@@ -12,7 +12,7 @@ namespace RemotiatR.Serializer.Json.Server
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
-            options.Services.TryAddSingleton<IMessageSerializer, DefaultJsonMessageSerializer>();
+            options.Services.TryAddScoped<IMessageSerializer, DefaultJsonMessageSerializer>();
 
             return options;
         }

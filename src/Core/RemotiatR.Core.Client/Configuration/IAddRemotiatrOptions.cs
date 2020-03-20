@@ -8,8 +8,6 @@ namespace RemotiatR.Client
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions SetMessageKeyGenerator(Func<Type, string> keyGenerator);
-
         IAddRemotiatrOptions SetEndpointUri(Uri endpointUri);
 
         IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);

@@ -18,10 +18,8 @@ namespace RemotiatR.FluentValidation.Server
 
         private readonly IServiceProvider _serviceProvider;
 
-        public ValidationMessagePipelineHandler(IServiceProvider serviceProvider)
-        {
+        public ValidationMessagePipelineHandler(IServiceProvider serviceProvider) =>
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        }
 
         public async Task<object> Handle(object message, MessagePipelineDelegate next, CancellationToken cancellationToken)
         {

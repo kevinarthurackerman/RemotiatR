@@ -45,14 +45,6 @@ namespace RemotiatR.Server
                 .Select(x => x.GetResponseType())
                 .ToArray();
 
-            var keyMessageTypeMappings = notificationTypes.Concat(requestTypes).Concat(responseTypes)
-                .Distinct()
-                .Select(x => new KeyMessageTypeMapping(options.MessageKeyGenerator(x), x))
-                .ToArray();
-
-            foreach (var keyMessageTypeMapping in keyMessageTypeMappings)
-                options.Services.AddSingleton(keyMessageTypeMapping);
-
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
             serviceCollection.RemoveAll<IRemotiatr<TMarker>>();
@@ -74,8 +66,6 @@ namespace RemotiatR.Server
 
         private static void AddDefaultServices(AddRemotiatrOptions options)
         {
-            options.Services.TryAddSingleton<IKeyMessageTypeMappings, KeyMessageTypeMappings>();
-
             options.Services.TryAddScoped<IApplicationServiceProviderAccessor, ApplicationServiceProviderAccessor>();
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
