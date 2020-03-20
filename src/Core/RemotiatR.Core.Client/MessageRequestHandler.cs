@@ -21,7 +21,9 @@ namespace RemotiatR.Client
 
             var result = await handler(request);
 
-            return (TResponse)result;
+            if (typeof(TResponse).IsAssignableFrom(result.GetType())) return (TResponse)result;
+
+            return default;
         }
     }
 }
