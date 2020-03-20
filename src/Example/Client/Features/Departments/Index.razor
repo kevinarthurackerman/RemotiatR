@@ -57,7 +57,7 @@
 </Loading>
 
 @code {
-    public List<_.Model> Data { get; private set; }
+    public List<_.Result.Model> Data { get; private set; }
 
-    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
+    protected override async Task OnInitializedAsync() => Data = (await _remotiatr.Send(new _.Query())).Departments;
 }

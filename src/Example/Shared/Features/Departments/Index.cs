@@ -7,18 +7,23 @@ namespace ContosoUniversity.Shared.Features.Departments
 {
     public class Index
     {
-        public class Query : IRequest<List<Model>>
+        public class Query : IRequest<Result>
         {
         }
 
-        public class Model
+        public class Result
         {
-            public string Name { get; set; }
-            public decimal Budget { get; set; }
-            public DateTime StartDate { get; set; }
-            public int Id { get; set; }
-            [DisplayName("Administrator")]
-            public string AdministratorFullName { get; set; }
+            public List<Model> Departments { get; set; }
+
+            public class Model
+            {
+                public string Name { get; set; }
+                public decimal Budget { get; set; }
+                public DateTime StartDate { get; set; }
+                public int Id { get; set; }
+                [DisplayName("Administrator")]
+                public string AdministratorFullName { get; set; }
+            }
         }
     }
 }

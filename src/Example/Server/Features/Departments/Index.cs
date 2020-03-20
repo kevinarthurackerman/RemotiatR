@@ -6,7 +6,6 @@ using ContosoUniversity.Shared.Infrastructure;
 using DelegateDecompiler.EntityFrameworkCore;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,14 +17,14 @@ namespace ContosoUniversity.Server.Features.Departments
     {
         public class MappingProfile : Profile
         {
-            public MappingProfile() => CreateMap<Department, Model>()
+            public MappingProfile() => CreateMap<Department, Result.Model>()
                 .ForMember(
                     dest => dest.AdministratorFullName,
                     opt => opt.MapFrom(src => src.Instructor.FullName())
                 );
         }
 
-        public class QueryHandler : IRequestHandler<Query, List<Model>>
+        public class QueryHandler : IRequestHandler<Query, Result>
         {
             private readonly SchoolContext _context;
             private readonly IConfigurationProvider _configuration;
@@ -37,11 +36,16 @@ namespace ContosoUniversity.Server.Features.Departments
                 _configuration = configuration;
             }
 
-            public Task<List<Model>> Handle(Query message, CancellationToken token) => _context.Departments
-                .Include(x => x.Instructor)
-                .ProjectTo<Model>(_configuration)
-                .DecompileAsync()
-                .ToListAsync(token);
+            public async Task<Result> Handle(Query message, CancellationToken token)
+            {
+                var departments = await _context.Departments
+                    .Include(x => x.Instructor)
+                    .ProjectTo<Result.Model>(_configuration)
+                    .DecompileAsync()
+                    .ToListAsync(token);
+
+                return new Result { Departments = departments };
+            }
         }
     }
 }
