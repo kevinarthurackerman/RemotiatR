@@ -53,12 +53,15 @@ namespace RemotiatR.Server
             {
                 serviceCollection.RemoveAll<IRemotiatr>();
 
-                serviceCollection.AddScoped<IRemotiatr>(applicationServices => new DefaultRemotiatr(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped<IRemotiatr>(applicationServices =>
+                    new DefaultRemotiatr(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+
                 serviceCollection.AddScoped(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
             }
             else
             {
-                serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices => new Remotiatr<TMarker>(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices =>
+                    new Remotiatr<TMarker>(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
             }
 
             return serviceCollection;

@@ -47,10 +47,6 @@ namespace RemotiatR.Client
 
             var requestTypesLookup = ImmutableHashSet.Create(requestTypes);
 
-            var responseTypes = requestTypes
-                .Select(x => x.GetResponseType())
-                .ToArray();
-
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
             serviceCollection.RemoveAll<IRemotiatr<TMarker>>();

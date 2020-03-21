@@ -45,7 +45,8 @@ namespace RemotiatR.Client
 
         public IAddRemotiatrOptions WithMediatorLifetime(ServiceLifetime serviceLifetime)
         {
-            if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime)) throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
+            if (!Enum.IsDefined(typeof(ServiceLifetime), serviceLifetime))
+                throw new InvalidEnumArgumentException(nameof(serviceLifetime), (int)serviceLifetime, typeof(ServiceLifetime));
 
             MediatorServiceLifetime = serviceLifetime;
             return this;

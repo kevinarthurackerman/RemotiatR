@@ -112,10 +112,9 @@ namespace RemotiatR.FluentValidation.Client
             {
                 var validationFailures = _validationErrorsAccessor.ValidationErrors
                     .Select(x => new ValidationFailure(x.PropertyName, x.ErrorMessage)
-                    {
-                        ErrorMessage = x.ErrorMessage
-                    }
-                    )
+                        {
+                            ErrorMessage = x.ErrorMessage
+                        })
                     .ToArray();
             }
         }
