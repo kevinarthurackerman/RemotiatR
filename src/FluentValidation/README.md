@@ -22,6 +22,8 @@ Configure core RemotiatR services
 
 In your shared project
 ```csharp
+using MediatR;
+
 public class UpdatePerson
 {
     public class Request : IRequest<Response>
@@ -39,6 +41,8 @@ public class UpdatePerson
 
 On your server
 ```csharp
+using RemotiatR.FluentValidation.Server;
+
 public class Startup
 {
     ...
@@ -48,10 +52,15 @@ public class Startup
         services.AddRemotiatr(x => 
         {
             ...
+            // register fluent validation
             x.Services.AddFluentValidation(typeof(UpdatePersonHandler),typeof(Startup));
         }
     }
 }
+```
+
+```csharp
+using MediatR;
 
 public class UpdatePersonHandler : IRequestHandlerUpdatePerson.Request, UpdatePerson.Response>
 {
@@ -64,6 +73,26 @@ public class UpdatePersonHandler : IRequestHandlerUpdatePerson.Request, UpdatePe
 
 On your client
 ```csharp
+using RemotiatR.Serializer.Json.Client;
+
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+        services.AddRemotiatr(x =>
+        {
+            ...
+            // register fluent validation
+            x.AddFluentValidation(typeof(UpdatePersonHandler),typeof(Startup));
+        });
+    }
+    ...
+}
+```
+
+```csharp
+@using RemotiatR.FluentValidation.Client
 @inject IRemotiatr _remotiatr
 ...
 @code {
