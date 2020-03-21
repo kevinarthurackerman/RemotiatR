@@ -1,10 +1,9 @@
 ﻿using MediatR;
+using MediatR.Registration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RemotiatR.Shared;
 using System;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace RemotiatR.Server
 {
@@ -23,27 +22,10 @@ namespace RemotiatR.Server
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 
             var options = new AddRemotiatrOptions();
-            configure.Invoke(options);
 
             AddDefaultServices(options);
 
-            var notificationTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsNotificationType())
-                .ToArray();
-
-            var notificationTypesLookup = ImmutableHashSet.Create(notificationTypes);
-
-            var requestTypes = options.AssembliesToScan
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsRequestType())
-                .ToArray();
-
-            var requestTypesLookup = ImmutableHashSet.Create(requestTypes);
-
-            var responseTypes = requestTypes
-                .Select(x => x.GetResponseType())
-                .ToArray();
+            configure.Invoke(options);
 
             var internalServiceProvider = options.Services.BuildServiceProvider();
 
@@ -54,14 +36,14 @@ namespace RemotiatR.Server
                 serviceCollection.RemoveAll<IRemotiatr>();
 
                 serviceCollection.AddScoped<IRemotiatr>(applicationServices =>
-                    new DefaultRemotiatr(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                    new DefaultRemotiatr(internalServiceProvider, applicationServices));
 
                 serviceCollection.AddScoped(x => (IRemotiatr<TMarker>)x.GetRequiredService<IRemotiatr>());
             }
             else
             {
                 serviceCollection.AddScoped<IRemotiatr<TMarker>>(applicationServices =>
-                    new Remotiatr<TMarker>(internalServiceProvider, applicationServices, notificationTypesLookup, requestTypesLookup));
+                    new Remotiatr<TMarker>(internalServiceProvider, applicationServices));
             }
 
             return serviceCollection;
@@ -75,31 +57,9 @@ namespace RemotiatR.Server
 
             options.Services.AddScoped<MessageMetadata>();
 
-            options.Services.AddMediatR(
-                options.AssembliesToScan.ToArray(),
-                x =>
-                {
-                    switch (options.MediatorServiceLifetime)
-                    {
-                        case ServiceLifetime.Transient:
-                            x.AsTransient();
-                            break;
-                        case ServiceLifetime.Scoped:
-                            x.AsScoped();
-                            break;
-                        case ServiceLifetime.Singleton:
-                            x.AsSingleton();
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(options.MediatorServiceLifetime), "Not a valid ServiceLifetime");
-                    }
+            options.Services.AddSingleton<IMessageHostInfoLookup, MessageHostInfoLookup>();
 
-                    typeof(MediatRServiceConfiguration)
-                        .GetMethod(nameof(MediatRServiceConfiguration.Using))
-                        !.MakeGenericMethod(options.MediatorImplementationType)
-                        !.Invoke(x, new object[0]);
-                }
-            );
+            ServiceRegistrar.AddRequiredServices(options.Services, new MediatRServiceConfiguration());
         }
     }
 }

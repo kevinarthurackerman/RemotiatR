@@ -8,10 +8,8 @@ namespace RemotiatR.Server
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
+        IAddRemotiatrOptions ConfigureMediator(Type implementationType, ServiceLifetime serviceLifetime);
 
-        IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType);
-
-        IAddRemotiatrOptions WithMediatorLifetime(ServiceLifetime serviceLifetime);
+        IAddRemotiatrOptions AddHost(Uri rootUri, Func<Type, Uri> pathLocator, Type messageSerializerType, params Assembly[] assemblies);
     }
 }

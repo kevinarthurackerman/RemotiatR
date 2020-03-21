@@ -22,9 +22,7 @@ namespace ContosoUniversity.Client
         {
             services.AddRemotiatr(x =>
             {
-                x.AddAssemblies(typeof(SharedAssemblyTypeMarker));
-
-                x.SetDefaultEndpointUriWithRoot(new Uri("https://localhost:44337"));
+                x.AddHost(new Uri("https://localhost:44337"), typeof(SharedAssemblyTypeMarker).Assembly);
 
                 x.AddHttpMessageTransport();
 

@@ -8,12 +8,8 @@ namespace RemotiatR.Client
     {
         IServiceCollection Services { get; }
 
-        IAddRemotiatrOptions SetEndpointUri(Uri endpointUri);
+        IAddRemotiatrOptions ConfigureMediator(Type implementationType, ServiceLifetime serviceLifetime);
 
-        IAddRemotiatrOptions AddAssemblies(params Assembly[] assembliesToScan);
-
-        IAddRemotiatrOptions WithMediatorImplementationType(Type implementationType);
-
-        IAddRemotiatrOptions WithMediatorLifetime(ServiceLifetime serviceLifetime);
+        IAddRemotiatrOptions AddHost(Uri rootUri, Func<Type, Uri> pathLocator, Type messageSerializerType, Type messageTransportType, params Assembly[] assemblies);
     }
 }

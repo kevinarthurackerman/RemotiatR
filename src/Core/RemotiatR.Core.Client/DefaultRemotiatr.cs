@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Immutable;
 
 namespace RemotiatR.Client
 {
@@ -7,11 +6,9 @@ namespace RemotiatR.Client
     {
         internal DefaultRemotiatr(
             IServiceProvider internalServiceProvider,
-            IServiceProvider applicationService,
-            IImmutableSet<Type> canHandleNotificationTypes,
-            IImmutableSet<Type> canHandleRequestTypes
+            IServiceProvider applicationService
         )
-            : base(internalServiceProvider, applicationService, canHandleNotificationTypes, canHandleRequestTypes)
+            : base(internalServiceProvider, applicationService)
         {
         }
     }

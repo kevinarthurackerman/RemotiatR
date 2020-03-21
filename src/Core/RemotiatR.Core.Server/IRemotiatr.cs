@@ -11,6 +11,6 @@ namespace RemotiatR.Server
 
     public interface IRemotiatr<TMarker>
     {
-        Task<Stream> Handle(Stream message, Action<IServiceProvider>? configure, CancellationToken cancellationToken);
+        Task<Stream> Handle(Uri uri, Stream message, Action<IServiceProvider>? configure, CancellationToken cancellationToken);
     }
 }

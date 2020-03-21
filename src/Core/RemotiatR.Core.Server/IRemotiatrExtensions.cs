@@ -7,13 +7,13 @@ namespace RemotiatR.Server
 {
     public static class IRemotiatrExtensions
     {
-        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Stream message) =>
-            remotiatr.Handle(message, default, default);
+        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Uri uri, Stream message) =>
+            remotiatr.Handle(uri, message, default, default);
 
-        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Stream message, Action<IServiceProvider> configure) =>
-            remotiatr.Handle(message, configure, default);
+        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Uri uri, Stream message, Action<IServiceProvider> configure) =>
+            remotiatr.Handle(uri, message, configure, default);
 
-        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Stream message, CancellationToken cancellationToken) =>
-            remotiatr.Handle(message, default, cancellationToken);
+        public static Task<Stream> Handle<TMarker>(this IRemotiatr<TMarker> remotiatr, Uri uri, Stream message, CancellationToken cancellationToken) =>
+            remotiatr.Handle(uri, message, default, cancellationToken);
     }
 }

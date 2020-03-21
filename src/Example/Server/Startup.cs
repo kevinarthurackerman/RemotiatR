@@ -34,8 +34,12 @@ namespace ContosoUniversity.Server
         {
             services.AddRemotiatr(x => 
             {
-                x.AddAssemblies(typeof(Program), typeof(SharedAssemblyTypeMarker));
-                
+                x.AddHost(
+                    new Uri("https://localhost:44337"),
+                    typeof(Program).Assembly,
+                    typeof(SharedAssemblyTypeMarker).Assembly
+                );
+
                 x.AddJsonSerializer();
 
                 x.Services.AddDbContext<SchoolContext>(options =>

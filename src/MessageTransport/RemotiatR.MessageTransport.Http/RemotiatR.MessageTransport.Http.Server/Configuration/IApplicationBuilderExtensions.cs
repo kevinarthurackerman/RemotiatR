@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using RemotiatR.Server;
 using System;
@@ -43,7 +44,7 @@ namespace RemotiatR.MessageTransport.Http.Server
                     var dataStream = new MemoryStream();
                     await httpContext.Request.Body.CopyToAsync(dataStream);
 
-                    var result = await remotiatr.Handle(dataStream);
+                    var result = await remotiatr.Handle(new Uri(httpContext.Request.GetDisplayUrl()), dataStream);
 
                     await result.CopyToAsync(httpContext.Response.Body);
                 });

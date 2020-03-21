@@ -1,41 +1,27 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
+using System.Reflection;
+using RemotiatR.Shared;
 
 namespace RemotiatR.Client
 {
     public static class IAddRemotiatrOptionsExtensions
     {
-        public static IAddRemotiatrOptions WithMediatorImplementationType<TMediator>(this IAddRemotiatrOptions addRemotiatrOptions)
-            where TMediator : IMediator =>
-            addRemotiatrOptions?.WithMediatorImplementationType(typeof(TMediator)) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
+        public static IAddRemotiatrOptions ConfigureMediator<TMediator>(this IAddRemotiatrOptions options, ServiceLifetime serviceLifetime) where TMediator : IMediator =>
+            options.ConfigureMediator(typeof(TMediator), serviceLifetime);
 
-        public static IAddRemotiatrOptions AsSingleton(this IAddRemotiatrOptions addRemotiatrOptions) =>
-            addRemotiatrOptions?.WithMediatorLifetime(ServiceLifetime.Singleton) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
+        public static IAddRemotiatrOptions AddHost(this IAddRemotiatrOptions options, Uri rootUri, params Assembly[] assemblies) =>
+            options.AddHost(rootUri, x => new Uri("remotiatr", UriKind.Relative), typeof(IMessageSerializer), typeof(IMessageTransport), assemblies);
 
-        public static IAddRemotiatrOptions AsScoped(this IAddRemotiatrOptions addRemotiatrOptions) =>
-            addRemotiatrOptions?.WithMediatorLifetime(ServiceLifetime.Scoped) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
-
-        public static IAddRemotiatrOptions AsTransient(this IAddRemotiatrOptions addRemotiatrOptions) =>
-            addRemotiatrOptions?.WithMediatorLifetime(ServiceLifetime.Transient) ?? throw new ArgumentNullException(nameof(addRemotiatrOptions));
-
-        public static IAddRemotiatrOptions SetDefaultEndpointUriWithRoot(this IAddRemotiatrOptions addRemotiatrOptions, Uri endpointRoot)
-        {
-            if (addRemotiatrOptions == null) throw new ArgumentNullException(nameof(addRemotiatrOptions));
-            if (!endpointRoot.IsAbsoluteUri) throw new InvalidOperationException($"{nameof(endpointRoot)} must be absolute");
-
-            var uri = new Uri(endpointRoot, "remotiatr");
-
-            return addRemotiatrOptions.SetEndpointUri(uri);
-        }
-
-        public static IAddRemotiatrOptions AddAssemblies(this IAddRemotiatrOptions addRemotiatrOptions, params Type[] assemblyTypeMarkers)
-        {
-            if (addRemotiatrOptions == null) throw new ArgumentNullException(nameof(addRemotiatrOptions));
-            if (assemblyTypeMarkers == null) throw new ArgumentNullException(nameof(assemblyTypeMarkers));
-
-            return addRemotiatrOptions.AddAssemblies(assemblyTypeMarkers.Select(x => x.Assembly).ToArray());
-        }
+        public static IAddRemotiatrOptions AddHost<TMessageSerializer, TMessageTransport>(
+            this IAddRemotiatrOptions options,
+            Uri rootUri,
+            Func<Type, Uri> pathLocator,
+            params Assembly[] assemblies
+        ) 
+            where TMessageSerializer : IMessageSerializer
+            where TMessageTransport : IMessageTransport 
+        => options.AddHost(rootUri, pathLocator, typeof(TMessageSerializer), typeof(TMessageTransport), assemblies);
     }
 }

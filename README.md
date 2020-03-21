@@ -24,6 +24,8 @@ Check out the example at [src/Example/](https://github.com/kevinarthurackerman/R
 
 In your shared project
 ```csharp
+using MediatR;
+
 public class Ping
 {
     public class Request : IRequest<Response>
@@ -39,6 +41,10 @@ public class Ping
 
 On your server
 ```csharp
+using RemotiatR.Server;
+using RemotiatR.MessageTransport.Http.Server;
+using RemotiatR.Serializer.Json.Server;
+
 public class Startup
 {
     ...
@@ -47,8 +53,8 @@ public class Startup
         ...
         services.AddRemotiatr(x => 
         {
-            // register assemblies to search for notifications and requests
-            x.AddAssemblies(typeof(Ping),typeof(Startup)));
+            // register host uri and assemblies to search for notifications and requests
+            x.AddHost(new Uri("https://localhost:44337"), typeof(Ping).Assembly, typeof(Startup).Assembly);
 			
             // register http message transport
             x.AddHttpMessageTransport();
@@ -75,6 +81,10 @@ public class PingHandler : IRequestHandler<Ping.Request, Ping.Response>
 
 On your client
 ```csharp
+using RemotiatR.Client;
+using RemotiatR.MessageTransport.Http.Client;
+using RemotiatR.Serializer.Json.Client;
+
 public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
@@ -82,11 +92,8 @@ public class Startup
         ...
         services.AddRemotiatr(x =>
         {
-            // register assemblies to search for notifications and requests
-            x.AddAssemblies(typeof(Ping), typeof(Startup));
-            
-            // set the uri to send requests to
-            x.SetDefaultEndpointUriWithRoot(new Uri("https://localhost:{{port number}}"));
+            // register host uri and assemblies to search for notifications and requests
+            x.AddHost(new Uri("https://localhost:44337"), typeof(Ping).Assembly, typeof(Startup).Assembly);
 			
             // register http message transport
             x.AddHttpMessageTransport();
