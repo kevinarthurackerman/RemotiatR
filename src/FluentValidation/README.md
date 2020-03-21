@@ -3,10 +3,17 @@
 ### Add support for FluentValidation
 Configure rules with an easy fluent syntax with [FluentValidation](https://github.com/FluentValidation/FluentValidation/) and apply those rules on the client, server, or both.
 
+> RemotiatR is not made in direct affiliation or endorsement of the authors or maintainers of any other libraries
+
 ### Install Packages
-Add support for FluentValidation
+To add support for FluentValidation add the client and server packages to your respective client and server projects
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Client/>
 - <https://www.nuget.org/packages/RemotiatR.FluentValidation.Server/>
+
+```
+dotnet add package RemotiatR.FluentValidation.Client
+dotnet add package RemotiatR.FluentValidation.Server
+```
 
 ### Getting Started
 Check out the example at [src/Example/](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Example)

@@ -4,20 +4,26 @@
 ### MediatR For Your Remote Clients
 RemotiatR makes it easy to run you [MediatR](https://github.com/jbogard/MediatR) requests and commands from a remote client on your server without all the ceremony. Just send or publish the same way you always would, and RemotiatR handles everything between.
 
+> RemotiatR is not made in direct affiliation or endorsement of the authors or maintainers of any other libraries
+
 ### Install Packages
-Base nuget packages
+To add RemotiatR to your project add the client and server packages to your respective client and server projects
+
 - <https://www.nuget.org/packages/RemotiatR.Client/>
 - <https://www.nuget.org/packages/RemotiatR.Server/>
 
-Add support for HTTP
-- <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Client/>
-- <https://www.nuget.org/packages/RemotiatR.MessageTransport.Http.Server/>
+```
+dotnet add package RemotiatR.Client
+dotnet add package RemotiatR.Server
+```
 
-Add support for JSON
-- <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Client/>
-- <https://www.nuget.org/packages/RemotiatR.Serializer.Json.Server/>
+#### Extensions
 
-Add support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
+Adding support for [HTTP](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/MessageTransport/RemotiatR.MessageTransport.Http)
+
+Adding support for [JSON](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Serializer/RemotiatR.Serializer.Json)
+
+Adding support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
 
 ### Getting Started
 Check out the example at [src/Example/](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Example)
