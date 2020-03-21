@@ -12,12 +12,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemotiatR.Server;
 using System.Linq;
-using RemotiatR.MessageTransport.Http.Server;
 using RemotiatR.FluentValidation.Server;
 using RemotiatR.Serializer.Json.Server;
 using System;
 using System.Net.Http;
 using Microsoft.AspNetCore.Components;
+using RemotiatR.MessageTransport.Http.Server;
 
 namespace ContosoUniversity.Server
 {

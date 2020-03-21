@@ -30,7 +30,7 @@ namespace RemotiatR.Client
             if (!_canHandleNotificationTypes.TryGetValue(notification.GetType(), out var _))
                 throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
 
-            return PublishNotification(notification, cancellationToken);
+            return PublishNotification(notification, default, cancellationToken);
         }
 
         public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
@@ -41,14 +41,26 @@ namespace RemotiatR.Client
             if (!_canHandleNotificationTypes.TryGetValue(notification.GetType(), out var _))
                 throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
 
-            return PublishNotification(notification, cancellationToken);
+            return PublishNotification(notification, default, cancellationToken);
         }
 
-        private async Task PublishNotification(object notification, CancellationToken cancellationToken)
+        public Task Publish(object notification, Action<IServiceProvider>? configure, CancellationToken cancellationToken)
+        {
+            if (notification == null) throw new ArgumentNullException(nameof(notification));
+
+            if (!_canHandleNotificationTypes.TryGetValue(notification.GetType(), out var _))
+                throw new InvalidOperationException($"This server is not configured to handle notification type {notification.GetType().FullName}.");
+
+            return PublishNotification(notification, configure, cancellationToken);
+        }
+
+        private async Task PublishNotification(object notification, Action<IServiceProvider>? configure, CancellationToken cancellationToken)
         {
             using var scope = _internalServiceProvider.CreateScope();
 
             scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
+
+            configure?.Invoke(scope.ServiceProvider);
 
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
@@ -62,7 +74,7 @@ namespace RemotiatR.Client
             if (!_canHandleRequestTypes.TryGetValue(request.GetType(), out var _))
                 throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
 
-            return (TResponse)(await SendRequest(request, cancellationToken));
+            return (TResponse)(await SendRequest(request, default, cancellationToken));
         }
 
         public Task<object> Send(object request, CancellationToken cancellationToken = default)
@@ -72,14 +84,26 @@ namespace RemotiatR.Client
             if (!_canHandleRequestTypes.TryGetValue(request.GetType(), out var _))
                 throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
 
-            return SendRequest(request, cancellationToken);
+            return SendRequest(request, default, cancellationToken);
         }
 
-        private async Task<object> SendRequest(object request, CancellationToken cancellationToken)
+        public Task<object> Send(object request, Action<IServiceProvider>? configure, CancellationToken cancellationToken = default)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            if (!_canHandleRequestTypes.TryGetValue(request.GetType(), out var _))
+                throw new InvalidOperationException($"This server is not configured to handle request type {request.GetType().FullName}.");
+
+            return SendRequest(request, configure, cancellationToken);
+        }
+
+        private async Task<object> SendRequest(object request, Action<IServiceProvider>? configure, CancellationToken cancellationToken)
         {
             using var scope = _internalServiceProvider.CreateScope();
 
             scope.ServiceProvider.GetRequiredService<IApplicationServiceProviderAccessor>().Value = _applicationServiceProvider;
+
+            configure?.Invoke(scope.ServiceProvider);
 
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 

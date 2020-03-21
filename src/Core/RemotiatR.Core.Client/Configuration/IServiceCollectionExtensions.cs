@@ -76,6 +76,8 @@ namespace RemotiatR.Client
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
 
+            options.Services.AddScoped<MessageMetadata>();
+
             options.Services.AddMediatR(
                 options.AssembliesToScan.ToArray(), 
                 x =>
@@ -129,7 +131,8 @@ namespace RemotiatR.Client
                         x => notificationHandlerType.Invoke(new object[] 
                         { 
                             x.GetRequiredService<IMessageTransport>(),
-                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
+                            x.GetRequiredService<IMessageSerializer>(),
+                            x.GetRequiredService<MessageMetadata>(),
                             endpointUri 
                         })
                     );
@@ -167,7 +170,8 @@ namespace RemotiatR.Client
                         x => requestHandlerType.Invoke(new object[] 
                         { 
                             x.GetRequiredService<IMessageTransport>(),
-                            x.GetRequiredService<IEnumerable<IMessagePipelineHandler>>(),
+                            x.GetRequiredService<IMessageSerializer>(),
+                            x.GetRequiredService<MessageMetadata>(),
                             endpointUri 
                         })
                     );

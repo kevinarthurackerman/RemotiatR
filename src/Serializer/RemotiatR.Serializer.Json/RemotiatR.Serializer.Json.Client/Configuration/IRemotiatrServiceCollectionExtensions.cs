@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using RemotiatR.Shared;
-using System;
-using RemotiatR.Serializer.Json.Shared;
 using RemotiatR.Client;
+using RemotiatR.Shared;
+using RemotiatR.Serializer.Json.Shared;
+using System;
 
 namespace RemotiatR.Serializer.Json.Client
 {

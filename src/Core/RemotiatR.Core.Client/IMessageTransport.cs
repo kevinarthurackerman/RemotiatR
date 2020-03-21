@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,6 +7,6 @@ namespace RemotiatR.Client
 {
     public interface IMessageTransport
     {
-        Task<object> SendRequest(Uri uri, object requestData, CancellationToken cancellationToken = default);
+        Task<Stream> SendRequest(Uri uri, Stream message, CancellationToken cancellationToken = default);
     }
 }

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using RemotiatR.Shared;
+using System.IO;
 using RemotiatR.Client;
 
 namespace RemotiatR.MessageTransport.Http.Client
@@ -10,33 +11,25 @@ namespace RemotiatR.MessageTransport.Http.Client
     internal class DefaultHttpMessageTransport : IMessageTransport
     {
         private readonly HttpClient _httpClient;
-        private readonly IMessageSerializer _serializer;
 
-        public DefaultHttpMessageTransport(IApplicationService<HttpClient> httpClient, IMessageSerializer serializer)
-        {
+        public DefaultHttpMessageTransport(IApplicationService<HttpClient> httpClient) =>
             _httpClient = httpClient.Value ?? throw new ArgumentNullException(nameof(httpClient));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-        }
 
-        public async Task<object> SendRequest(Uri uri, object requestData, CancellationToken cancellationToken = default)
+        public async Task<Stream> SendRequest(Uri uri, Stream message, CancellationToken cancellationToken = default)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
-            if (requestData == null) throw new ArgumentNullException(nameof(requestData));
-            
-            var payload = await _serializer.Serialize(requestData);
+            if (message == null) throw new ArgumentNullException(nameof(message));
 
-            var content = new StreamContent(payload);
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-            requestMessage.Content = content;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new StreamContent(message)
+            };
 
             var responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
             responseMessage.EnsureSuccessStatusCode();
 
-            var resultStream = await responseMessage.Content.ReadAsStreamAsync();
-
-            return await _serializer.Deserialize(resultStream);
+            return await responseMessage.Content.ReadAsStreamAsync();
         }
     }
 }
