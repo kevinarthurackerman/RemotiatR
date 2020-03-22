@@ -51,6 +51,7 @@ $buildOrder | ForEach-Object {
         -p:EmbedUntrackedSources=true `
         -p:IncludeSymbols=true `
         -p:SymbolPackageFormat=snupkg `
+        -p:PackageLicenseExpression="MIT" `
         --output $root\nuget
 
     nuget add $nupkgPath -source $packagesDir

@@ -127,4 +127,4 @@ public class ServerTimeService
 Want to contribute? Great!
 
 ### License
-[MIT](https://github.com/kevinarthurackerman/RemotiatR/blob/master/LICENSE)
+[MIT](https://github.com/kevinarthurackerman/RemotiatR/blob/master/LICENSE.md)
