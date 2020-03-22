@@ -1,2 +1,2 @@
 $packageId="RemotiatR.Server"
-$projectPath="..\src\Core\RemotiatR.Core.Server\RemotiatR.Core.Server.csproj"
+$projectPath="..\src\Core\Server\RemotiatR.Core.Server.csproj"

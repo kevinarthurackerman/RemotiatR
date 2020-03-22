@@ -1,2 +1,2 @@
 $packageId="RemotiatR.MessageTransport.Http.Shared"
-$projectPath="..\src\MessageTransport\RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Shared\RemotiatR.MessageTransport.Http.Shared.csproj"
+$projectPath="..\src\MessageTransport\Http\Shared\RemotiatR.MessageTransport.Http.Shared.csproj"

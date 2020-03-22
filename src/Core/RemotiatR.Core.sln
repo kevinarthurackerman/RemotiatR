@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Server", "RemotiatR.Core.Server\RemotiatR.Core.Server.csproj", "{DC9D9AD0-0773-4354-96EC-C2922F08718B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Server", "Server\RemotiatR.Core.Server.csproj", "{DC9D9AD0-0773-4354-96EC-C2922F08718B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Shared", "RemotiatR.Core.Shared\RemotiatR.Core.Shared.csproj", "{E7E279E5-243A-4ED6-9FE5-F3992362B355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Shared", "Shared\RemotiatR.Core.Shared.csproj", "{E7E279E5-243A-4ED6-9FE5-F3992362B355}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Client", "RemotiatR.Core.Client\RemotiatR.Core.Client.csproj", "{A9D40B12-88B4-4078-9717-84F10D18AEF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Client", "Client\RemotiatR.Core.Client.csproj", "{A9D40B12-88B4-4078-9717-84F10D18AEF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

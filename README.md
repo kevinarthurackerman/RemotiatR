@@ -19,9 +19,9 @@ dotnet add package RemotiatR.Server
 
 #### Extensions
 
-Adding support for [HTTP](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/MessageTransport/RemotiatR.MessageTransport.Http)
+Adding support for [HTTP](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/MessageTransport/Http)
 
-Adding support for [JSON](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Serializer/RemotiatR.Serializer.Json)
+Adding support for [JSON](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Serializer/Json)
 
 Adding support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
 

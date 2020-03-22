@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Client", "RemotiatR.FluentValidation.Client\RemotiatR.FluentValidation.Client.csproj", "{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Client", "Client\RemotiatR.FluentValidation.Client.csproj", "{C9C1BFF7-C0FF-4284-99FD-561B07C6AEC3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Server", "RemotiatR.FluentValidation.Server\RemotiatR.FluentValidation.Server.csproj", "{97767612-EAFB-418C-9EC9-20F08F654EA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Server", "Server\RemotiatR.FluentValidation.Server.csproj", "{97767612-EAFB-418C-9EC9-20F08F654EA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "RemotiatR.FluentValidation.Shared\RemotiatR.FluentValidation.Shared.csproj", "{35B01798-D3EA-4769-947B-9C7F21C18318}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "Shared\RemotiatR.FluentValidation.Shared.csproj", "{35B01798-D3EA-4769-947B-9C7F21C18318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

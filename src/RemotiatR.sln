@@ -9,29 +9,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity.Server", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity.Shared", "Example\Shared\ContosoUniversity.Shared.csproj", "{59056C9E-33AD-4A68-BFD9-DC067D1F5B7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Shared", "Core\RemotiatR.Core.Shared\RemotiatR.Core.Shared.csproj", "{23BEF8D9-2C41-4853-8914-4889393852DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Shared", "Core\Shared\RemotiatR.Core.Shared.csproj", "{23BEF8D9-2C41-4853-8914-4889393852DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Server", "Core\RemotiatR.Core.Server\RemotiatR.Core.Server.csproj", "{2A724D55-FB67-49F9-845B-4056E77B665C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Server", "Core\Server\RemotiatR.Core.Server.csproj", "{2A724D55-FB67-49F9-845B-4056E77B665C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Client", "Core\RemotiatR.Core.Client\RemotiatR.Core.Client.csproj", "{2C8EFE3C-B9D9-42CD-9582-73D19A595204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Core.Client", "Core\Client\RemotiatR.Core.Client.csproj", "{2C8EFE3C-B9D9-42CD-9582-73D19A595204}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Server", "FluentValidation\RemotiatR.FluentValidation.Server\RemotiatR.FluentValidation.Server.csproj", "{CB3F41C3-F1EE-41B1-816F-D8F1DBA5528A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Server", "FluentValidation\Server\RemotiatR.FluentValidation.Server.csproj", "{CB3F41C3-F1EE-41B1-816F-D8F1DBA5528A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Client", "FluentValidation\RemotiatR.FluentValidation.Client\RemotiatR.FluentValidation.Client.csproj", "{14CD847F-53BF-44A4-A8A5-F2442054CC3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Client", "FluentValidation\Client\RemotiatR.FluentValidation.Client.csproj", "{14CD847F-53BF-44A4-A8A5-F2442054CC3F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Client", "MessageTransport\RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Client\RemotiatR.MessageTransport.Http.Client.csproj", "{1DBC6348-8C25-4EAB-B28B-26BF13EAB505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Client", "MessageTransport\Http\RemotiatR.MessageTransport.Http.Client\RemotiatR.MessageTransport.Http.Client.csproj", "{1DBC6348-8C25-4EAB-B28B-26BF13EAB505}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "MessageTransport\RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Server\RemotiatR.MessageTransport.Http.Server.csproj", "{A69CAEB6-ECF6-465D-9583-A5E143E020A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "MessageTransport\Http\RemotiatR.MessageTransport.Http.Server\RemotiatR.MessageTransport.Http.Server.csproj", "{A69CAEB6-ECF6-465D-9583-A5E143E020A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Client", "Serializer\RemotiatR.Serializer.Json\RemotiatR.Serializer.Json.Client\RemotiatR.Serializer.Json.Client.csproj", "{DB6BF6B4-035C-4F9B-9B8F-9E8AB0823D02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Client", "Serializer\Json\RemotiatR.Serializer.Json.Client\RemotiatR.Serializer.Json.Client.csproj", "{DB6BF6B4-035C-4F9B-9B8F-9E8AB0823D02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Server", "Serializer\RemotiatR.Serializer.Json\RemotiatR.Serializer.Json.Server\RemotiatR.Serializer.Json.Server.csproj", "{C7D67219-7634-48DB-A8FD-505EB2752EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Server", "Serializer\Json\RemotiatR.Serializer.Json.Server\RemotiatR.Serializer.Json.Server.csproj", "{C7D67219-7634-48DB-A8FD-505EB2752EA2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "FluentValidation\RemotiatR.FluentValidation.Shared\RemotiatR.FluentValidation.Shared.csproj", "{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "FluentValidation\Shared\RemotiatR.FluentValidation.Shared.csproj", "{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Shared", "MessageTransport\RemotiatR.MessageTransport.Http\RemotiatR.MessageTransport.Http.Shared\RemotiatR.MessageTransport.Http.Shared.csproj", "{0E6B5486-099B-499F-A278-52AB98292587}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Shared", "MessageTransport\Http\Shared\RemotiatR.MessageTransport.Http.Shared.csproj", "{0E6B5486-099B-499F-A278-52AB98292587}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Shared", "Serializer\RemotiatR.Serializer.Json\RemotiatR.Serializer.Json.Shared\RemotiatR.Serializer.Json.Shared.csproj", "{E2691137-D37D-4D9B-8DEF-658D002D2EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Shared", "Serializer\Json\Shared\RemotiatR.Serializer.Json.Shared.csproj", "{E2691137-D37D-4D9B-8DEF-658D002D2EAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
