@@ -19,13 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Client", "FluentValidation\Client\RemotiatR.FluentValidation.Client.csproj", "{14CD847F-53BF-44A4-A8A5-F2442054CC3F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Client", "MessageTransport\Http\RemotiatR.MessageTransport.Http.Client\RemotiatR.MessageTransport.Http.Client.csproj", "{1DBC6348-8C25-4EAB-B28B-26BF13EAB505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Client", "MessageTransport\Http\Client\RemotiatR.MessageTransport.Http.Client.csproj", "{1DBC6348-8C25-4EAB-B28B-26BF13EAB505}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "MessageTransport\Http\RemotiatR.MessageTransport.Http.Server\RemotiatR.MessageTransport.Http.Server.csproj", "{A69CAEB6-ECF6-465D-9583-A5E143E020A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Http.Server", "MessageTransport\Http\Server\RemotiatR.MessageTransport.Http.Server.csproj", "{A69CAEB6-ECF6-465D-9583-A5E143E020A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Client", "Serializer\Json\RemotiatR.Serializer.Json.Client\RemotiatR.Serializer.Json.Client.csproj", "{DB6BF6B4-035C-4F9B-9B8F-9E8AB0823D02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Client", "Serializer\Json\Client\RemotiatR.Serializer.Json.Client.csproj", "{DB6BF6B4-035C-4F9B-9B8F-9E8AB0823D02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Server", "Serializer\Json\RemotiatR.Serializer.Json.Server\RemotiatR.Serializer.Json.Server.csproj", "{C7D67219-7634-48DB-A8FD-505EB2752EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Server", "Serializer\Json\Server\RemotiatR.Serializer.Json.Server.csproj", "{C7D67219-7634-48DB-A8FD-505EB2752EA2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.FluentValidation.Shared", "FluentValidation\Shared\RemotiatR.FluentValidation.Shared.csproj", "{44516202-0FB8-4C0C-96EA-FBD5FD7BBDF1}"
 EndProject
