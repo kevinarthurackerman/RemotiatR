@@ -54,34 +54,37 @@ namespace RemotiatR.Serializer.Json.Shared
 
         public Task<Stream> Serialize(object? message, IDictionary<string,string> messageMetadata)
         {
-            try
+            return Task.FromResult((Stream)new LazyStream(() =>
             {
-                var payload = new Message
+                try
                 {
-                    Data = message,
-                    Meta = messageMetadata.Any()
-                        ? messageMetadata is Dictionary<string, string> metaDict
-                            ? metaDict
-                            : messageMetadata.ToDictionary(x => x.Key, x => x.Value)
-                        : null
-                };
+                    var payload = new Message
+                    {
+                        Data = message,
+                        Meta = messageMetadata.Any()
+                            ? messageMetadata is Dictionary<string, string> metaDict
+                                ? metaDict
+                                : messageMetadata.ToDictionary(x => x.Key, x => x.Value)
+                            : null
+                    };
 
-                var stream = new MemoryStream();
-                using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
-                using var jsonTextWriter = new JsonTextWriter(streamWriter);
+                    var stream = new MemoryStream();
+                    using var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
+                    using var jsonTextWriter = new JsonTextWriter(streamWriter);
 
-                jsonTextWriter.CloseOutput = false;
-                _jsonSerializer.Serialize(jsonTextWriter, payload, typeof(Message));
-                jsonTextWriter.Flush();
+                    jsonTextWriter.CloseOutput = false;
+                    _jsonSerializer.Serialize(jsonTextWriter, payload, typeof(Message));
+                    jsonTextWriter.Flush();
 
-                RestartStream(stream);
+                    RestartStream(stream);
 
-                return Task.FromResult((Stream)stream);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception("Derializing failed. See inner exception for details.", exception);
-            }
+                    return stream;
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception("Serializing failed. See inner exception for details.", exception);
+                }
+            }));
         }
 
         private static void RestartStream(Stream stream)
