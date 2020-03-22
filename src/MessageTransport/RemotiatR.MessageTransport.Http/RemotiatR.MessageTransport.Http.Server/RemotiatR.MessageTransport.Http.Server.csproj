@@ -14,9 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
-    <PackageReference Include="RemotiatR.MessageTransport.Http.Shared" Version="1.0.17-beta" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.17-beta" />
-    <PackageReference Include="RemotiatR.Shared" Version="1.0.17-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.18-beta" />
   </ItemGroup>
 
 </Project>
