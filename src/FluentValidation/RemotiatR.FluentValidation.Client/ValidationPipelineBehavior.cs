@@ -23,9 +23,9 @@ namespace RemotiatR.FluentValidation.Client
 
         private readonly IValidationErrorsAccessor _validationErrorsAccessor;
         private readonly IServiceProvider _serviceProvider;
-        private readonly MessageMetadata _messageMetadata;
+        private readonly IMessageMetadata _messageMetadata;
 
-        public ValidationPipelineBehavior(IValidationErrorsAccessor validationErrorsAccessor, IServiceProvider serviceProvider, MessageMetadata messageMetadata)
+        public ValidationPipelineBehavior(IValidationErrorsAccessor validationErrorsAccessor, IServiceProvider serviceProvider, IMessageMetadata messageMetadata)
         {
             _validationErrorsAccessor = validationErrorsAccessor ?? throw new ArgumentNullException(nameof(validationErrorsAccessor));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

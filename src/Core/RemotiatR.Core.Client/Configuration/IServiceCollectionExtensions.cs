@@ -55,7 +55,7 @@ namespace RemotiatR.Client
 
             options.Services.TryAddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
 
-            options.Services.AddScoped<MessageMetadata>();
+            options.Services.AddScoped<IMessageMetadata, MessageMetadata>();
 
             options.Services.AddSingleton<IMessageHostInfoLookup, MessageHostInfoLookup>();
 

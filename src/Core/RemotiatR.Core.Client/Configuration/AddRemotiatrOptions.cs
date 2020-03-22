@@ -118,7 +118,7 @@ namespace RemotiatR.Client
                 {
                     x.GetRequiredService(messageInfo.HostInfo.MessageTransportType),
                     x.GetRequiredService(messageInfo.HostInfo.MessageSerializerType),
-                    x.GetRequiredService<MessageMetadata>(),
+                    x.GetRequiredService<IMessageMetadata>(),
                     messageInfo.EndpointPath
                 })
             );
@@ -141,7 +141,7 @@ namespace RemotiatR.Client
                 {
                     x.GetRequiredService(messageInfo.HostInfo.MessageTransportType),
                     x.GetRequiredService(messageInfo.HostInfo.MessageSerializerType),
-                    x.GetRequiredService<MessageMetadata>(),
+                    x.GetRequiredService<IMessageMetadata>(),
                     messageInfo.EndpointPath
                 })
             );

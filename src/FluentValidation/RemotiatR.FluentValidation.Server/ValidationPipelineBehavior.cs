@@ -20,9 +20,9 @@ namespace RemotiatR.FluentValidation.Server
         private readonly ConcurrentDictionary<Type, Type> _typeValidatorTypeCache = new ConcurrentDictionary<Type, Type>();
 
         private readonly IServiceProvider _serviceProvider;
-        private readonly MessageMetadata _messageMetadata;
+        private readonly IMessageMetadata _messageMetadata;
 
-        public ValidationPipelineBehavior(IServiceProvider serviceProvider, MessageMetadata messageMetadata)
+        public ValidationPipelineBehavior(IServiceProvider serviceProvider, IMessageMetadata messageMetadata)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _messageMetadata = messageMetadata ?? throw new ArgumentNullException(nameof(messageMetadata));

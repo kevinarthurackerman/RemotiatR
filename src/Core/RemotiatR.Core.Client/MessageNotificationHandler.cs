@@ -11,13 +11,13 @@ namespace RemotiatR.Client
     {
         private readonly IMessageTransport _messageTransport;
         private readonly IMessageSerializer _messageSerializer;
-        private readonly MessageMetadata _messageMetadata;
+        private readonly IMessageMetadata _messageMetadata;
         private readonly Uri _uri;
 
         public MessageNotificationHandler(
             IMessageTransport messageTransport,
             IMessageSerializer messageSerializer,
-            MessageMetadata messageMetadata,
+            IMessageMetadata messageMetadata,
             Uri uri
         )
         {

@@ -29,7 +29,7 @@ namespace RemotiatR.Server
 
             configure?.Invoke(scope.ServiceProvider);
 
-            var messageMetadata = scope.ServiceProvider.GetRequiredService<MessageMetadata>();
+            var messageMetadata = scope.ServiceProvider.GetRequiredService<IMessageMetadata>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
             var messageHostInfoLookup = scope.ServiceProvider.GetRequiredService<IMessageHostInfoLookup>();
 
