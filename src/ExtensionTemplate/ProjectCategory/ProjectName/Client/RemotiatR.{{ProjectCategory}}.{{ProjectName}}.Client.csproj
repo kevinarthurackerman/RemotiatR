@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>RemotiatR.{{ProjectCategory}}.{{ProjectName}}.Client</AssemblyName>
+    <RootNamespace>RemotiatR.{{ProjectCategory}}.{{ProjectName}}.Client</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RemotiatR.{{ProjectCategory}}.{{ProjectName}}.Shared" Version="1.0.18-beta" />
+    <PackageReference Include="RemotiatR.Client" Version="1.0.18-beta" />
+  </ItemGroup>
+
+</Project>
