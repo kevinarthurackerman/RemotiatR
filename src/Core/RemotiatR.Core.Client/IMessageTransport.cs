@@ -7,6 +7,6 @@ namespace RemotiatR.Client
 {
     public interface IMessageTransport
     {
-        Task<Stream> SendRequest(Uri uri, Stream message, CancellationToken cancellationToken = default);
+        Task<Stream> SendRequest(Uri uri, Stream message, object messageObject, CancellationToken cancellationToken = default);
     }
 }

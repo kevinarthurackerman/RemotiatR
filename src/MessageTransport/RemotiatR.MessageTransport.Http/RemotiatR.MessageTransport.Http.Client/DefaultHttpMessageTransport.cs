@@ -15,7 +15,7 @@ namespace RemotiatR.MessageTransport.Http.Client
         public DefaultHttpMessageTransport(IApplicationService<HttpClient> httpClient) =>
             _httpClient = httpClient.Value ?? throw new ArgumentNullException(nameof(httpClient));
 
-        public async Task<Stream> SendRequest(Uri uri, Stream message, CancellationToken cancellationToken = default)
+        public async Task<Stream> SendRequest(Uri uri, Stream message, object messageObject, CancellationToken cancellationToken = default)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
             if (message == null) throw new ArgumentNullException(nameof(message));
