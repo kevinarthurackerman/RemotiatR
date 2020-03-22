@@ -128,7 +128,7 @@ Want to contribute? Great!
 
 Check out the [setup docs](https://github.com/kevinarthurackerman/RemotiatR/blob/master/SETUP.md) to get started
 
-If you are creating an extension check out the [Extension Temlate](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/ExtensionTemplate)
+If you are creating an extension check out the [Extension Template](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/ExtensionTemplate)
 
 ### License
 [MIT](https://github.com/kevinarthurackerman/RemotiatR/blob/master/LICENSE.md)
