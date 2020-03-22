@@ -1,4 +1,4 @@
-# RemotiatR.Serializer.Json.Http
+# RemotiatR.Serializer.Json
 
 ### Add support for sending notifications and request via JSON
 
