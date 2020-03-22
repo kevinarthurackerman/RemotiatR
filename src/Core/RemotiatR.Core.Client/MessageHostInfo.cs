@@ -6,9 +6,9 @@ using RemotiatR.Shared;
 
 namespace RemotiatR.Client
 {
-    internal class MEssageHostInfo : IMessageHostInfo
+    internal class MessageHostInfo : IMessageHostInfo
     {
-        internal static IMessageHostInfo NoopMessageHostInfo = new MEssageHostInfo();
+        internal static IMessageHostInfo NoopMessageHostInfo = new MessageHostInfo();
 
         public Uri RootUri { get; }
         public Type MessageSerializerType { get; }
@@ -16,10 +16,10 @@ namespace RemotiatR.Client
         public IReadOnlyDictionary<Type, IMessageInfo> MessageInfos { get; }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        private MEssageHostInfo() { }
+        private MessageHostInfo() { }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        internal MEssageHostInfo(Uri rootUri, Type messageSerializerType, Type messageTransportType, IEnumerable<IMessageInfo> messageInfos)
+        internal MessageHostInfo(Uri rootUri, Type messageSerializerType, Type messageTransportType, IEnumerable<IMessageInfo> messageInfos)
         {
             RootUri = rootUri ?? throw new ArgumentNullException(nameof(rootUri));
             MessageSerializerType = messageSerializerType ?? throw new ArgumentNullException(nameof(messageSerializerType));

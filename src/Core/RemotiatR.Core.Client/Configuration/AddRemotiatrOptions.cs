@@ -77,7 +77,7 @@ namespace RemotiatR.Client
                 messageInfos.Add(messageInfo);
             }
 
-            var messageHostInfo = new MEssageHostInfo(rootUri, messageSerializerType, messageTransportType, messageInfos);
+            var messageHostInfo = new MessageHostInfo(rootUri, messageSerializerType, messageTransportType, messageInfos);
 
             foreach (var messageInfo in messageInfos) messageInfo.SetHost(messageHostInfo);
 

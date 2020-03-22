@@ -8,7 +8,7 @@ namespace RemotiatR.Client
         public Type MessageType { get; }
         public Uri EndpointPath { get; }
         public MediatorTypes MediatorType { get; }
-        public IMessageHostInfo HostInfo { get; private set; } = MEssageHostInfo.NoopMessageHostInfo;
+        public IMessageHostInfo HostInfo { get; private set; } = MessageHostInfo.NoopMessageHostInfo;
 
         internal MessageInfo(Type messageType, Uri endpointPath)
         {
