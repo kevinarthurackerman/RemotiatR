@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using RemotiatR.Server;
 using System;
 using System.Collections.Generic;
@@ -45,46 +47,66 @@ namespace RemotiatR.MessageTransport.Http.Server
             {
                 x.Run(async httpContext =>
                 {
-                    if(!httpContext.Request.Headers.TryGetValue(_messageLengthsHeader, out var requestMessageLengths))
-                        throw new HttpRequestException($"Missing response header \"{_messageLengthsHeader}\"");
-
-                    var requestMessageLengthInts = new List<long>();
-                    foreach (var requestMessageLength in requestMessageLengths.ToString().Split(','))
-                    {
-                        if (!Int64.TryParse(requestMessageLength.Trim(), out var requestMessageLengthInt))
-                            throw new HttpRequestException($"\"{_messageLengthsHeader}\" request header was present, but contained a non-integer value \"{requestMessageLength}\"");
-                        requestMessageLengthInts.Add(requestMessageLengthInt);
-                    }
-
-                    var requestContent = new MemoryStream();
-                    await httpContext.Request.Body.CopyToAsync(requestContent);
-                    requestContent.Seek(0, SeekOrigin.Begin);
-
-                    var declaredLength = requestMessageLengthInts.Aggregate((x, y) => x + y);
-                    if (declaredLength != requestContent.Length)
-                        throw new HttpRequestException($"\"{_messageLengthsHeader}\" request header was present, but the lengths added up to {declaredLength} while the total content length is {requestContent.Length}");
-
-                    var remotiatr = httpContext.RequestServices.GetRequiredService<TRemotiatr>();
-
-                    var messageTasks = new List<Task<Stream>>();
-                    foreach(var requestMessageLengthInt in requestMessageLengthInts)
-                    {
-                        var messageBytes = new byte[requestMessageLengthInt];
-                        requestContent.Read(messageBytes);
-                        var message = new MemoryStream(messageBytes);
-
-                        messageTasks.Add(remotiatr.Handle(new Uri(httpContext.Request.GetDisplayUrl()), message));
-                    }
-
-                    await Task.WhenAll(messageTasks);
-
-                    var messageLengthsHeaderValues = messageTasks.Select(x => x.Result.Length);
-                    httpContext.Response.Headers.Add(_messageLengthsHeader, String.Join(",", messageLengthsHeaderValues));
-
-                    foreach (var messageTask in messageTasks)
-                        await messageTask.Result.CopyToAsync(httpContext.Response.Body);
+                    if (httpContext.Request.Headers.TryGetValue(_messageLengthsHeader, out var requestMessageLengths))
+                        await ProcessMultiple<TMarker, TRemotiatr>(httpContext, requestMessageLengths);
+                    else
+                        await ProcessSingle<TMarker, TRemotiatr>(httpContext);
                 });
             });
+        }
+
+        private static async Task ProcessMultiple<TMarker, TRemotiatr>(HttpContext httpContext, StringValues requestMessageLengths)
+            where TRemotiatr : IRemotiatr<TMarker>
+        {
+            var requestMessageLengthInts = new List<long>();
+            foreach (var requestMessageLength in requestMessageLengths.ToString().Split(','))
+            {
+                if (!Int64.TryParse(requestMessageLength.Trim(), out var requestMessageLengthInt))
+                    throw new HttpRequestException($"\"{_messageLengthsHeader}\" request header was present, but contained a non-integer value \"{requestMessageLength}\"");
+                requestMessageLengthInts.Add(requestMessageLengthInt);
+            }
+
+            var requestContent = new MemoryStream();
+            await httpContext.Request.Body.CopyToAsync(requestContent);
+            requestContent.Seek(0, SeekOrigin.Begin);
+
+            var declaredLength = requestMessageLengthInts.Aggregate((x, y) => x + y);
+            if (declaredLength != requestContent.Length)
+                throw new HttpRequestException($"\"{_messageLengthsHeader}\" request header was present, but the lengths added up to {declaredLength} while the total content length is {requestContent.Length}");
+
+            var remotiatr = httpContext.RequestServices.GetRequiredService<TRemotiatr>();
+
+            var messageTasks = new List<Task<Stream>>();
+            foreach (var requestMessageLengthInt in requestMessageLengthInts)
+            {
+                var messageBytes = new byte[requestMessageLengthInt];
+                requestContent.Read(messageBytes);
+                var message = new MemoryStream(messageBytes);
+
+                messageTasks.Add(remotiatr.Handle(new Uri(httpContext.Request.GetDisplayUrl()), message));
+            }
+
+            await Task.WhenAll(messageTasks);
+
+            var messageLengthsHeaderValues = messageTasks.Select(x => x.Result.Length);
+            httpContext.Response.Headers.Add(_messageLengthsHeader, String.Join(",", messageLengthsHeaderValues));
+
+            foreach (var messageTask in messageTasks)
+                await messageTask.Result.CopyToAsync(httpContext.Response.Body);
+        }
+
+        private static async Task ProcessSingle<TMarker, TRemotiatr>(HttpContext httpContext)
+            where TRemotiatr : IRemotiatr<TMarker>
+        {
+            var remotiatr = httpContext.RequestServices.GetRequiredService<TRemotiatr>();
+
+            var requestContent = new MemoryStream();
+            await httpContext.Request.Body.CopyToAsync(requestContent);
+            requestContent.Seek(0, SeekOrigin.Begin);
+
+            var result = await remotiatr.Handle(new Uri(httpContext.Request.GetDisplayUrl()), requestContent);
+
+            await result.CopyToAsync(httpContext.Response.Body);
         }
     }
 }

@@ -72,76 +72,105 @@ namespace RemotiatR.MessageTransport.Http.Client
 
             foreach(var groupedSendBatch in groupedSendBatches)
             {
-                _ = Task.Run(async () =>
+                if (groupedSendBatch.Count() == 1)
+                    SendSingle(httpClient, groupedSendBatch.Single());
+                else
+                    SendMultiple(httpClient, groupedSendBatch);
+            }
+        }
+
+        private static void SendMultiple(HttpClient httpClient, IGrouping<Uri, BatchedMessage> groupedSendBatch)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
                 {
-                    try
-                    {
-                        var uri = groupedSendBatch.Key;
-                        var batchedMessages = groupedSendBatch.ToArray();
+                    var uri = groupedSendBatch.Key;
+                    var batchedMessages = groupedSendBatch.ToArray();
 
-                        var messagePayload = batchedMessages.First().Message;
-                        messagePayload.Seek(0, SeekOrigin.End);
+                    var messagePayload = batchedMessages.First().Message;
+                    messagePayload.Seek(0, SeekOrigin.End);
 
-                        var requestMessageLengths = new List<string>()
+                    var requestMessageLengths = new List<string>()
                         {
                             messagePayload.Length.ToString()
                         };
-                        foreach (var additionalMessage in batchedMessages.Skip(1).ToArray())
-                        {
-                            requestMessageLengths.Add(additionalMessage.Message.Length.ToString());
-
-                            await additionalMessage.Message.CopyToAsync(messagePayload);
-                        }
-
-                        messagePayload.Seek(0, SeekOrigin.Begin);
-                        var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
-                        {
-                            Content = new StreamContent(messagePayload)
-                        };
-                        requestMessage.Headers.Add(_messageLengthsHeader, requestMessageLengths);
-
-                        var responseMessage = await httpClient.SendAsync(requestMessage);
-
-                        responseMessage.EnsureSuccessStatusCode();
-
-                        await responseMessage.Content.ReadAsStreamAsync();
-
-                        if(!responseMessage.Headers.TryGetValues(_messageLengthsHeader, out var responseMessageLengths))
-                            throw new HttpRequestException($"Missing response header \"{_messageLengthsHeader}\"");
-
-                        responseMessageLengths = responseMessageLengths.SelectMany(x => x.Split(','));
-
-                        if (responseMessageLengths.Count() != batchedMessages.Length)
-                            throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but contained {responseMessageLengths.Count()} values when it was expected to contain {batchedMessages.Length} values");
-
-                        var responseMessageLengthInts = new List<long>();
-                        foreach(var responseMessageLength in responseMessageLengths)
-                        {
-                            if (!Int64.TryParse(responseMessageLength.ToString().Trim(), out var responseMessageLengthInt))
-                                throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but contained a non-integer value");
-                            responseMessageLengthInts.Add(responseMessageLengthInt);
-                        }
-
-                        var responseContent = await responseMessage.Content.ReadAsStreamAsync();
-
-                        var declaredLength = responseMessageLengthInts.Aggregate((x, y) => x + y);
-                        if (declaredLength != responseContent.Length)
-                            throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but the lengths added up to {declaredLength} while the total content length is {responseContent.Length}");
-
-                        for (var i = 0; i < batchedMessages.Length; i++)
-                        {
-                            var messageBytes = new byte[responseMessageLengthInts[i]];
-                            await responseContent.ReadAsync(messageBytes);
-                            batchedMessages[i].CompletionSource.SetResult(new MemoryStream(messageBytes));
-                        }
-                    }
-                    catch (Exception exception)
+                    foreach (var additionalMessage in batchedMessages.Skip(1).ToArray())
                     {
-                        foreach(var sendBatch in groupedSendBatch)
-                            sendBatch.CompletionSource.SetException(exception);
+                        requestMessageLengths.Add(additionalMessage.Message.Length.ToString());
+
+                        await additionalMessage.Message.CopyToAsync(messagePayload);
                     }
-                });
-            }
+
+                    messagePayload.Seek(0, SeekOrigin.Begin);
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
+                    {
+                        Content = new StreamContent(messagePayload)
+                    };
+
+                    requestMessage.Headers.Add(_messageLengthsHeader, requestMessageLengths);
+
+                    var responseMessage = await httpClient.SendAsync(requestMessage);
+
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    if (!responseMessage.Headers.TryGetValues(_messageLengthsHeader, out var responseMessageLengths))
+                        throw new HttpRequestException($"Missing response header \"{_messageLengthsHeader}\"");
+
+                    responseMessageLengths = responseMessageLengths.SelectMany(x => x.Split(','));
+
+                    if (responseMessageLengths.Count() != batchedMessages.Length)
+                        throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but contained {responseMessageLengths.Count()} values when it was expected to contain {batchedMessages.Length} values");
+
+                    var responseMessageLengthInts = new List<long>();
+                    foreach (var responseMessageLength in responseMessageLengths)
+                    {
+                        if (!Int64.TryParse(responseMessageLength.ToString().Trim(), out var responseMessageLengthInt))
+                            throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but contained a non-integer value");
+                        responseMessageLengthInts.Add(responseMessageLengthInt);
+                    }
+
+                    var responseContent = await responseMessage.Content.ReadAsStreamAsync();
+
+                    var declaredLength = responseMessageLengthInts.Aggregate((x, y) => x + y);
+                    if (declaredLength != responseContent.Length)
+                        throw new HttpRequestException($"\"{_messageLengthsHeader}\" response header was present, but the lengths added up to {declaredLength} while the total content length is {responseContent.Length}");
+
+                    for (var i = 0; i < batchedMessages.Length; i++)
+                    {
+                        var messageBytes = new byte[responseMessageLengthInts[i]];
+                        await responseContent.ReadAsync(messageBytes);
+                        batchedMessages[i].CompletionSource.SetResult(new MemoryStream(messageBytes));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    foreach (var sendBatch in groupedSendBatch)
+                        sendBatch.CompletionSource.SetException(exception);
+                }
+            });
+        }
+
+        private void SendSingle(HttpClient httpClient, BatchedMessage batchedMessage)
+        {
+            _ = Task.Run(async () =>
+            {
+                var uri = batchedMessage.Uri;
+                var messagePayload = batchedMessage.Message;
+
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
+                {
+                    Content = new StreamContent(messagePayload)
+                };
+
+                var responseMessage = await httpClient.SendAsync(requestMessage);
+
+                responseMessage.EnsureSuccessStatusCode();
+
+                var responseContent = await responseMessage.Content.ReadAsStreamAsync();
+
+                batchedMessage.CompletionSource.SetResult(responseContent);
+            });
         }
 
         private struct BatchedMessage
