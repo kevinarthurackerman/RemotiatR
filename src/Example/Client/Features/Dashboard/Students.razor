@@ -1,0 +1,41 @@
+﻿@using _ = ContosoUniversity.Shared.Features.Dashboard.Students
+
+@inject IRemotiatr _remotiatr
+
+<h2>Students</h2>
+
+<Loading When="Data == null">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <Label For="() => Data.Students.First().LastName" />
+                </th>
+                <th>
+                    <Label For="() => Data.Students.First().FirstMidName" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Data.Students)
+            {
+                <tr>
+                    <td>
+                        @item.LastName
+                    </td>
+                    <td>
+                        @item.FirstMidName  
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</Loading>
+
+@code {
+    public _.Result Data { get; private set; }
+
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
+}

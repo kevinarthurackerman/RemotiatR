@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.0-preview3" />
-    <PackageReference Include="RemotiatR.FluentValidation.Shared" Version="1.0.18-beta" />
-    <PackageReference Include="RemotiatR.Server" Version="1.0.18-beta" />
+    <PackageReference Include="RemotiatR.FluentValidation.Shared" Version="1.0.19-beta" />
+    <PackageReference Include="RemotiatR.Server" Version="1.0.19-beta" />
   </ItemGroup>
 
 </Project>

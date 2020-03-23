@@ -10,7 +10,7 @@ namespace RemotiatR.MessageTransport.Http.Client
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
-            options.Services.TryAddTransient<IMessageTransport, DefaultHttpMessageTransport>();
+            options.Services.TryAddScoped<IMessageTransport, DefaultHttpMessageTransport>();
 
             return options;
         }
