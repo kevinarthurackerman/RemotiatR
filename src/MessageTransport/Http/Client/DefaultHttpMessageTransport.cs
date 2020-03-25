@@ -83,11 +83,12 @@ namespace RemotiatR.MessageTransport.Http.Client
         {
             _ = Task.Run(async () =>
             {
+                var uri = groupedSendBatch.Key;
+                var batchedMessages = groupedSendBatch.ToArray();
+                var responseMessages = new Stream[batchedMessages.Length];
+
                 try
                 {
-                    var uri = groupedSendBatch.Key;
-                    var batchedMessages = groupedSendBatch.ToArray();
-
                     var messagePayload = batchedMessages.First().Message;
                     messagePayload.Seek(0, SeekOrigin.End);
 
@@ -140,7 +141,7 @@ namespace RemotiatR.MessageTransport.Http.Client
                     {
                         var messageBytes = new byte[responseMessageLengthInts[i]];
                         await responseContent.ReadAsync(messageBytes);
-                        batchedMessages[i].CompletionSource.SetResult(new MemoryStream(messageBytes));
+                        responseMessages[i] = new MemoryStream(messageBytes);
                     }
                 }
                 catch (Exception exception)
@@ -148,6 +149,9 @@ namespace RemotiatR.MessageTransport.Http.Client
                     foreach (var sendBatch in groupedSendBatch)
                         sendBatch.CompletionSource.SetException(exception);
                 }
+
+                for (var i = 0; i < batchedMessages.Length; i++)
+                    batchedMessages[i].CompletionSource.SetResult(responseMessages[i]);
             });
         }
 
