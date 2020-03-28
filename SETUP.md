@@ -12,6 +12,8 @@ This file details setting up your developer environment to have the most product
 
 ### Making Changes
 
+> It is requested that you discuss changes before working on them to avoid changes being declined or requiring significant rework
+
 To support easy extensibility this code makes heavy use of nuget packages. This can create some friction in development, so the code include scripts to make it easier to deploy your changes locally as you code
 
 - After verifying that everything builds and before creating any changes open one of the project files and look for a reference to a RemotiatR package (ex: `<PackageReference Include="RemotiatR.abc.Client/Server" Version="x.y.z-beta" />`)
