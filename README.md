@@ -17,14 +17,6 @@ dotnet add package RemotiatR.Client
 dotnet add package RemotiatR.Server
 ```
 
-#### Extensions
-
-Adding support for [HTTP](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/MessageTransport/Http)
-
-Adding support for [JSON](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Serializer/Json)
-
-Adding support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
-
 ### Getting Started
 Check out the example at [src/Example/](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Example)
 
@@ -122,6 +114,14 @@ public class ServerTimeService
         (await _remotiatr.Send(new Ping.Request())).ServerTime;
 }
 ```
+
+### Extensions
+
+Adding support for [HTTP](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/MessageTransport/Http)
+
+Adding support for [JSON](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/Serializer/Json)
+
+Adding support for [FluentValidation](https://github.com/kevinarthurackerman/RemotiatR/tree/master/src/FluentValidation)
 
 ### Contributing
 Want to contribute? Great!
