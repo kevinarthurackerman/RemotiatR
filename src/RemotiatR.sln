@@ -33,6 +33,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.Serializer.Json.Shared", "Serializer\Json\Shared\RemotiatR.Serializer.Json.Shared.csproj", "{E2691137-D37D-4D9B-8DEF-658D002D2EAA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Rest.Client", "MessageTransport\Rest\Client\RemotiatR.MessageTransport.Rest.Client.csproj", "{9594D7D1-5D1A-4C52-A3CB-932F5DE5CF04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Rest.Server", "MessageTransport\Rest\Server\RemotiatR.MessageTransport.Rest.Server.csproj", "{107BB8CF-4D11-4FB6-9573-A975CBB9ECD0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemotiatR.MessageTransport.Rest.Shared", "MessageTransport\Rest\Shared\RemotiatR.MessageTransport.Rest.Shared.csproj", "{9FE73B67-0811-4C56-9AFC-BF86364BFE86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +105,18 @@ Global
 		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2691137-D37D-4D9B-8DEF-658D002D2EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9594D7D1-5D1A-4C52-A3CB-932F5DE5CF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9594D7D1-5D1A-4C52-A3CB-932F5DE5CF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9594D7D1-5D1A-4C52-A3CB-932F5DE5CF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9594D7D1-5D1A-4C52-A3CB-932F5DE5CF04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{107BB8CF-4D11-4FB6-9573-A975CBB9ECD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{107BB8CF-4D11-4FB6-9573-A975CBB9ECD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{107BB8CF-4D11-4FB6-9573-A975CBB9ECD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{107BB8CF-4D11-4FB6-9573-A975CBB9ECD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FE73B67-0811-4C56-9AFC-BF86364BFE86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FE73B67-0811-4C56-9AFC-BF86364BFE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FE73B67-0811-4C56-9AFC-BF86364BFE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FE73B67-0811-4C56-9AFC-BF86364BFE86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

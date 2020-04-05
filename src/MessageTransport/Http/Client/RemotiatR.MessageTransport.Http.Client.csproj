@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.2" />
-    <PackageReference Include="RemotiatR.MessageTransport.Http.Shared" Version="1.0.19-beta" />
-    <PackageReference Include="RemotiatR.Client" Version="1.0.19-beta" />
+    <PackageReference Include="RemotiatR.MessageTransport.Http.Shared" Version="1.0.20-beta" />
+    <PackageReference Include="RemotiatR.Client" Version="1.0.20-beta" />
   </ItemGroup>
 
 </Project>

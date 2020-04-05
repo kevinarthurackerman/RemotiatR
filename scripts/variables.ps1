@@ -1,6 +1,6 @@
 $majorVersion=1
 $minorVersion=0
-$buildVersion=19
+$buildVersion=20
 $postfixVersion="-beta"
 $version="$majorVersion.$minorVersion.$buildVersion$postfixVersion"
 
@@ -18,6 +18,9 @@ $buildOrder= `
     "variables-remotiatr-messagetransport-http-shared", `
     "variables-remotiatr-messagetransport-http-client", `
     "variables-remotiatr-messagetransport-http-server", `
+	"variables-remotiatr-messagetransport-rest-shared", `
+    "variables-remotiatr-messagetransport-rest-client", `
+    "variables-remotiatr-messagetransport-rest-server", `
     "variables-remotiatr-fluentvalidation-shared", `
     "variables-remotiatr-fluentvalidation-client", `
     "variables-remotiatr-fluentvalidation-server"

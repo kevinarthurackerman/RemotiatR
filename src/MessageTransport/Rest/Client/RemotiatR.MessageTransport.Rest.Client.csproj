@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>RemotiatR.Serializer.Json.Client</AssemblyName>
-    <RootNamespace>RemotiatR.Serializer.Json.Client</RootNamespace>
+    <AssemblyName>RemotiatR.MessageTransport.Rest.Client</AssemblyName>
+    <RootNamespace>RemotiatR.MessageTransport.Rest.Client</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RemotiatR.Serializer.Json.Shared" Version="1.0.20-beta" />
+    <PackageReference Include="RemotiatR.MessageTransport.Rest.Shared" Version="1.0.20-beta" />
     <PackageReference Include="RemotiatR.Client" Version="1.0.20-beta" />
   </ItemGroup>
 
