@@ -3,6 +3,7 @@ using RemotiatR.Client;
 using RemotiatR.Shared;
 using System;
 using System.Reflection;
+using RemotiatR.MessageTransport.Rest.Shared.Internal;
 
 namespace RemotiatR.MessageTransport.Rest.Client
 {
@@ -18,6 +19,6 @@ namespace RemotiatR.MessageTransport.Rest.Client
         }
 
         public static IAddRemotiatrOptions AddRestHost(this IAddRemotiatrOptions options, Uri rootUri, params Assembly[] assemblies) =>
-            options.AddHost(rootUri, x => new Uri(x.FullName.Replace('.','/').Replace('+','-'), UriKind.Relative), typeof(IMessageSerializer), typeof(IMessageTransport), assemblies);
+            options.AddHost(rootUri, Constants.PathLocator, typeof(IMessageSerializer), typeof(IMessageTransport), assemblies);
     }
 }
