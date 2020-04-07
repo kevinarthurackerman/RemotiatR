@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace ContosoUniversity.Shared.Features.Dashboard
