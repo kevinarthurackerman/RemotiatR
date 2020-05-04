@@ -44,10 +44,10 @@ namespace ContosoUniversity.Server.Features.Instructors
                     .ThenInclude(c => c.Course)
                     .OrderBy(i => i.LastName)
                     .ProjectTo<Model.Instructor>(_configuration)
-                    .ToListAsync(token);
+                    .ToArrayAsync(token);
 
-                var courses = new List<Model.Course>();
-                var enrollments = new List<Model.Enrollment>();
+                Model.Course[] courses;
+                Model.Enrollment[] enrollments;
 
                 if (message.Id != null)
                 {
@@ -55,16 +55,18 @@ namespace ContosoUniversity.Server.Features.Instructors
                         .Where(ci => ci.InstructorId == message.Id)
                         .Select(ci => ci.Course)
                         .ProjectTo<Model.Course>(_configuration)
-                        .ToListAsync(token);
+                        .ToArrayAsync(token);
                 }
+                else courses = new Model.Course[0];
 
                 if (message.CourseId != null)
                 {
                     enrollments = await _db.Enrollments
                         .Where(x => x.CourseId == message.CourseId)
                         .ProjectTo<Model.Enrollment>(_configuration)
-                        .ToListAsync(token);
+                        .ToArrayAsync(token);
                 }
+                else enrollments = new Model.Enrollment[0];
 
                 var viewModel = new Model
                 {

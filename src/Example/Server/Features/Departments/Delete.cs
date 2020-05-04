@@ -88,7 +88,7 @@ namespace ContosoUniversity.Server.Features.Departments
 
                 _db.Departments.Remove(department);
 
-                return default;
+                return Unit.Value;
             }
         }
     }

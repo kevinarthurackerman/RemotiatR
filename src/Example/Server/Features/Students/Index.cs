@@ -41,28 +41,22 @@ namespace ContosoUniversity.Server.Features.Students
                     students = students.Where(s => s.LastName.Contains(message.SearchString) || s.FirstMidName.Contains(message.SearchString));
                 }
 
-                switch (message.SortOrder)
+                students = message.SortOrder switch
                 {
-                    case "name_desc":
-                        students = students.OrderByDescending(s => s.LastName);
-                        break;
-                    case "date":
-                        students = students.OrderBy(s => s.EnrollmentDate);
-                        break;
-                    case "date_desc":
-                        students = students.OrderByDescending(s => s.EnrollmentDate);
-                        break;
-                    default: // Name ascending
-                        students = students.OrderBy(s => s.LastName);
-                        break;
-                }
+                    "name_desc" => students.OrderByDescending(s => s.LastName),
+                    "date" => students.OrderBy(s => s.EnrollmentDate),
+                    "date_desc" => students.OrderByDescending(s => s.EnrollmentDate),
+                    _ => students.OrderBy(s => s.LastName),
+                };
 
                 int pageNumber = message.Page ?? 1;
 
-                var model = new Result();
-                model.Results = await students
-                    .ProjectTo<Model>(_configuration)
-                    .PaginatedListAsync(pageNumber, _pageSize);
+                var model = new Result
+                {
+                    Results = await students
+                        .ProjectTo<Model>(_configuration)
+                        .PaginatedListAsync(pageNumber, _pageSize)
+                };
 
                 return model;
             }

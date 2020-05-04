@@ -26,7 +26,7 @@ namespace ContosoUniversity.Server.Features.About
                         EnrollmentDate = x.Key,
                         StudentCount = x.Count()
                     })
-                    .ToListAsync(token);
+                    .ToArrayAsync(token);
 
                 return new Result { EnrollmentDateGroups = groups };
             }

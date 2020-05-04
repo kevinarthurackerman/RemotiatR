@@ -16,7 +16,7 @@ namespace ContosoUniversity.Server.Features.Students
             public MappingProfile() => CreateMap<Command, Student>(MemberList.Source);
         }
 
-        public class Handler : IRequestHandler<Command, int>
+        public class Handler : IRequestHandler<Command>
         {
             private readonly SchoolContext _db;
             private readonly IMapper _mapper;
@@ -27,15 +27,13 @@ namespace ContosoUniversity.Server.Features.Students
                 _mapper = mapper;
             }
 
-            public async Task<int> Handle(Command message, CancellationToken token)
+            public Task<Unit> Handle(Command message, CancellationToken token)
             {
                 var student = _mapper.Map<Command, Student>(message);
 
                 _db.Students.Add(student);
 
-                await _db.SaveChangesAsync(token);
-
-                return student.Id;
+                return Unit.Task;
             }
         }
     }

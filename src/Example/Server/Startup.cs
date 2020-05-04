@@ -35,7 +35,7 @@ namespace ContosoUniversity.Server
             services.AddRemotiatr(x => 
             {
                 x.AddHost(
-                    new Uri("https://localhost:44337"),
+                    new Uri("https://localhost:44337", UriKind.Absolute),
                     typeof(Program).Assembly,
                     typeof(SharedAssemblyTypeMarker).Assembly
                 );
@@ -49,13 +49,9 @@ namespace ContosoUniversity.Server
 
                 x.AddFluentValidation(typeof(Program), typeof(SharedAssemblyTypeMarker));
 
-                x.Services.AddScoped(
-                    typeof(IPipelineBehavior<,>),
-                    typeof(TransactionBehavior<,>));
+                x.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
-                x.Services.AddScoped(
-                    typeof(IPipelineBehavior<,>),
-                    typeof(LoggingBehavior<,>));
+                x.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             });
 
             services.AddServerSideBlazor();

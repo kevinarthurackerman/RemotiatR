@@ -52,7 +52,7 @@ public class Startup
         services.AddRemotiatr(x => 
         {
             // register host uri and assemblies to search for notifications and requests
-            x.AddHost(new Uri("https://localhost:44337"), typeof(Ping).Assembly, typeof(Startup).Assembly);
+            x.AddHost(new Uri("https://localhost:44337", UriKind.Absolute), typeof(Ping).Assembly, typeof(Startup).Assembly);
 			
             // register http message transport
             x.AddHttpMessageTransport();
@@ -91,7 +91,7 @@ public class Startup
         services.AddRemotiatr(x =>
         {
             // register host uri and assemblies to search for notifications and requests
-            x.AddHost(new Uri("https://localhost:44337"), typeof(Ping).Assembly, typeof(Startup).Assembly);
+            x.AddHost(new Uri("https://localhost:44337", UriKind.Absolute), typeof(Ping).Assembly, typeof(Startup).Assembly);
 			
             // register http message transport
             x.AddHttpMessageTransport();

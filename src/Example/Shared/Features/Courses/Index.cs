@@ -12,7 +12,7 @@ namespace ContosoUniversity.Shared.Features.Courses
 
         public class Result
         {
-            public List<Course> Courses { get; set; }
+            public Course[] Courses { get; set; }
 
             public class Course
             {

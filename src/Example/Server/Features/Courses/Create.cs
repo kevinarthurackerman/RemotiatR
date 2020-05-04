@@ -70,7 +70,7 @@ namespace ContosoUniversity.Server.Features.Courses
                 departmentId.HasValue && await _schoolContext.Departments.AnyAsync(x => x.Id == departmentId, cancellationToken);
         }
 
-        public class CommandHandler : IRequestHandler<Command, int>
+        public class CommandHandler : IRequestHandler<Command>
         {
             private readonly SchoolContext _db;
             private readonly IMapper _mapper;
@@ -81,16 +81,14 @@ namespace ContosoUniversity.Server.Features.Courses
                 _mapper = mapper;
             }
 
-            public async Task<int> Handle(Command message, CancellationToken token)
+            public Task<Unit> Handle(Command message, CancellationToken token)
             {
                 var course = _mapper.Map<Command, Course>(message);
                 course.Id = message.Number.Value;
 
                 _db.Courses.Add(course);
 
-                await _db.SaveChangesAsync(token);
-
-                return course.Id;
+                return Unit.Task;
             }
         }
     }

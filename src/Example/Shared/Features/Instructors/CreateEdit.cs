@@ -13,7 +13,7 @@ namespace ContosoUniversity.Shared.Features.Instructors
             public int? Id { get; set; }
         }
 
-        public class Command : IRequest<int>
+        public class Command : IRequest
         {
             public int? Id { get; set; }
             public string LastName { get; set; }
@@ -22,7 +22,7 @@ namespace ContosoUniversity.Shared.Features.Instructors
             public DateTime? HireDate { get; set; }
             [DisplayName("Office Location")]
             public string OfficeAssignmentLocation { get; set; }
-            public List<CourseData> Courses { get; set; }
+            public CourseData[] Courses { get; set; }
 
             public class CourseData
             {

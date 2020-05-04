@@ -7,7 +7,7 @@ namespace ContosoUniversity.Shared.Features.Students
 {
     public class Create
     {
-        public class Command : IRequest<int>
+        public class Command : IRequest
         {
             public string LastName { get; set; }
             [DisplayName("First Name")]

@@ -65,7 +65,7 @@ namespace ContosoUniversity.Server.Features.Departments
             }
         }
 
-        public class CommandHandler : IRequestHandler<Command, int>
+        public class CommandHandler : IRequestHandler<Command>
         {
             private readonly SchoolContext _context;
             private readonly IMapper _mapper;
@@ -76,15 +76,13 @@ namespace ContosoUniversity.Server.Features.Departments
                 _mapper = mapper;
             }
 
-            public async Task<int> Handle(Command message, CancellationToken token)
+            public Task<Unit> Handle(Command message, CancellationToken token)
             {
                 var department = _mapper.Map<Command, Department>(message);
 
                 _context.Departments.Add(department);
 
-                await _context.SaveChangesAsync(token);
-
-                return department.Id;
+                return Unit.Task;
             }
         }
     }

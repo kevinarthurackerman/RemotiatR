@@ -35,12 +35,9 @@ namespace ContosoUniversity.Server.Features.Courses
                 var courses = await _db.Courses
                     .OrderBy(d => d.Id)
                     .ProjectTo<Result.Course>(_configuration)
-                    .ToListAsync(token);
+                    .ToArrayAsync(token);
 
-                return new Result
-                {
-                    Courses = courses
-                };
+                return new Result { Courses = courses };
             }
         }
     }

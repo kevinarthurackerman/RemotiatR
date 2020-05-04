@@ -82,7 +82,7 @@ namespace ContosoUniversity.Server.Features.Students
 
                 _db.Students.Remove(student);
 
-                return default;
+                return Unit.Value;
             }
         }
     }

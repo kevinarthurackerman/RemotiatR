@@ -20,7 +20,7 @@ namespace ContosoUniversity.Shared.Features.Students
             public string FirstMidName { get; set; }
             public string LastName { get; set; }
             public DateTime EnrollmentDate { get; set; }
-            public List<Enrollment> Enrollments { get; set; }
+            public Enrollment[] Enrollments { get; set; }
 
             public class Enrollment
             {

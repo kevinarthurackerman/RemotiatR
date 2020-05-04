@@ -13,7 +13,7 @@ namespace ContosoUniversity.Shared.Features.Departments
 
         public class Result
         {
-            public List<Model> Departments { get; set; }
+            public Model[] Departments { get; set; }
 
             public class Model
             {

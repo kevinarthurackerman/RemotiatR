@@ -23,7 +23,7 @@ namespace ContosoUniversity.Shared.Features.Departments
             public int? InstructorId { get; set; }
             public int Id { get; set; }
             public byte[] RowVersion { get; set; }
-            public IEnumerable<Instructor> Administrators { get; set; }
+            public Instructor[] Administrators { get; set; }
 
             public class Instructor : IPerson
             {

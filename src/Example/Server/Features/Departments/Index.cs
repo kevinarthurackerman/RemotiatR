@@ -42,7 +42,7 @@ namespace ContosoUniversity.Server.Features.Departments
                     .Include(x => x.Instructor)
                     .ProjectTo<Result.Model>(_configuration)
                     .DecompileAsync()
-                    .ToListAsync(token);
+                    .ToArrayAsync(token);
 
                 return new Result { Departments = departments };
             }

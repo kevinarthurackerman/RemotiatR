@@ -125,11 +125,17 @@
         return SearchAndUpdateUrl(_currentSortOrder, _currentSearchString, Data.Results.PageIndex);
     }
 
-    private Task PreviousClicked() =>
-        SearchAndUpdateUrl(_currentSortOrder, _currentSearchString, Data.Results.PageIndex - 1);
+    private async Task PreviousClicked()
+    {
+        if (!Data.Results.HasPreviousPage) return;
+        await SearchAndUpdateUrl(_currentSortOrder, _currentSearchString, Data.Results.PageIndex - 1);
+    }
 
-    private Task NextClicked() =>
-        SearchAndUpdateUrl(_currentSortOrder, _currentSearchString, Data.Results.PageIndex + 1);
+    private async Task NextClicked()
+    {
+        if (!Data.Results.HasNextPage) return;
+        await SearchAndUpdateUrl(_currentSortOrder, _currentSearchString, Data.Results.PageIndex + 1);
+    }
 
     private async Task BackToFullListClicked()
     {

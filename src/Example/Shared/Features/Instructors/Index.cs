@@ -19,9 +19,9 @@ namespace ContosoUniversity.Shared.Features.Instructors
             public int? InstructorId { get; set; }
             public int? CourseId { get; set; }
 
-            public IList<Instructor> Instructors { get; set; }
-            public IList<Course> Courses { get; set; }
-            public IList<Enrollment> Enrollments { get; set; }
+            public Instructor[] Instructors { get; set; }
+            public Course[] Courses { get; set; }
+            public Enrollment[] Enrollments { get; set; }
 
             public class Instructor
             {
@@ -32,7 +32,7 @@ namespace ContosoUniversity.Shared.Features.Instructors
                 public DateTime HireDate { get; set; }
                 [DisplayName("Office Location")]
                 public string OfficeAssignmentLocation { get; set; }
-                public IEnumerable<CourseAssignment> CourseAssignments { get; set; }
+                public CourseAssignment[] CourseAssignments { get; set; }
             }
 
             public class CourseAssignment

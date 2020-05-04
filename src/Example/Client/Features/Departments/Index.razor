@@ -14,22 +14,22 @@
         <thead>
             <tr>
                 <th>
-                    <Label For="() => Data[0].Name" />
+                    <Label For="() => Data.Departments[0].Name" />
                 </th>
                 <th>
-                    <Label For="() => Data[0].Budget" />
+                    <Label For="() => Data.Departments[0].Budget" />
                 </th>
                 <th>
-                    <Label For="() => Data[0].StartDate" />
+                    <Label For="() => Data.Departments[0].StartDate" />
                 </th>
                 <th>
-                    <Label For="() => Data[0].AdministratorFullName" />
+                    <Label For="() => Data.Departments[0].AdministratorFullName" />
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Data)
+            @foreach (var item in Data.Departments)
             {
                 <tr>
                     <td>
@@ -57,7 +57,7 @@
 </Loading>
 
 @code {
-    public List<_.Result.Model> Data { get; private set; }
+    public _.Result Data { get; private set; }
 
-    protected override async Task OnInitializedAsync() => Data = (await _remotiatr.Send(new _.Query())).Departments;
+    protected override async Task OnInitializedAsync() => Data = await _remotiatr.Send(new _.Query());
 }
