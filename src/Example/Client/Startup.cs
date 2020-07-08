@@ -6,6 +6,7 @@ using System;
 using RemotiatR.MessageTransport.Http.Client;
 using RemotiatR.FluentValidation.Client;
 using RemotiatR.Serializer.Json.Client;
+using System.Linq;
 
 namespace ContosoUniversity.Client
 {

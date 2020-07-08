@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RemotiatR.Shared;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace RemotiatR.Serializer.Json.Shared
     {
         private readonly JsonSerializer _jsonSerializer;
 
-        public DefaultJsonMessageSerializer()
+        public DefaultJsonMessageSerializer(IEnumerable<Type> allowedMessageTypes)
         {
             _jsonSerializer = new JsonSerializer
             {
@@ -23,6 +24,8 @@ namespace RemotiatR.Serializer.Json.Shared
                 DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
                 NullValueHandling = NullValueHandling.Ignore
             };
+
+            _jsonSerializer.Converters.Add(new MessageConverter(allowedMessageTypes));
         }
 
         public Task<MessageSerializerResult> Deserialize(Stream stream)
@@ -96,6 +99,76 @@ namespace RemotiatR.Serializer.Json.Shared
         {
             public object? Data { get; set; }
             public Dictionary<string,string>? Meta { get; set; }
+        }
+
+        private class MessageConverter : JsonConverter
+        {
+            private readonly HashSet<Type> _allowedMessageTypes;
+
+            public MessageConverter(IEnumerable<Type> allowedMessageTypes)
+            {
+                _allowedMessageTypes = allowedMessageTypes.ToHashSet();
+            }
+
+            public override bool CanConvert(Type objectType) => objectType == typeof(Message);
+
+            public override bool CanRead => true;
+
+            public override bool CanWrite => true;
+
+            public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+            {
+                var jObject = serializer.Deserialize<JObject>(reader);
+
+                jObject.TryGetValue(nameof(Message.Data), StringComparison.OrdinalIgnoreCase, out var dataToken);
+
+                if (dataToken == null) throw new InvalidOperationException($"{nameof(Message)} payload missing {nameof(Message.Data)} property");
+
+                var dataObject = dataToken as JObject;
+
+                if (dataObject == null) throw new InvalidOperationException($"{nameof(Message)} {nameof(Message.Data)} property was not an object type");
+
+                dataObject.TryGetValue("$type", out var typeToken);
+
+                if (dataToken == null) throw new InvalidOperationException($"{nameof(Message)} {nameof(Message.Data)} property was missing $type property");
+
+                var typeString = typeToken.Value<string>();
+
+                var type = Type.GetType(typeString, throwOnError: false, ignoreCase: true);
+
+                if (type == null || !_allowedMessageTypes.Contains(type))
+                    throw new InvalidOperationException($"{nameof(Message)}.{nameof(Message.Data)} is not an allowed type");
+
+                var thisIndex = serializer.Converters.IndexOf(this);
+                serializer.Converters.RemoveAt(thisIndex);
+
+                var result = jObject.ToObject(objectType, serializer);
+
+                serializer.Converters.Insert(thisIndex, this);
+
+                return result;
+            }
+
+            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            {
+                if (value == null)
+                {
+                    writer.WriteNull();
+                    return;
+                }
+
+                var message = value as Message;
+
+                if (message!.Data != null && !_allowedMessageTypes.Contains(message.Data.GetType()))
+                    throw new InvalidOperationException($"{nameof(Message)}.{nameof(Message.Data)} is not an allowed type");
+
+                var thisIndex = serializer.Converters.IndexOf(this);
+                serializer.Converters.RemoveAt(thisIndex);
+
+                serializer.Serialize(writer, message);
+
+                serializer.Converters.Insert(thisIndex, this);
+            }
         }
     }
 }

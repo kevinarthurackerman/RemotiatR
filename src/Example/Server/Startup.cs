@@ -39,7 +39,7 @@ namespace ContosoUniversity.Server
                     typeof(Program).Assembly,
                     typeof(SharedAssemblyTypeMarker).Assembly
                 );
-
+                
                 x.AddJsonSerializer();
 
                 x.Services.AddDbContext<SchoolContext>(options =>
