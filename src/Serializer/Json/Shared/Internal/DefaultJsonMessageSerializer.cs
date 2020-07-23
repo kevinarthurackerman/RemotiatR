@@ -101,7 +101,7 @@ namespace RemotiatR.Serializer.Json.Shared
             public Dictionary<string,string>? Meta { get; set; }
         }
 
-        private class MessageConverter : JsonConverter
+        private class MessageConverter : JsonConverter<Message>
         {
             private readonly HashSet<Type> _allowedMessageTypes;
 
@@ -110,17 +110,15 @@ namespace RemotiatR.Serializer.Json.Shared
                 _allowedMessageTypes = allowedMessageTypes.ToHashSet();
             }
 
-            public override bool CanConvert(Type objectType) => objectType == typeof(Message);
-
             public override bool CanRead => true;
 
             public override bool CanWrite => true;
 
-            public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+            public override Message ReadJson(JsonReader reader, Type objectType, Message? existingValue, bool hasExistingValue, JsonSerializer serializer)
             {
                 var jObject = serializer.Deserialize<JObject>(reader);
-
-                jObject.TryGetValue(nameof(Message.Data), StringComparison.OrdinalIgnoreCase, out var dataToken);
+                
+                jObject!.TryGetValue(nameof(Message.Data), StringComparison.OrdinalIgnoreCase, out var dataToken);
 
                 if (dataToken == null) throw new InvalidOperationException($"{nameof(Message)} payload missing {nameof(Message.Data)} property");
 
@@ -130,7 +128,7 @@ namespace RemotiatR.Serializer.Json.Shared
 
                 dataObject.TryGetValue("$type", out var typeToken);
 
-                if (dataToken == null) throw new InvalidOperationException($"{nameof(Message)} {nameof(Message.Data)} property was missing $type property");
+                if (typeToken == null) throw new InvalidOperationException($"{nameof(Message)} {nameof(Message.Data)} property was missing $type property");
 
                 var typeString = typeToken.Value<string>();
 
@@ -142,14 +140,14 @@ namespace RemotiatR.Serializer.Json.Shared
                 var thisIndex = serializer.Converters.IndexOf(this);
                 serializer.Converters.RemoveAt(thisIndex);
 
-                var result = jObject.ToObject(objectType, serializer);
+                var result = jObject.ToObject(objectType, serializer) as Message;
 
                 serializer.Converters.Insert(thisIndex, this);
 
                 return result;
             }
 
-            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, Message? value, JsonSerializer serializer)
             {
                 if (value == null)
                 {
@@ -157,16 +155,14 @@ namespace RemotiatR.Serializer.Json.Shared
                     return;
                 }
 
-                var message = value as Message;
-
-                if (message!.Data != null && !_allowedMessageTypes.Contains(message.Data.GetType()))
+                if (value!.Data != null && !_allowedMessageTypes.Contains(value.Data.GetType()))
                     throw new InvalidOperationException($"{nameof(Message)}.{nameof(Message.Data)} is not an allowed type");
 
                 var thisIndex = serializer.Converters.IndexOf(this);
                 serializer.Converters.RemoveAt(thisIndex);
 
-                serializer.Serialize(writer, message);
-
+                serializer.Serialize(writer, value);
+                
                 serializer.Converters.Insert(thisIndex, this);
             }
         }
