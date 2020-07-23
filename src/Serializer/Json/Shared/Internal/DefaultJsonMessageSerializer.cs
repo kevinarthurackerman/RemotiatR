@@ -13,6 +13,7 @@ namespace RemotiatR.Serializer.Json.Shared
     internal class DefaultJsonMessageSerializer : IMessageSerializer
     {
         private readonly JsonSerializer _jsonSerializer;
+        private readonly MessageConverter _messageConverter;
 
         public DefaultJsonMessageSerializer(IEnumerable<Type> allowedMessageTypes)
         {
@@ -25,7 +26,8 @@ namespace RemotiatR.Serializer.Json.Shared
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            _jsonSerializer.Converters.Add(new MessageConverter(allowedMessageTypes));
+            _messageConverter = new MessageConverter(allowedMessageTypes);
+            _jsonSerializer.Converters.Add(_messageConverter);
         }
 
         public Task<MessageSerializerResult> Deserialize(Stream stream)
@@ -105,14 +107,16 @@ namespace RemotiatR.Serializer.Json.Shared
         {
             private readonly HashSet<Type> _allowedMessageTypes;
 
+            private bool _skip;
+
             public MessageConverter(IEnumerable<Type> allowedMessageTypes)
             {
                 _allowedMessageTypes = allowedMessageTypes as HashSet<Type> ?? allowedMessageTypes.ToHashSet();
             }
 
-            public override bool CanRead => true;
+            public override bool CanRead => !_skip || (_skip = false);
 
-            public override bool CanWrite => true;
+            public override bool CanWrite => !_skip || (_skip = false);
 
             public override Message ReadJson(JsonReader reader, Type objectType, Message? existingValue, bool hasExistingValue, JsonSerializer serializer)
             {
@@ -137,12 +141,9 @@ namespace RemotiatR.Serializer.Json.Shared
                 if (type == null || !_allowedMessageTypes.Contains(type))
                     throw new InvalidOperationException($"{nameof(Message)}.{nameof(Message.Data)} is not an allowed type");
 
-                var thisIndex = serializer.Converters.IndexOf(this);
-                serializer.Converters.RemoveAt(thisIndex);
+                _skip = true;
 
                 var result = jObject.ToObject(objectType, serializer) as Message;
-
-                serializer.Converters.Insert(thisIndex, this);
 
                 return result;
             }
