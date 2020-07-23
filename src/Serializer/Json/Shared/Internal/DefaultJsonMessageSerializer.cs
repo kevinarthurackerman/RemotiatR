@@ -107,7 +107,7 @@ namespace RemotiatR.Serializer.Json.Shared
 
             public MessageConverter(IEnumerable<Type> allowedMessageTypes)
             {
-                _allowedMessageTypes = allowedMessageTypes.ToHashSet();
+                _allowedMessageTypes = allowedMessageTypes as HashSet<Type> ?? allowedMessageTypes.ToHashSet();
             }
 
             public override bool CanRead => true;
