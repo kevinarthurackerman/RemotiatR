@@ -1,6 +1,6 @@
 $majorVersion=2
 $minorVersion=0
-$buildVersion=1
+$buildVersion=2
 $postfixVersion=""
 $version="$majorVersion.$minorVersion.$buildVersion$postfixVersion"
 
